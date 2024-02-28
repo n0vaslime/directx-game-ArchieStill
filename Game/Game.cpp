@@ -118,7 +118,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(Box);
     Box->SetPos(Vector3(0.0f, 0.0f, -100.0f));
     Box->SetPitch(XM_PIDIV4);
-    Box->SetScale(200.0f);
+    Box->SetScale(20.0f);
 
     VBCube* cube = new VBCube();
     cube->init(11, m_d3dDevice.Get());

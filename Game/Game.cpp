@@ -6,12 +6,18 @@
 #include "Game.h"
 #include <time.h>
 
+#include <iostream>
+
 //Scarle Headers
 #include "GameData.h"
 #include "GameState.h"
 #include "DrawData.h"
 #include "DrawData2D.h"
 #include "ObjectList.h"
+
+#include "CMOGO.h"
+#include <DirectXCollision.h>
+#include "Collision.h"
 
 extern void ExitGame() noexcept;
 
@@ -93,9 +99,16 @@ void Game::Initialize(HWND _window, int _width, int _height)
     //example basic 3D stuff
     Terrain* terrain = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3(100.0f, 0.0f, 100.0f), 0.0f, 0.0f, 0.0f, 0.25f * Vector3::One);
     m_GameObjects.push_back(terrain);
+    m_ColliderObjects.push_back(terrain);
+
+    Terrain* terrain2 = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3(-100.0f, 0.0f, -100.0f), 0.0f, 0.0f, 0.0f, Vector3::One);
+    m_GameObjects.push_back(terrain2);
+    m_ColliderObjects.push_back(terrain2);
 
     //L-system like tree
-    m_GameObjects.push_back(new Tree(4, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory));
+    Tree* tree = new Tree(4, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
+    m_GameObjects.push_back(tree);  
+    // todo: add to cmogo
 
     //Vertex Buffer Game Objects
     FileVBGO* terrainBox = new FileVBGO("terrainTex", m_d3dDevice.Get());
@@ -105,7 +118,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(Box);
     Box->SetPos(Vector3(0.0f, 0.0f, -100.0f));
     Box->SetPitch(XM_PIDIV4);
-    Box->SetScale(20.0f);
+    Box->SetScale(200.0f);
 
     VBCube* cube = new VBCube();
     cube->init(11, m_d3dDevice.Get());
@@ -152,6 +165,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     //add Player
     Player* pPlayer = new Player("BirdModelV1", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(pPlayer);
+    m_PhysicsObjects.push_back(pPlayer);
 
     //add a secondary camera
     m_TPScam = new TPSCamera(0.25f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 10.0f, 50.0f));
@@ -223,7 +237,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     bug_test->SetPos(300.0f * Vector2::One);
     m_GameObjects2D.push_back(bug_test);
 
-    TextGO2D* text = new TextGO2D("wibble wobble :]");
+    TextGO2D* text = new TextGO2D("Test Text");
     text->SetPos(Vector2(100, 10));
     text->SetColour(Color((float*)&Colors::Yellow));
     m_GameObjects2D.push_back(text);
@@ -296,6 +310,8 @@ void Game::Update(DX::StepTimer const& _timer)
     {
         (*it)->Tick(m_GD);
     }
+
+    CheckCollision();
 }
 
 // Draws the scene.
@@ -412,8 +428,8 @@ void Game::OnWindowSizeChanged(int _width, int _height)
 void Game::GetDefaultSize(int& _width, int& _height) const noexcept
 {
     // TODO: Change to desired default window size (note minimum size is 320x200).
-    _width = 1080;
-    _height = 720;
+    _width = 800;
+    _height = 600;
 }
 
 // These are the resources that depend on the device.
@@ -612,4 +628,17 @@ void Game::ReadInput()
     RECT window;
     GetWindowRect(m_window, &window);
     SetCursorPos((window.left + window.right) >> 1, (window.bottom + window.top) >> 1);
+}
+
+void Game::CheckCollision()
+{
+    for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_ColliderObjects.size(); j++)
+    {
+        if (m_PhysicsObjects[i]->Intersects(*m_ColliderObjects[j])) //std::cout << "Collision Detected!" << std::endl;
+        {
+            XMFLOAT3 eject_vect = Collision::ejectionCMOGO(*m_PhysicsObjects[i], *m_ColliderObjects[j]);
+            auto pos = m_PhysicsObjects[i]->GetPos();
+            m_PhysicsObjects[i]->SetPos(pos - eject_vect);
+        }
+    }
 }

@@ -33,6 +33,9 @@ public:
 	float		GetYaw() { return m_yaw; }
 	float		GetRoll() { return m_roll; }
 
+	Matrix&			getWorldTransform()		  { return m_worldMat; }
+	const Matrix&	getWorldTransform() const { return m_worldMat; }
+
 	bool		IsPhysicsOn() { return m_physicsOn; }
 	float		GetDrag() { return m_drag; }
 
@@ -51,7 +54,6 @@ public:
 	void		SetPhysicsOn(bool _physics) { m_physicsOn = _physics; }
 	void		TogglePhysics() { m_physicsOn = !m_physicsOn; }
 	void		SetDrag(float _drag) { m_drag = _drag; }
-
 
 protected:
 

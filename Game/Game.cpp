@@ -114,7 +114,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     FileVBGO* terrainBox = new FileVBGO("terrainTex", m_d3dDevice.Get());
     m_GameObjects.push_back(terrainBox);
 
-    FileVBGO* Box = new FileVBGO("cube", m_d3dDevice.Get());
+    /*FileVBGO* Box = new FileVBGO("cube", m_d3dDevice.Get());
     m_GameObjects.push_back(Box);
     Box->SetPos(Vector3(0.0f, 0.0f, -100.0f));
     Box->SetPitch(XM_PIDIV4);
@@ -155,7 +155,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     VBMC->SetPos(Vector3(100, 0, -100));
     VBMC->SetPitch(-XM_PIDIV2);
     VBMC->SetScale(Vector3(3, 3, 1.5));
-    m_GameObjects.push_back(VBMC);
+    m_GameObjects.push_back(VBMC);*/
 
     //create a base camera
     m_cam = new Camera(0.25f * XM_PI, AR, 1.0f, 10000.0f, Vector3::UnitY, Vector3::Zero);
@@ -173,7 +173,13 @@ void Game::Initialize(HWND _window, int _width, int _height)
 
     //test all GPGOs
     float* params = new float[3];
-    params[0] = 10.f;  params[1] = 20.0f; params[2] = 30.f;
+
+    params[0] = 250.f; params[1] = 10.f; params[2] = 250.f;
+    GPGO* pGPGO = new GPGO(m_d3dContext.Get(), GPGO_BOX, (float*)&Colors::DarkSeaGreen, params);
+    pGPGO->SetPos(Vector3(0.f, -2.5f, 0.f));
+    m_GameObjects.push_back(pGPGO);
+
+    /*params[0] = 10.f;  params[1] = 20.0f; params[2] = 30.f;
     GPGO* pGPGO = new GPGO(m_d3dContext.Get(), GPGO_BOX, (float*)&Colors::Azure, params);
     pGPGO->SetPos(Vector3(-50.0f, 10.0f, -100.f));
     m_GameObjects.push_back(pGPGO);
@@ -220,7 +226,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     params[0] = 30.0f; params[1] = 10.0f; params[2] = (size_t)32;
     pGPGO = new GPGO(m_d3dContext.Get(), GPGO_TORUS, (float*)&Colors::Aquamarine, params);
     pGPGO->SetPos(Vector3(-50.0f, 10.0f, 230.f));
-    m_GameObjects.push_back(pGPGO);
+    m_GameObjects.push_back(pGPGO);*/
 
     //create DrawData struct and populate its pointers
     m_DD = new DrawData;
@@ -230,14 +236,14 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_DD->m_light = m_light;
 
     //example basic 2D stuff
-    ImageGO2D* logo = new ImageGO2D("logo_small", m_d3dDevice.Get());
+    /*ImageGO2D* logo = new ImageGO2D("logo_small", m_d3dDevice.Get());
     logo->SetPos(200.0f * Vector2::One);
     m_GameObjects2D.push_back(logo);
     ImageGO2D* bug_test = new ImageGO2D("bug_test", m_d3dDevice.Get());
     bug_test->SetPos(300.0f * Vector2::One);
-    m_GameObjects2D.push_back(bug_test);
+    m_GameObjects2D.push_back(bug_test);*/
 
-    TextGO2D* text = new TextGO2D("Test Text");
+    TextGO2D* text = new TextGO2D("VIDEO GAME :]");
     text->SetPos(Vector2(100, 10));
     text->SetColour(Color((float*)&Colors::Yellow));
     m_GameObjects2D.push_back(text);
@@ -248,8 +254,8 @@ void Game::Initialize(HWND _window, int _width, int _height)
     loop->Play();
     m_Sounds.push_back(loop);
 
-    TestSound* TS = new TestSound(m_audioEngine.get(), "Explo1");
-    m_Sounds.push_back(TS);
+    // TestSound* TS = new TestSound(m_audioEngine.get(), "Explo1");
+    // m_Sounds.push_back(TS);
 }
 
 // Executes the basic game loop.
@@ -287,9 +293,11 @@ void Game::Update(DX::StepTimer const& _timer)
     }
 
     ReadInput();
+
+
     //upon space bar switch camera state
     //see docs here for what's going on: https://github.com/Microsoft/DirectXTK/wiki/Keyboard
-    if (m_GD->m_KBS_tracker.pressed.Space)
+    if (m_GD->m_KBS_tracker.pressed.Tab)
     {
         if (m_GD->m_GS == GS_PLAY_MAIN_CAM)
         {
@@ -616,6 +624,11 @@ void Game::ReadInput()
 {
     m_GD->m_KBS = m_keyboard->GetState();
     m_GD->m_KBS_tracker.Update(m_GD->m_KBS);
+
+    if (m_GD->m_KBS.Space)
+    {
+        std::cout << "hi" << std::endl;
+    }
     //quit game on hiting escape
     if (m_GD->m_KBS.Escape)
     {

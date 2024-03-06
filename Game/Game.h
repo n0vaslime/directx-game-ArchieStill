@@ -113,8 +113,10 @@ private:
 
     std::vector<CMOGO*> m_ColliderObjects;
     std::vector<CMOGO*> m_PhysicsObjects;
+    std::vector<CMOGO*> m_TriggerObjects;
 
     void CheckCollision();
+    void CheckTriggers();
                                          
     //sound stuff
 	//This uses a simple system, but a better pipeline can be used using Wave Banks

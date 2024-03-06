@@ -103,7 +103,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
 
     Terrain* terrain2 = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3(-100.0f, 0.0f, -100.0f), 0.0f, 0.0f, 0.0f, Vector3::One);
     m_GameObjects.push_back(terrain2);
-    m_ColliderObjects.push_back(terrain2);
+    m_TriggerObjects.push_back(terrain2);
 
     //L-system like tree
     Tree* tree = new Tree(4, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
@@ -118,7 +118,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(Box);
     Box->SetPos(Vector3(0.0f, 0.0f, -100.0f));
     Box->SetPitch(XM_PIDIV4);
-    Box->SetScale(20.0f);
+    Box->SetScale(20.0f);*/
 
     VBCube* cube = new VBCube();
     cube->init(11, m_d3dDevice.Get());
@@ -126,7 +126,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     cube->SetScale(4.0f);
     m_GameObjects.push_back(cube);
 
-    VBSpike* spikes = new VBSpike();
+    /*VBSpike* spikes = new VBSpike();
     spikes->init(11, m_d3dDevice.Get());
     spikes->SetPos(Vector3(0.0f, 0.0f, 100.0f));
     spikes->SetScale(4.0f);
@@ -320,6 +320,7 @@ void Game::Update(DX::StepTimer const& _timer)
     }
 
     CheckCollision();
+    CheckTriggers();
 }
 
 // Draws the scene.
@@ -436,8 +437,8 @@ void Game::OnWindowSizeChanged(int _width, int _height)
 void Game::GetDefaultSize(int& _width, int& _height) const noexcept
 {
     // TODO: Change to desired default window size (note minimum size is 320x200).
-    _width = 800;
-    _height = 600;
+    _width = 1600;
+    _height = 1200;
 }
 
 // These are the resources that depend on the device.
@@ -652,6 +653,17 @@ void Game::CheckCollision()
             XMFLOAT3 eject_vect = Collision::ejectionCMOGO(*m_PhysicsObjects[i], *m_ColliderObjects[j]);
             auto pos = m_PhysicsObjects[i]->GetPos();
             m_PhysicsObjects[i]->SetPos(pos - eject_vect);
+        }
+    }
+}
+
+void Game::CheckTriggers()
+{
+    for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_TriggerObjects.size(); j++)
+    {
+        if (m_PhysicsObjects[i]->Intersects(*m_TriggerObjects[j])) //std::cout << "Collision Detected!" << std::endl;
+        {
+            std::cout << "TRIGGERED" << std::endl;
         }
     }
 }

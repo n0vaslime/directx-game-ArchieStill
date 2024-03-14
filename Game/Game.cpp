@@ -120,11 +120,14 @@ void Game::Initialize(HWND _window, int _width, int _height)
     Box->SetPitch(XM_PIDIV4);
     Box->SetScale(20.0f);*/
 
-    VBCube* cube = new VBCube();
-    cube->init(11, m_d3dDevice.Get());
-    cube->SetPos(Vector3(100.0f, 0.0f, 0.0f));
-    cube->SetScale(4.0f);
-    m_GameObjects.push_back(cube);
+    // VBCube* cube = new VBCube();
+    // cube->init(11, m_d3dDevice.Get());
+    // cube->SetPos(Vector3(100.0f, 0.0f, 0.0f));
+    // cube->SetScale(4.0f);
+    // m_GameObjects.push_back(cube);
+    Terrain* wall = new Terrain("cube", m_d3dDevice.Get(), m_fxFactory, Vector3(100.0f, 0.0f, 100.0f), 0.0f, 0.0f, 0.0f, 0.25f * Vector3::One);
+    m_GameObjects.push_back(wall);
+    m_ColliderObjects.push_back(wall);
 
     /*VBSpike* spikes = new VBSpike();
     spikes->init(11, m_d3dDevice.Get());

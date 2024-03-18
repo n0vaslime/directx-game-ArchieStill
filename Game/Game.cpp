@@ -105,6 +105,10 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(terrain2);
     m_TriggerObjects.push_back(terrain2);
 
+    Terrain* floor = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3(-100.0f, 0.0f, -100.0f), 0.0f, 0.0f, 0.0f, Vector3::One);
+    m_GameObjects.push_back(terrain2);
+    m_TriggerObjects.push_back(terrain2);
+
     //L-system like tree
     Tree* tree = new Tree(4, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(tree);  
@@ -125,9 +129,9 @@ void Game::Initialize(HWND _window, int _width, int _height)
     // cube->SetPos(Vector3(100.0f, 0.0f, 0.0f));
     // cube->SetScale(4.0f);
     // m_GameObjects.push_back(cube);
-    Terrain* wall = new Terrain("cube", m_d3dDevice.Get(), m_fxFactory, Vector3(100.0f, 0.0f, 100.0f), 0.0f, 0.0f, 0.0f, 0.25f * Vector3::One);
-    m_GameObjects.push_back(wall);
-    m_ColliderObjects.push_back(wall);
+    // Terrain* wall = new Terrain("cube", m_d3dDevice.Get(), m_fxFactory, Vector3(100.0f, 0.0f, 100.0f), 0.0f, 0.0f, 0.0f, 0.25f * Vector3::One);
+    // m_GameObjects.push_back(wall);
+    // m_ColliderObjects.push_back(wall);
 
     /*VBSpike* spikes = new VBSpike();
     spikes->init(11, m_d3dDevice.Get());
@@ -171,7 +175,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_PhysicsObjects.push_back(pPlayer);
 
     //add a secondary camera
-    m_TPScam = new TPSCamera(0.25f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 10.0f, 50.0f));
+    m_TPScam = new TPSCamera(0.25f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.01f));
     m_GameObjects.push_back(m_TPScam);
 
     //test all GPGOs
@@ -302,13 +306,13 @@ void Game::Update(DX::StepTimer const& _timer)
     //see docs here for what's going on: https://github.com/Microsoft/DirectXTK/wiki/Keyboard
     if (m_GD->m_KBS_tracker.pressed.Tab)
     {
-        if (m_GD->m_GS == GS_PLAY_MAIN_CAM)
+        if (m_GD->m_GS == GS_PLAY_TPS_CAM)
         {
-            m_GD->m_GS = GS_PLAY_TPS_CAM;
+            m_GD->m_GS = GS_PLAY_MAIN_CAM;
         }
         else
         {
-            m_GD->m_GS = GS_PLAY_MAIN_CAM;
+            m_GD->m_GS = GS_PLAY_TPS_CAM;
         }
     }
 

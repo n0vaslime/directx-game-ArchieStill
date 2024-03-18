@@ -13,6 +13,8 @@ public:
 	Player(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF);
 	~Player();
 
+	virtual void Draw(DrawData* _DD) override;
+
 	virtual void Tick(GameData* _GD) override;
 
 protected:

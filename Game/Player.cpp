@@ -2,6 +2,7 @@
 #include "Player.h"
 #include <dinput.h>
 #include "GameData.h"
+#include <iostream>
 
 Player::Player(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF) : CMOGO(_fileName, _pd3dDevice, _EF)
 {
@@ -37,6 +38,7 @@ void Player::Tick(GameData* _GD)
 	case GS_PLAY_TPS_CAM:
 	{
 		//TURN AND FORWARD CONTROL HERE
+
 		Vector3 forwardMove = 40.0f * Vector3::Forward;
 		Matrix rotMove = Matrix::CreateRotationY(m_yaw);
 		forwardMove = Vector3::Transform(forwardMove, rotMove);
@@ -52,15 +54,19 @@ void Player::Tick(GameData* _GD)
 	}
 	}
 
-	//change orinetation of player
-	float rotSpeed = 2.0f * _GD->m_dt;
-	if (_GD->m_KBS.A)
+	//change orientation of player
+	float rotSpeed = 0.5f * _GD->m_dt;
+	if (_GD->m_MS.x)
 	{
-		m_yaw += rotSpeed;
+		m_yaw -= rotSpeed * _GD->m_MS.x;
 	}
-	if (_GD->m_KBS.D)
+	if (_GD->m_MS.y)
 	{
-		m_yaw -= rotSpeed;
+		m_pitch -= rotSpeed * _GD->m_MS.y;
+		if (m_pitch <= -XM_PI / 4)
+			m_pitch = -XM_PI / 4;
+		if (m_pitch >= XM_PI / 2 - 0.05)
+			m_pitch = XM_PI / 2 - 0.05;
 	}
 
 	//move player up and down
@@ -86,4 +92,12 @@ void Player::Tick(GameData* _GD)
 
 	//apply my base behaviour
 	CMOGO::Tick(_GD);
+}
+
+void Player::Draw(DrawData* _DD)
+{
+	if (false)
+	{
+		CMOGO::Draw(_DD);
+	}
 }

@@ -70,7 +70,7 @@ void Player::Tick(GameData* _GD)
 	}
 
 	//move player up and down
-	if (_GD->m_KBS.R)
+	if (_GD->m_KBS.Space)
 	{
 		m_acc.y += 40.0f;
 	}
@@ -96,7 +96,7 @@ void Player::Tick(GameData* _GD)
 
 void Player::Draw(DrawData* _DD)
 {
-	if (false)
+	if (true)
 	{
 		CMOGO::Draw(_DD);
 	}

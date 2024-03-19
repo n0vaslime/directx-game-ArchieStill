@@ -105,9 +105,9 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(terrain2);
     m_TriggerObjects.push_back(terrain2);
 
-    Terrain* floor = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3(-100.0f, 0.0f, -100.0f), 0.0f, 0.0f, 0.0f, Vector3::One);
-    m_GameObjects.push_back(terrain2);
-    m_TriggerObjects.push_back(terrain2);
+    Terrain* floor = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, -105.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3::One);
+    m_GameObjects.push_back(floor);
+    m_ColliderObjects.push_back(floor);
 
     //L-system like tree
     Tree* tree = new Tree(4, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
@@ -175,16 +175,16 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_PhysicsObjects.push_back(pPlayer);
 
     //add a secondary camera
-    m_TPScam = new TPSCamera(0.25f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.01f));
+    m_TPScam = new TPSCamera(0.25f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 10.0f));
     m_GameObjects.push_back(m_TPScam);
 
     //test all GPGOs
     float* params = new float[3];
 
-    params[0] = 250.f; params[1] = 10.f; params[2] = 250.f;
-    GPGO* pGPGO = new GPGO(m_d3dContext.Get(), GPGO_BOX, (float*)&Colors::DarkSeaGreen, params);
-    pGPGO->SetPos(Vector3(0.f, -2.5f, 0.f));
-    m_GameObjects.push_back(pGPGO);
+    // params[0] = 250.f; params[1] = 10.f; params[2] = 250.f;
+    // GPGO* pGPGO = new GPGO(m_d3dContext.Get(), GPGO_BOX, (float*)&Colors::DarkSeaGreen, params);
+    // pGPGO->SetPos(Vector3(0.f, -2.5f, 0.f));
+    // m_GameObjects.push_back(pGPGO);
 
     /*params[0] = 10.f;  params[1] = 20.0f; params[2] = 30.f;
     GPGO* pGPGO = new GPGO(m_d3dContext.Get(), GPGO_BOX, (float*)&Colors::Azure, params);
@@ -444,8 +444,8 @@ void Game::OnWindowSizeChanged(int _width, int _height)
 void Game::GetDefaultSize(int& _width, int& _height) const noexcept
 {
     // TODO: Change to desired default window size (note minimum size is 320x200).
-    _width = 1600;
-    _height = 1200;
+    _width = 800;
+    _height = 600;
 }
 
 // These are the resources that depend on the device.
@@ -633,10 +633,6 @@ void Game::ReadInput()
     m_GD->m_KBS = m_keyboard->GetState();
     m_GD->m_KBS_tracker.Update(m_GD->m_KBS);
 
-    if (m_GD->m_KBS.Space)
-    {
-        std::cout << "hi" << std::endl;
-    }
     //quit game on hiting escape
     if (m_GD->m_KBS.Escape)
     {
@@ -668,7 +664,7 @@ void Game::CheckTriggers()
 {
     for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_TriggerObjects.size(); j++)
     {
-        if (m_PhysicsObjects[i]->Intersects(*m_TriggerObjects[j])) //std::cout << "Collision Detected!" << std::endl;
+        if (m_PhysicsObjects[i]->Intersects(*m_TriggerObjects[j])) //std::cout << "Trigger Detected!" << std::endl;
         {
             std::cout << "TRIGGERED" << std::endl;
         }

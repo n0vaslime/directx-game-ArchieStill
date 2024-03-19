@@ -105,9 +105,14 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(terrain2);
     m_TriggerObjects.push_back(terrain2);
 
-    Terrain* floor = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, -105.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3::One);
+    Terrain* floor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, -50.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(10,10,10));
     m_GameObjects.push_back(floor);
     m_ColliderObjects.push_back(floor);
+
+
+    // Terrain* house = new Terrain("House", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, -0.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(5, 5, 5));
+    // m_GameObjects.push_back(house);
+    // m_ColliderObjects.push_back(house);
 
     //L-system like tree
     Tree* tree = new Tree(4, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
@@ -170,12 +175,12 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(m_cam);
 
     //add Player
-    Player* pPlayer = new Player("BirdModelV1", m_d3dDevice.Get(), m_fxFactory);
+    Player* pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(pPlayer);
     m_PhysicsObjects.push_back(pPlayer);
 
     //add a secondary camera
-    m_TPScam = new TPSCamera(0.25f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 10.0f));
+    m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f));
     m_GameObjects.push_back(m_TPScam);
 
     //test all GPGOs
@@ -243,12 +248,13 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_DD->m_light = m_light;
 
     //example basic 2D stuff
-    /*ImageGO2D* logo = new ImageGO2D("logo_small", m_d3dDevice.Get());
-    logo->SetPos(200.0f * Vector2::One);
-    m_GameObjects2D.push_back(logo);
-    ImageGO2D* bug_test = new ImageGO2D("bug_test", m_d3dDevice.Get());
-    bug_test->SetPos(300.0f * Vector2::One);
-    m_GameObjects2D.push_back(bug_test);*/
+    // ImageGO2D* logo = new ImageGO2D("logo_small", m_d3dDevice.Get());
+    // logo->SetPos(200.0f * Vector2::One);
+    // m_GameObjects2D.push_back(logo);
+    ImageGO2D* bug_test = new ImageGO2D("pain", m_d3dDevice.Get());
+    bug_test->SetPos(150.0f * Vector2::One);
+    bug_test->SetScale(0.1f);
+    m_GameObjects2D.push_back(bug_test);
 
     TextGO2D* text = new TextGO2D("VIDEO GAME :]");
     text->SetPos(Vector2(100, 10));

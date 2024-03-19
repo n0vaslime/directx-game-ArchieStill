@@ -19,6 +19,7 @@ public:
 
 protected:
 
+	bool is_jumping = false;
 };
 
 #endif

@@ -70,9 +70,14 @@ void Player::Tick(GameData* _GD)
 	}
 
 	//move player up and down
-	if (_GD->m_KBS.Space)
+	if (_GD->m_KBS.Space && !is_jumping)
 	{
-		m_acc.y += 40.0f;
+		is_jumping = true;
+	}
+	if (is_jumping)
+	{
+		m_acc.y += 400.0f;
+		is_jumping = false;
 	}
 
 	if (_GD->m_KBS.F)
@@ -96,7 +101,7 @@ void Player::Tick(GameData* _GD)
 
 void Player::Draw(DrawData* _DD)
 {
-	if (true)
+	if (false)
 	{
 		CMOGO::Draw(_DD);
 	}

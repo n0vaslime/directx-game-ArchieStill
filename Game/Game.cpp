@@ -113,6 +113,10 @@ void Game::Initialize(HWND _window, int _width, int _height)
     pGroundCheck = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(1, 0.05, 1));
     m_TriggerObjects.push_back(pGroundCheck);
 
+    pCoin1 = new Terrain("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(20.0f, 0.0f, 20.0f), 0.0f, 0.0f, 0.0f, Vector3(0.25f, 0.3f, 0.25f));
+    m_GameObjects.push_back(pCoin1);
+    m_TriggerObjects.push_back(pCoin1);
+
     // Terrain* house = new Terrain("House", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, -0.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(5, 5, 5));
     // m_GameObjects.push_back(house);
     // m_ColliderObjects.push_back(house);
@@ -684,12 +688,15 @@ void Game::CheckTriggers()
     {
         if (m_PhysicsObjects[i]->Intersects(*m_TriggerObjects[j])) //std::cout << "Trigger Detected!" << std::endl;
         {
-            std::cout << "TRIGGERED" << std::endl;
             if (m_PhysicsObjects[i] == pPlayer)
             {
                 if (m_TriggerObjects[j] == pGroundCheck)
                 {
                     pPlayer->is_grounded = true;
+                }
+                if (m_TriggerObjects[j] == pCoin1)
+                {
+                    std::cout << "COIN COLLECTED" << std::endl;
                 }
             }
         }

@@ -130,4 +130,5 @@ private:
 
     Player* pPlayer;
     Terrain* pGroundCheck;
+    Terrain* pCoin1;
 };

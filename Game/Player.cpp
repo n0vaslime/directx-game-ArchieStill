@@ -72,16 +72,12 @@ void Player::Tick(GameData* _GD)
 	}
 
 	//move player up and down
-	if (_GD->m_KBS.Space && !is_jumping)
+	if (_GD->m_KBS.Space && is_grounded)
 	{
-		is_jumping = true;
+		m_acc.y += 200.0f;
+		is_grounded = false;
 	}
-	if (is_jumping)
-	{
-		m_acc.y += 400.0f;
-		is_jumping = false;
-	}
-
+	
 	if (_GD->m_KBS.F)
 	{
 		m_acc.y -= 40.0f;

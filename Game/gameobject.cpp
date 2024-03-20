@@ -24,7 +24,7 @@ void GameObject::Tick(GameData* _GD)
 {
 	if (m_physicsOn)
 	{
-		m_acc.y -= 30;
+		m_acc.y -= 50;
 		Vector3 newVel = m_vel + _GD->m_dt * (m_acc - m_drag*m_vel);
 		Vector3 newPos = m_pos + _GD->m_dt * m_vel;
 
@@ -42,4 +42,4 @@ void GameObject::Tick(GameData* _GD)
 
 	//zero acceleration ready for the next time round
 	m_acc = Vector3::Zero;
-}
+}	

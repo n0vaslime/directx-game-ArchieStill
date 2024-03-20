@@ -17,9 +17,10 @@ public:
 
 	virtual void Tick(GameData* _GD) override;
 
+	bool is_grounded = true;
+
 protected:
 
-	bool is_jumping = false;
 };
 
 #endif

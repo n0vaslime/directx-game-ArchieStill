@@ -65,7 +65,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
 
     //create GameData struct and populate its pointers
     m_GD = new GameData;
-    m_GD->m_GS = GS_PLAY_MAIN_CAM;
+    m_GD->m_GS = GS_PLAY_TPS_CAM;
 
     //set up systems for 2D rendering
     m_DD2D = new DrawData2D();
@@ -96,6 +96,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     //find how big my window is to correctly calculate my aspect ratio
     float AR = (float)_width / (float)_height;
 
+
     //example basic 3D stuff
     Terrain* terrain = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3(100.0f, 0.0f, 100.0f), 0.0f, 0.0f, 0.0f, 0.25f * Vector3::One);
     m_GameObjects.push_back(terrain);
@@ -109,6 +110,8 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(floor);
     m_ColliderObjects.push_back(floor);
 
+    pGroundCheck = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(1, 0.05, 1));
+    m_TriggerObjects.push_back(pGroundCheck);
 
     // Terrain* house = new Terrain("House", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, -0.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(5, 5, 5));
     // m_GameObjects.push_back(house);
@@ -175,7 +178,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(m_cam);
 
     //add Player
-    Player* pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
+    pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(pPlayer);
     m_PhysicsObjects.push_back(pPlayer);
 
@@ -307,7 +310,6 @@ void Game::Update(DX::StepTimer const& _timer)
 
     ReadInput();
 
-
     //upon space bar switch camera state
     //see docs here for what's going on: https://github.com/Microsoft/DirectXTK/wiki/Keyboard
     if (m_GD->m_KBS_tracker.pressed.Tab)
@@ -320,6 +322,14 @@ void Game::Update(DX::StepTimer const& _timer)
         {
             m_GD->m_GS = GS_PLAY_TPS_CAM;
         }
+    }
+
+    if (m_GD->m_MS.leftButton)
+    {
+        std::cout << "Mouse" << std::endl;
+        Terrain* sword_bounds = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3::Zero, 0.0f, 0.0f, 0.0f, Vector3(0.1f, 0.1f, 0.1f));
+        m_GameObjects.push_back(sword_bounds);
+        m_TriggerObjects.push_back(sword_bounds);
     }
 
     //update all objects
@@ -675,6 +685,13 @@ void Game::CheckTriggers()
         if (m_PhysicsObjects[i]->Intersects(*m_TriggerObjects[j])) //std::cout << "Trigger Detected!" << std::endl;
         {
             std::cout << "TRIGGERED" << std::endl;
+            if (m_PhysicsObjects[i] == pPlayer)
+            {
+                if (m_TriggerObjects[j] == pGroundCheck)
+                {
+                    pPlayer->is_grounded = true;
+                }
+            }
         }
     }
 }

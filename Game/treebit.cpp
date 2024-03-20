@@ -25,13 +25,11 @@ TreeBit::TreeBit(int _levels, int _perLevel, int _ofLevel, float _scale, Vector3
 			new TreeBit(_levels - 1, _perLevel, i, _scale, _shift, _lean, _bitFileName, _pd3dDevice, _EF, this, _tree);
 		}
 	}
-	
 }
 
 TreeBit::~TreeBit()
 {
 }
-
 
 void TreeBit::Tick(GameData* _GD)
 {
@@ -42,5 +40,4 @@ void TreeBit::Tick(GameData* _GD)
 		//this should pick up all the previous generations of the parenting
 		m_worldMat = m_worldMat * m_parent->m_worldMat;
 	}
-	
 }

@@ -20,7 +20,6 @@ Tree::~Tree()
 	m_Tree.clear();
 }
 
-
 void Tree::Tick(GameData* _GD)
 {
 	//update all tree parts

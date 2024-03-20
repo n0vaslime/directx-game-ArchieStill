@@ -115,13 +115,13 @@ void Game::Initialize(HWND _window, int _width, int _height)
     // m_ColliderObjects.push_back(house);
 
     //L-system like tree
-    Tree* tree = new Tree(4, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
-    m_GameObjects.push_back(tree);  
+    Tree* tree = new Tree(3, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
+    m_GameObjects.push_back(tree);
     // todo: add to cmogo
 
     //Vertex Buffer Game Objects
-    FileVBGO* terrainBox = new FileVBGO("terrainTex", m_d3dDevice.Get());
-    m_GameObjects.push_back(terrainBox);
+    // FileVBGO* terrainBox = new FileVBGO("terrainTex", m_d3dDevice.Get());
+    // m_GameObjects.push_back(terrainBox);
 
     /*FileVBGO* Box = new FileVBGO("cube", m_d3dDevice.Get());
     m_GameObjects.push_back(Box);
@@ -334,6 +334,8 @@ void Game::Update(DX::StepTimer const& _timer)
 
     CheckCollision();
     CheckTriggers();
+
+    m_TPScam->Tick(m_GD);
 }
 
 // Draws the scene.

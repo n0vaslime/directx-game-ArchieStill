@@ -13,6 +13,8 @@ Player::Player(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF)
 
 	SetDrag(0.7);
 	SetPhysicsOn(true);
+	SetScale(Vector3(2.5f,2.5f,2.5f));
+
 }
 
 Player::~Player()

@@ -114,9 +114,15 @@ void Game::Initialize(HWND _window, int _width, int _height)
     pGroundCheck = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(1, 0.05, 1));
     m_TriggerObjects.push_back(pGroundCheck);
 
-    pCoin1 = new Terrain("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(20.0f, 0.0f, 20.0f), 0.0f, 0.0f, 0.0f, Vector3(0.25f, 0.3f, 0.25f));
+    pCoin1 = new Terrain("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(20.0f, 0.0f, 20.0f), 0.0f, 0.0f, 0.0f, Vector3(0.15f, 0.25f, 0.15f));
     m_GameObjects.push_back(pCoin1);
     m_TriggerObjects.push_back(pCoin1);
+    pCoin2 = new Terrain("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-20.0f, 0.0f, -20.0f), 0.0f, 0.0f, 0.0f, Vector3(0.15f, 0.25f, 0.15f));
+    m_GameObjects.push_back(pCoin2);
+    m_TriggerObjects.push_back(pCoin2);
+    pCoin3 = new Terrain("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 0.0f, 10.0f), 0.0f, 0.0f, 0.0f, Vector3(0.15f, 0.25f, 0.15f));
+    m_GameObjects.push_back(pCoin3);
+    m_TriggerObjects.push_back(pCoin3);
 
     // Terrain* house = new Terrain("House", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, -0.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(5, 5, 5));
     // m_GameObjects.push_back(house);
@@ -264,9 +270,10 @@ void Game::Initialize(HWND _window, int _width, int _height)
     bug_test->SetScale(0.1f);
     m_GameObjects2D.push_back(bug_test);
 
-    scoreText = new TextGO2D("COINS: 0");
+    scoreText = new TextGO2D(std::to_string(score));
     scoreText->SetPos(Vector2(100, 10));
     scoreText->SetColour(Color((float*)&Colors::Yellow));
+    scoreText->SetScale(1.5f);
     m_GameObjects2D.push_back(scoreText);
 
     //Test Sounds
@@ -315,9 +322,6 @@ void Game::Update(DX::StepTimer const& _timer)
 
     ReadInput();
 
-    std::cout << score << std::endl;
-    scoreText = new TextGO2D("COINS: " + score);
-
     //upon space bar switch camera state
     //see docs here for what's going on: https://github.com/Microsoft/DirectXTK/wiki/Keyboard
     if (m_GD->m_KBS_tracker.pressed.Tab)
@@ -332,13 +336,13 @@ void Game::Update(DX::StepTimer const& _timer)
         }
     }
 
-    if (m_GD->m_MS.leftButton)
-    {
-        std::cout << "Mouse" << std::endl;
-        Terrain* sword_bounds = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3::Zero, 0.0f, 0.0f, 0.0f, Vector3(0.1f, 0.1f, 0.1f));
-        m_GameObjects.push_back(sword_bounds);
-        m_TriggerObjects.push_back(sword_bounds);
-    }
+    // if (m_GD->m_MS.leftButton)
+    // {
+    //     std::cout << "Mouse" << std::endl;
+    //     Terrain* sword_bounds = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3::Zero, 0.0f, 0.0f, 0.0f, Vector3(0.1f, 0.1f, 0.1f));
+    //     m_GameObjects.push_back(sword_bounds);
+    //     m_TriggerObjects.push_back(sword_bounds);
+    // }
 
     //update all objects
     for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
@@ -690,6 +694,7 @@ void Game::CheckTriggers()
 {
     for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_TriggerObjects.size(); j++)
     {
+        std::cout << m_TriggerObjects[j] << std::endl;
         if (m_PhysicsObjects[i]->Intersects(*m_TriggerObjects[j])) //std::cout << "Trigger Detected!" << std::endl;
         {
             if (m_PhysicsObjects[i] == pPlayer)
@@ -698,11 +703,17 @@ void Game::CheckTriggers()
                 {
                     pPlayer->is_grounded = true;
                 }
-                if (m_TriggerObjects[j] == pCoin1)
+                if (m_TriggerObjects[j] == pCoin1 || m_TriggerObjects[j] == pCoin2 || m_TriggerObjects[j] == pCoin3)
                 {
-                    m_GameObjects.remove(pCoin1);
+                    m_GameObjects2D.remove(scoreText);
+                    m_GameObjects.remove(m_TriggerObjects[j]);
                     m_TriggerObjects.pop_back();
                     score++;
+                    scoreText = new TextGO2D(std::to_string(score));
+                    scoreText->SetPos(Vector2(100, 10));
+                    scoreText->SetColour(Color((float*)&Colors::Yellow));
+                    scoreText->SetScale(1.5f);
+                    m_GameObjects2D.push_back(scoreText);
                 }
             }
         }

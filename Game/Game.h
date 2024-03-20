@@ -132,6 +132,8 @@ private:
     Player* pPlayer;
     Terrain* pGroundCheck;
     Terrain* pCoin1;
+    Terrain* pCoin2;
+    Terrain* pCoin3;
 
     int score;
     TextGO2D* scoreText;

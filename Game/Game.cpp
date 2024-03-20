@@ -88,6 +88,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_audioEngine = std::make_unique<AudioEngine>(eflags);
 
     //create a set of dummy things to show off the engine
+    score = 0;
 
     //create a base light
     m_light = new Light(Vector3(0.0f, 100.0f, 160.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(0.4f, 0.1f, 0.1f, 1.0f));
@@ -263,10 +264,10 @@ void Game::Initialize(HWND _window, int _width, int _height)
     bug_test->SetScale(0.1f);
     m_GameObjects2D.push_back(bug_test);
 
-    TextGO2D* text = new TextGO2D("VIDEO GAME :]");
-    text->SetPos(Vector2(100, 10));
-    text->SetColour(Color((float*)&Colors::Yellow));
-    m_GameObjects2D.push_back(text);
+    scoreText = new TextGO2D("COINS: 0");
+    scoreText->SetPos(Vector2(100, 10));
+    scoreText->SetColour(Color((float*)&Colors::Yellow));
+    m_GameObjects2D.push_back(scoreText);
 
     //Test Sounds
     Loop* loop = new Loop(m_audioEngine.get(), "NightAmbienceSimple_02");
@@ -313,6 +314,9 @@ void Game::Update(DX::StepTimer const& _timer)
     }
 
     ReadInput();
+
+    std::cout << score << std::endl;
+    scoreText = new TextGO2D("COINS: " + score);
 
     //upon space bar switch camera state
     //see docs here for what's going on: https://github.com/Microsoft/DirectXTK/wiki/Keyboard
@@ -696,7 +700,9 @@ void Game::CheckTriggers()
                 }
                 if (m_TriggerObjects[j] == pCoin1)
                 {
-                    std::cout << "COIN COLLECTED" << std::endl;
+                    m_GameObjects.remove(pCoin1);
+                    m_TriggerObjects.pop_back();
+                    score++;
                 }
             }
         }

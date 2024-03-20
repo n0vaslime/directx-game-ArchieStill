@@ -14,6 +14,7 @@
 #include "CMOGO.h"
 #include "Player.h"
 #include "Terrain.h"
+#include "TextGO2D.h"
 
 using std::list;
 
@@ -131,4 +132,7 @@ private:
     Player* pPlayer;
     Terrain* pGroundCheck;
     Terrain* pCoin1;
+
+    int score;
+    TextGO2D* scoreText;
 };

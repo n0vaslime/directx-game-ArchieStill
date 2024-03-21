@@ -120,7 +120,6 @@ private:
     std::vector<CMOGO*> m_TriggerObjects;
 
     void CheckCollision();
-
     void CheckTriggers();
                                          
     //sound stuff
@@ -137,4 +136,19 @@ private:
 
     int score;
     TextGO2D* scoreText;
+
+    TextGO2D* Text;
+
+
+    bool terrain = false;
+
+    void DisplayMenu();
+    void DisplayGame();
+    void DisplayWin();
+    void DisplayLoss();
+
+    void initMenuAssets();
+    void initGameAssets();
+    void initWinAssets();
+    void initLossAssets();
 };

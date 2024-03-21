@@ -37,7 +37,7 @@ void Player::Tick(GameData* _GD)
 			break;
 		}
 	}
-	case GS_PLAY_TPS_CAM:
+	case GS_GAME:
 	{
 		//TURN AND FORWARD CONTROL HERE
 

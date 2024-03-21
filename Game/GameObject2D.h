@@ -25,6 +25,8 @@ public:
 	virtual void Tick(GameData* _GD) = 0;
 	virtual void Draw(DrawData2D* _DD) = 0;
 
+	bool isRendered() { return render; }
+
 	//setters
 
 	void SetPos(Vector2 _pos) { m_pos = _pos; }
@@ -34,6 +36,8 @@ public:
 	void SetScale(float _scale) { m_scale = _scale * Vector2::One; }
 	void SetOrigin(Vector2 _origin) { m_origin = _origin; }
 
+	void SetRendered(bool state) { render = state; }
+
 protected:
 	Vector2 m_pos;
 	float m_rotation;
@@ -41,6 +45,8 @@ protected:
 	Color m_colour;
 	Vector2 m_origin;
 
+	//ETC
+	bool render;
 };
 
 

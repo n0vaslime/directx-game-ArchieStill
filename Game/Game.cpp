@@ -65,7 +65,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
 
     //create GameData struct and populate its pointers
     m_GD = new GameData;
-    m_GD->m_GS = GS_PLAY_TPS_CAM;
+    m_GD->m_GS = GS_MENU;
 
     //set up systems for 2D rendering
     m_DD2D = new DrawData2D();
@@ -123,10 +123,6 @@ void Game::Initialize(HWND _window, int _width, int _height)
     pCoin3 = new Terrain("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 0.0f, 10.0f), 0.0f, 0.0f, 0.0f, Vector3(0.15f, 0.25f, 0.15f));
     m_GameObjects.push_back(pCoin3);
     m_TriggerObjects.push_back(pCoin3);
-
-    // Terrain* house = new Terrain("House", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, -0.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(5, 5, 5));
-    // m_GameObjects.push_back(house);
-    // m_ColliderObjects.push_back(house);
 
     //L-system like tree
     Tree* tree = new Tree(3, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
@@ -276,6 +272,12 @@ void Game::Initialize(HWND _window, int _width, int _height)
     scoreText->SetScale(1.5f);
     m_GameObjects2D.push_back(scoreText);
 
+    Text = new TextGO2D("Hello");
+    Text->SetPos(Vector2(100, 10));
+    Text->SetColour(Color((float*)&Colors::Purple));
+    Text->SetScale(1.5f);
+    m_GameObjects2D.push_back(Text);
+
     //Test Sounds
     Loop* loop = new Loop(m_audioEngine.get(), "NightAmbienceSimple_02");
     loop->SetVolume(0.1f);
@@ -284,6 +286,8 @@ void Game::Initialize(HWND _window, int _width, int _height)
 
     // TestSound* TS = new TestSound(m_audioEngine.get(), "Explo1");
     // m_Sounds.push_back(TS);
+
+    DisplayMenu();
 }
 
 // Executes the basic game loop.
@@ -322,28 +326,6 @@ void Game::Update(DX::StepTimer const& _timer)
 
     ReadInput();
 
-    //upon space bar switch camera state
-    //see docs here for what's going on: https://github.com/Microsoft/DirectXTK/wiki/Keyboard
-    if (m_GD->m_KBS_tracker.pressed.Tab)
-    {
-        if (m_GD->m_GS == GS_PLAY_TPS_CAM)
-        {
-            m_GD->m_GS = GS_PLAY_MAIN_CAM;
-        }
-        else
-        {
-            m_GD->m_GS = GS_PLAY_TPS_CAM;
-        }
-    }
-
-    // if (m_GD->m_MS.leftButton)
-    // {
-    //     std::cout << "Mouse" << std::endl;
-    //     Terrain* sword_bounds = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3::Zero, 0.0f, 0.0f, 0.0f, Vector3(0.1f, 0.1f, 0.1f));
-    //     m_GameObjects.push_back(sword_bounds);
-    //     m_TriggerObjects.push_back(sword_bounds);
-    // }
-
     //update all objects
     for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
     {
@@ -376,7 +358,7 @@ void Game::Render()
 
     //set which camera to be used
     m_DD->m_cam = m_cam;
-    if (m_GD->m_GS == GS_PLAY_TPS_CAM)
+    if (m_GD->m_GS == GS_GAME)
     {
         m_DD->m_cam = m_TPScam;
     }
@@ -387,14 +369,20 @@ void Game::Render()
     //Draw 3D Game Obejects
     for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
     {
-        (*it)->Draw(m_DD);
+        if ((*it)->isRendered())
+        {
+            (*it)->Draw(m_DD);
+        }
     }
 
     // Draw sprite batch stuff 
     m_DD2D->m_Sprites->Begin(SpriteSortMode_Deferred, m_states->NonPremultiplied());
     for (list<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
     {
-        (*it)->Draw(m_DD2D);
+        if ((*it)->isRendered())
+        {
+            (*it)->Draw(m_DD2D);
+        }
     }
     m_DD2D->m_Sprites->End();
 
@@ -662,19 +650,70 @@ void Game::ReadInput()
 {
     m_GD->m_KBS = m_keyboard->GetState();
     m_GD->m_KBS_tracker.Update(m_GD->m_KBS);
-
-    //quit game on hiting escape
-    if (m_GD->m_KBS.Escape)
-    {
-        ExitGame();
-    }
-
     m_GD->m_MS = m_mouse->GetState();
 
     //lock the cursor to the centre of the window
     RECT window;
     GetWindowRect(m_window, &window);
     SetCursorPos((window.left + window.right) >> 1, (window.bottom + window.top) >> 1);
+
+    //quit game on hitting escape
+
+    switch (m_GD->m_GS)
+    {
+    case(GS_MENU):
+        {
+            if (m_GD->m_KBS.Enter)
+            {
+                m_GD->m_GS = GS_GAME;
+                DisplayGame();
+            }
+            if (m_GD->m_KBS.Escape)
+            {
+                m_GD->m_GS = GS_GAME;
+                ExitGame();
+            }
+        }
+        case(GS_GAME):
+        {
+            if (m_GD->m_KBS.Escape)
+            {
+                DisplayMenu();
+            }
+            //upon space bar switch camera state
+            //see docs here for what's going on: https://github.com/Microsoft/DirectXTK/wiki/Keyboard
+            // if (m_GD->m_KBS_tracker.pressed.Tab)
+            // {
+            //     if (m_GD->m_GS == GS_GAME)
+            //     {
+            //         m_GD->m_GS = GS_PLAY_MAIN_CAM;
+            //     }
+            //     else
+            //     {
+            //         m_GD->m_GS = GS_GAME;
+            //     }
+            // }
+
+            if (m_GD->m_MS.leftButton)
+            {
+                std::cout << "Mouse" << std::endl;
+                // Terrain* sword_bounds = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3::Zero, 0.0f, 0.0f, 0.0f, Vector3(0.1f, 0.1f, 0.1f));
+                // m_GameObjects.push_back(sword_bounds);
+                // m_TriggerObjects.push_back(sword_bounds);
+            }
+        }
+        case(GS_WIN):
+        {
+
+        }
+        case(GS_LOSS):
+        {
+
+        }
+    default:
+        break;
+    }
+
 }
 
 void Game::CheckCollision()
@@ -718,4 +757,55 @@ void Game::CheckTriggers()
             }
         }
     }
+}
+
+
+void Game::DisplayMenu()
+{
+    //set menu active
+    m_GD->m_GS = GS_MENU;
+    Text->SetRendered(true);
+
+    //set others inactive
+    scoreText->SetRendered(false);
+    pCoin1->SetRendered(false);
+    pCoin2->SetRendered(false);
+    pCoin3->SetRendered(false);
+
+    for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+    {
+        (*it)->SetRendered(false);
+    }
+}
+
+void Game::DisplayGame()
+{
+    //set game active
+    m_GD->m_GS = GS_GAME;
+    scoreText->SetRendered(true);
+    pCoin1->SetRendered(true);
+    pCoin2->SetRendered(true);
+    pCoin3->SetRendered(true);
+
+    for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+    {
+        (*it)->SetRendered(true);
+    }
+
+    //set others inactive
+    Text->SetRendered(false);
+}
+
+void Game::DisplayWin()
+{
+    //set win active
+    m_GD->m_GS = GS_WIN;
+
+}
+
+void Game::DisplayLoss()
+{
+    //set loss active
+    m_GD->m_GS = GS_LOSS;
+
 }

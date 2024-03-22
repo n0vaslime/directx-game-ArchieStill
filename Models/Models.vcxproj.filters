@@ -25,5 +25,6 @@
     <MeshContentTask Include="C:\Users\a2-still\OneDrive - UWE Bristol\Second Year\More Games in C++\3D Models\Player.fbx" />
     <MeshContentTask Include="C:\Users\a2-still\OneDrive - UWE Bristol\Second Year\More Games in C++\3D Models\House.fbx" />
     <MeshContentTask Include="C:\Users\a2-still\OneDrive - UWE Bristol\Second Year\More Games in C++\3D Models\Coin.fbx" />
+    <MeshContentTask Include="C:\Users\a2-still\OneDrive - UWE Bristol\Second Year\More Games in C++\3D Models\GrassTile.fbx" />
   </ItemGroup>
 </Project>

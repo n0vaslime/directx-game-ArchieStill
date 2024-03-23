@@ -4,6 +4,7 @@
     <ImageContentTask Include="logo_small.png" />
     <ImageContentTask Include="grass.jpg" />
     <ImageContentTask Include="white.jpg" />
-    <ImageContentTask Include="C:\Users\a2-still\OneDrive - UWE Bristol\Second Year\More Games in C++\Images\pain.jpg" />
+    <ImageContentTask Include="..\RawAssets\Images\TitleScreen.png" />
+    <ImageContentTask Include="..\RawAssets\Images\pain.jpg" />
   </ItemGroup>
 </Project>

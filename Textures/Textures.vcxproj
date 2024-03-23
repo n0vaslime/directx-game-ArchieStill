@@ -151,7 +151,10 @@
     <ImageContentTask Include="white.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <ImageContentTask Include="C:\Users\a2-still\OneDrive - UWE Bristol\Second Year\More Games in C++\Images\pain.jpg" />
+    <ImageContentTask Include="..\RawAssets\Images\TitleScreen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="..\RawAssets\Images\pain.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -149,13 +149,11 @@
     <Text Include="terrainTex.txt" />
   </ItemGroup>
   <ItemGroup>
+    <MeshContentTask Include="..\RawAssets\Models\Coin.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\Cube.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\GreenCube.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\Player.fbx" />
     <MeshContentTask Include="Bird\BirdModelV1.fbx" />
-    <MeshContentTask Include="C:\Users\a2-still\OneDrive - UWE Bristol\Second Year\More Games in C++\3D Models\Coin.fbx" />
-    <MeshContentTask Include="C:\Users\a2-still\OneDrive - UWE Bristol\Second Year\More Games in C++\3D Models\Cube.fbx" />
-    <MeshContentTask Include="C:\Users\a2-still\OneDrive - UWE Bristol\Second Year\More Games in C++\3D Models\GrassTile.fbx" />
-    <MeshContentTask Include="C:\Users\a2-still\OneDrive - UWE Bristol\Second Year\More Games in C++\3D Models\GreenCube.fbx" />
-    <MeshContentTask Include="C:\Users\a2-still\OneDrive - UWE Bristol\Second Year\More Games in C++\3D Models\House.fbx" />
-    <MeshContentTask Include="C:\Users\a2-still\OneDrive - UWE Bristol\Second Year\More Games in C++\3D Models\Player.fbx" />
     <MeshContentTask Include="Table\table.FBX">
       <FileType>Document</FileType>
     </MeshContentTask>

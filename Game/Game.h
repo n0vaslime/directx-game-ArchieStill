@@ -15,6 +15,7 @@
 #include "Player.h"
 #include "Terrain.h"
 #include "TextGO2D.h"
+#include "ImageGO2D.h"
 
 using std::list;
 
@@ -138,6 +139,7 @@ private:
     TextGO2D* scoreText;
 
     TextGO2D* Text;
+    ImageGO2D* title_screen;
 
 
     bool terrain = false;
@@ -147,8 +149,10 @@ private:
     void DisplayWin();
     void DisplayLoss();
 
-    void initMenuAssets();
-    void initGameAssets();
-    void initWinAssets();
-    void initLossAssets();
+    void InitMenuAssets();
+    void InitGameAssets();
+    void InitWinAssets();
+    void InitLossAssets();
+
+    void CreateGround();
 };

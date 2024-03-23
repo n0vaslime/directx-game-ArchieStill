@@ -107,9 +107,11 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(terrain2);
     m_TriggerObjects.push_back(terrain2);
 
-    Terrain* floor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, -50.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(10,10,10));
-    m_GameObjects.push_back(floor);
-    m_ColliderObjects.push_back(floor);
+    // Terrain* floor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, -50.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(10,10,10));
+    // m_GameObjects.push_back(floor);
+    // m_ColliderObjects.push_back(floor);
+
+    CreateGround();
 
     pGroundCheck = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(1, 0.05, 1));
     m_TriggerObjects.push_back(pGroundCheck);
@@ -271,6 +273,11 @@ void Game::Initialize(HWND _window, int _width, int _height)
     scoreText->SetColour(Color((float*)&Colors::Yellow));
     scoreText->SetScale(1.5f);
     m_GameObjects2D.push_back(scoreText);
+
+    title_screen = new ImageGO2D("TitleScreen", m_d3dDevice.Get());
+    title_screen->SetPos(Vector2(400,300));
+    title_screen->SetScale(1.25f);
+    m_GameObjects2D.push_back(title_screen);
 
     Text = new TextGO2D("Hello");
     Text->SetPos(Vector2(100, 10));
@@ -765,6 +772,7 @@ void Game::DisplayMenu()
     //set menu active
     m_GD->m_GS = GS_MENU;
     Text->SetRendered(true);
+    title_screen->SetRendered(true);
 
     //set others inactive
     scoreText->SetRendered(false);
@@ -794,6 +802,7 @@ void Game::DisplayGame()
 
     //set others inactive
     Text->SetRendered(false);
+    title_screen->SetRendered(false);
 }
 
 void Game::DisplayWin()
@@ -808,4 +817,31 @@ void Game::DisplayLoss()
     //set loss active
     m_GD->m_GS = GS_LOSS;
 
+}
+
+void Game::CreateGround()
+{
+    //place one floor down as start so you have a starting pos (0,0,0)
+    Terrain* tiles = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(10,1,10));
+    m_GameObjects.push_back(tiles);
+    m_ColliderObjects.push_back(tiles);
+
+    // create variables for adding floors and spacing them out 
+    int floorsX = 1; // number of additional floors to add along the X-axis
+    int floorsZ = 1; // number of additional floors to add along the Z-axis
+    float spacingX = -400.0f; // space between floors/ceilings along the X-axis
+    float spacingZ = 100.0f; // space between floors/ceilings along the Z-axis
+
+    //  add additional floors in the X and Z 
+    for (int x = 0; x <= floorsX; ++x) {
+        for (int z = 0; z <= floorsZ; ++z) {
+            // skip first avoid dupes
+            if (x == 0 && z == 0) continue;
+
+            Vector3 position(x * spacingX, 0.0f, z * spacingZ); // Offset from initial floor
+            Terrain* extraFloor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, position, 0.0f, 0.0f, 0.0f, Vector3(10,1,10));
+            m_GameObjects.push_back(extraFloor);
+            m_ColliderObjects.push_back(extraFloor);
+        }
+    }
 }

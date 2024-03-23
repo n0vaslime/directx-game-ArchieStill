@@ -14,10 +14,18 @@ public:
 	~Player();
 
 	virtual void Draw(DrawData* _DD) override;
-
 	virtual void Tick(GameData* _GD) override;
 
 	bool is_grounded = true;
+	vector<CMOGO*> projectiles;
+
+	Vector3 player_pos;
+	Vector3 player_forward;
+	float player_rotation;
+	float spawn_distance;
+	Vector3 sword_spawn;
+
+	Vector3 test;
 
 protected:
 

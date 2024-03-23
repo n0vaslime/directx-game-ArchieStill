@@ -14,7 +14,6 @@ Player::Player(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF)
 	SetDrag(0.7);
 	SetPhysicsOn(true);
 	SetScale(Vector3(2.5f,2.5f,2.5f));
-
 }
 
 Player::~Player()
@@ -25,6 +24,11 @@ Player::~Player()
 
 void Player::Tick(GameData* _GD)
 {
+	player_pos = this->GetPos();
+	player_forward = 40.0f * Vector3::Forward;
+	spawn_distance = 0.5f;
+	sword_spawn = Vector3(player_pos + player_forward*spawn_distance);
+
 	switch (_GD->m_GS)
 	{
 	case GS_PLAY_MAIN_CAM:
@@ -81,6 +85,29 @@ void Player::Tick(GameData* _GD)
 	if (_GD->m_KBS.F)
 	{
 		m_acc.y -= 40.0f;
+	}
+
+	if (_GD->m_MS.leftButton)
+	{
+		bool foundProjectile = false;
+		for (size_t i = 0; i < projectiles.size(); i++)
+		{
+			if (!projectiles[i]->isRendered())
+			{
+				std::cout << "Found usable projectile" << std::endl;
+				Vector3 forwardMove = 40.0f * Vector3::Forward;
+				Matrix rotMove = Matrix::CreateRotationY(m_yaw);
+				forwardMove = Vector3::Transform(forwardMove, rotMove);
+				projectiles[i]->SetPos(Vector3(test));
+				projectiles[i]->SetRendered(true);
+				projectiles[i]->SetPitchYawRoll(this->GetPitch(),this->GetYaw(),this->GetRoll());
+				projectiles[i]->SetYaw(this->GetYaw());
+				projectiles[i]->SetDrag(0.1f);
+				projectiles[i]->SetPhysicsOn(true);
+				// projectiles[i]->SetAcceleration(forwardMove * 1000);
+
+			}
+		}
 	}
 
 	//limit motion of the player

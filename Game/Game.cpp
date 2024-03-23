@@ -116,15 +116,15 @@ void Game::Initialize(HWND _window, int _width, int _height)
     pGroundCheck = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(1, 0.05, 1));
     m_TriggerObjects.push_back(pGroundCheck);
 
-    pCoin1 = new Terrain("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(20.0f, 0.0f, 20.0f), 0.0f, 0.0f, 0.0f, Vector3(0.15f, 0.25f, 0.15f));
+    pCoin1 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(20.0f, 0.0f, 20.0f), Vector3(0.15f, 0.2f, 0.2f));
     m_GameObjects.push_back(pCoin1);
-    m_TriggerObjects.push_back(pCoin1);
-    pCoin2 = new Terrain("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-20.0f, 0.0f, -20.0f), 0.0f, 0.0f, 0.0f, Vector3(0.15f, 0.25f, 0.15f));
+    m_Coins.push_back(pCoin1);
+    pCoin2 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-20.0f, 0.0f, -20.0f), Vector3(0.15f, 0.2f, 0.2f));
     m_GameObjects.push_back(pCoin2);
-    m_TriggerObjects.push_back(pCoin2);
-    pCoin3 = new Terrain("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 0.0f, 10.0f), 0.0f, 0.0f, 0.0f, Vector3(0.15f, 0.25f, 0.15f));
+    m_Coins.push_back(pCoin2);
+    pCoin3 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 0.0f, 10.0f), Vector3(0.15f, 0.2f, 0.2f));
     m_GameObjects.push_back(pCoin3);
-    m_TriggerObjects.push_back(pCoin3);
+    m_Coins.push_back(pCoin3);
 
     //L-system like tree
     Tree* tree = new Tree(3, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
@@ -186,10 +186,23 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_cam->SetPos(Vector3(0.0f, 200.0f, 200.0f));
     m_GameObjects.push_back(m_cam);
 
+    //add Projectiles
+    for (size_t i = 0; i < 10; i++)
+    {
+        Projectile* pProjectile = new Projectile("table", m_d3dDevice.Get(), m_fxFactory);
+        pProjectile->SetRendered(false);
+        m_GameObjects.push_back(pProjectile);
+        m_TriggerObjects.push_back(pProjectile);
+        m_PlayerProjectiles.push_back(pProjectile);
+    }
+
     //add Player
     pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(pPlayer);
     m_PhysicsObjects.push_back(pPlayer);
+    pPlayer->projectiles = m_PlayerProjectiles;
+
+    m_cam->GetPos() - pPlayer->GetPos() = test;
 
     //add a secondary camera
     m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f));
@@ -345,6 +358,7 @@ void Game::Update(DX::StepTimer const& _timer)
 
     CheckCollision();
     CheckTriggers();
+    CoinCollision();
 
     m_TPScam->Tick(m_GD);
 }
@@ -701,13 +715,6 @@ void Game::ReadInput()
             //     }
             // }
 
-            if (m_GD->m_MS.leftButton)
-            {
-                std::cout << "Mouse" << std::endl;
-                // Terrain* sword_bounds = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3::Zero, 0.0f, 0.0f, 0.0f, Vector3(0.1f, 0.1f, 0.1f));
-                // m_GameObjects.push_back(sword_bounds);
-                // m_TriggerObjects.push_back(sword_bounds);
-            }
         }
         case(GS_WIN):
         {
@@ -740,7 +747,6 @@ void Game::CheckTriggers()
 {
     for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_TriggerObjects.size(); j++)
     {
-        std::cout << m_TriggerObjects[j] << std::endl;
         if (m_PhysicsObjects[i]->Intersects(*m_TriggerObjects[j])) //std::cout << "Trigger Detected!" << std::endl;
         {
             if (m_PhysicsObjects[i] == pPlayer)
@@ -749,18 +755,27 @@ void Game::CheckTriggers()
                 {
                     pPlayer->is_grounded = true;
                 }
-                if (m_TriggerObjects[j] == pCoin1 || m_TriggerObjects[j] == pCoin2 || m_TriggerObjects[j] == pCoin3)
-                {
-                    m_GameObjects2D.remove(scoreText);
-                    m_GameObjects.remove(m_TriggerObjects[j]);
-                    m_TriggerObjects.pop_back();
-                    score++;
-                    scoreText = new TextGO2D(std::to_string(score));
-                    scoreText->SetPos(Vector2(100, 10));
-                    scoreText->SetColour(Color((float*)&Colors::Yellow));
-                    scoreText->SetScale(1.5f);
-                    m_GameObjects2D.push_back(scoreText);
-                }
+            }
+        }
+    }
+}
+
+void Game::CoinCollision()
+{
+    for (int i = 0; i < m_Coins.size(); i++) for (int j = 0; j < m_PhysicsObjects.size(); j++)
+    {
+        if (m_Coins[i]->isRendered() && m_Coins[i]->Intersects(*m_PhysicsObjects[j]))
+        {
+            if (m_PhysicsObjects[j] == pPlayer)
+            {
+                m_GameObjects2D.remove(scoreText);
+                m_Coins[i]->SetRendered(false);
+                score++;
+                scoreText = new TextGO2D(std::to_string(score));
+                scoreText->SetPos(Vector2(100, 10));
+                scoreText->SetColour(Color((float*)&Colors::Yellow));
+                scoreText->SetScale(1.5f);
+                m_GameObjects2D.push_back(scoreText);
             }
         }
     }
@@ -822,7 +837,7 @@ void Game::DisplayLoss()
 void Game::CreateGround()
 {
     //place one floor down as start so you have a starting pos (0,0,0)
-    Terrain* tiles = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(10,1,10));
+    Terrain* tiles = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, -10.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(10,1,10));
     m_GameObjects.push_back(tiles);
     m_ColliderObjects.push_back(tiles);
 
@@ -830,7 +845,7 @@ void Game::CreateGround()
     int floorsX = 1; // number of additional floors to add along the X-axis
     int floorsZ = 1; // number of additional floors to add along the Z-axis
     float spacingX = -400.0f; // space between floors/ceilings along the X-axis
-    float spacingZ = 100.0f; // space between floors/ceilings along the Z-axis
+    float spacingZ = 110.0f; // space between floors/ceilings along the Z-axis
 
     //  add additional floors in the X and Z 
     for (int x = 0; x <= floorsX; ++x) {
@@ -838,7 +853,7 @@ void Game::CreateGround()
             // skip first avoid dupes
             if (x == 0 && z == 0) continue;
 
-            Vector3 position(x * spacingX, 0.0f, z * spacingZ); // Offset from initial floor
+            Vector3 position(x * spacingX, -10.0f, z * spacingZ); // Offset from initial floor
             Terrain* extraFloor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, position, 0.0f, 0.0f, 0.0f, Vector3(10,1,10));
             m_GameObjects.push_back(extraFloor);
             m_ColliderObjects.push_back(extraFloor);

@@ -16,6 +16,8 @@
 #include "Terrain.h"
 #include "TextGO2D.h"
 #include "ImageGO2D.h"
+#include "Projectile.h"
+#include "Coin.h"
 
 using std::list;
 
@@ -117,11 +119,15 @@ private:
 
     std::vector<CMOGO*> m_ColliderObjects;
     std::vector<CMOGO*> m_PhysicsObjects;
-
     std::vector<CMOGO*> m_TriggerObjects;
+    std::vector<CMOGO*> m_Coins;
+
+    std::vector<CMOGO*> m_PlayerProjectiles;
+    std::vector<Projectile*> m_Projectiles;
 
     void CheckCollision();
     void CheckTriggers();
+    void CoinCollision();
                                          
     //sound stuff
 	//This uses a simple system, but a better pipeline can be used using Wave Banks
@@ -131,9 +137,9 @@ private:
 
     Player* pPlayer;
     Terrain* pGroundCheck;
-    Terrain* pCoin1;
-    Terrain* pCoin2;
-    Terrain* pCoin3;
+    Coin* pCoin1;
+    Coin* pCoin2;
+    Coin* pCoin3;
 
     int score;
     TextGO2D* scoreText;
@@ -143,6 +149,9 @@ private:
 
 
     bool terrain = false;
+
+    Vector3 test;
+
 
     void DisplayMenu();
     void DisplayGame();

@@ -7,10 +7,10 @@ Projectile::Projectile(string _filename, ID3D11Device* _pd3dDevice, IEffectFacto
 {
 	m_fudge = Matrix::CreateRotationY(XM_PI);
 
-	m_pos.y = 10;
+	SetRendered(false);
 	SetScale(Vector3::One * 0.05f);
-	SetDrag(0.7f);
-	SetPhysicsOn(true);
+	// SetDrag(0.7f);
+	// SetPhysicsOn(true);
 }
 
 Projectile::~Projectile()
@@ -22,7 +22,7 @@ void Projectile::Tick(GameData* _GD)
 	if (isRendered())
 	{
 		lifetime += _GD->m_dt;
-		if (lifetime > 5.0f)
+		if (lifetime > 2.5f)
 		{
 			SetRendered(false);
 			lifetime = 0;

@@ -12,4 +12,3 @@ public:
 protected:
 	float lifetime = 0.0f;
 };
-

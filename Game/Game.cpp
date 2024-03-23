@@ -387,7 +387,7 @@ void Game::Render()
     //update the constant buffer for the rendering of VBGOs
     VBGO::UpdateConstantBuffer(m_DD);
 
-    //Draw 3D Game Obejects
+    //Draw 3D Game Objects
     for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
     {
         if ((*it)->isRendered())
@@ -727,7 +727,6 @@ void Game::ReadInput()
     default:
         break;
     }
-
 }
 
 void Game::CheckCollision()

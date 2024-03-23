@@ -7,7 +7,7 @@ Coin::Coin(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, Vec
 {
 	m_pos = _pos;
 	m_scale = _scale;
-	SetPhysicsOn(true);
+	//SetPhysicsOn(true);
 }
 
 Coin::~Coin()

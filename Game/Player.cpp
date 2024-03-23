@@ -21,13 +21,10 @@ Player::~Player()
 	//tidy up anything I've created
 }
 
-
 void Player::Tick(GameData* _GD)
 {
-	player_pos = this->GetPos();
-	player_forward = 40.0f * Vector3::Forward;
-	spawn_distance = 0.5f;
-	sword_spawn = Vector3(player_pos + player_forward*spawn_distance);
+	spawn_distance = 0.1f;
+	std::cout << is_attacking << std::endl;
 
 	switch (_GD->m_GS)
 	{
@@ -43,20 +40,33 @@ void Player::Tick(GameData* _GD)
 	}
 	case GS_GAME:
 	{
-		//TURN AND FORWARD CONTROL HERE
+		//MOVEMENT CONTROL HERE
 
 		Vector3 forwardMove = 40.0f * Vector3::Forward;
+		Vector3 leftMove = 40.0f * Vector3::Left;
 		Matrix rotMove = Matrix::CreateRotationY(m_yaw);
 		forwardMove = Vector3::Transform(forwardMove, rotMove);
-		if (_GD->m_KBS.W)
+		leftMove = Vector3::Transform(leftMove, rotMove);
+		if (!is_attacking)
 		{
-			m_acc += forwardMove;
+			if (_GD->m_KBS.W)
+			{
+				m_acc += forwardMove;
+			}
+			if (_GD->m_KBS.S)
+			{
+				m_acc -= forwardMove;
+			}
+			if (_GD->m_KBS.A)
+			{
+				m_acc += leftMove;
+			}
+			if (_GD->m_KBS.D)
+			{
+				m_acc -= leftMove;
+			}
+			break;
 		}
-		if (_GD->m_KBS.S)
-		{
-			m_acc -= forwardMove;
-		}
-		break;
 	}
 	}
 
@@ -81,31 +91,29 @@ void Player::Tick(GameData* _GD)
 		m_acc.y += 200.0f;
 		is_grounded = false;
 	}
-	
-	if (_GD->m_KBS.F)
-	{
-		m_acc.y -= 40.0f;
-	}
 
-	if (_GD->m_MS.leftButton)
+	// bool foundProjectile = false;
+	for (size_t i = 0; i < projectiles.size(); i++)
 	{
-		bool foundProjectile = false;
-		for (size_t i = 0; i < projectiles.size(); i++)
+		//checks if sword bounds are active
+		if (projectiles[i]->isRendered())
+			is_attacking = true;
+		else
+			is_attacking = false;
+
+		//creating sword bounds
+		if (_GD->m_MS.leftButton)
 		{
 			if (!projectiles[i]->isRendered())
 			{
-				std::cout << "Found usable projectile" << std::endl;
+				// std::cout << "Found usable projectile" << std::endl;
 				Vector3 forwardMove = 40.0f * Vector3::Forward;
 				Matrix rotMove = Matrix::CreateRotationY(m_yaw);
-				forwardMove = Vector3::Transform(forwardMove, rotMove);
-				projectiles[i]->SetPos(Vector3(test));
+				forwardMove = Vector3::Transform(forwardMove * spawn_distance, rotMove);
+				projectiles[i]->SetPos(this->GetPos() + forwardMove);
 				projectiles[i]->SetRendered(true);
-				projectiles[i]->SetPitchYawRoll(this->GetPitch(),this->GetYaw(),this->GetRoll());
 				projectiles[i]->SetYaw(this->GetYaw());
 				projectiles[i]->SetDrag(0.1f);
-				projectiles[i]->SetPhysicsOn(true);
-				// projectiles[i]->SetAcceleration(forwardMove * 1000);
-
 			}
 		}
 	}

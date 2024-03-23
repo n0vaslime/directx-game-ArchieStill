@@ -1,6 +1,7 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 #include "CMOGO.h"
+#include "Projectile.h"
 
 //=================================================================
 //Base Player Class (i.e. a GO the player controls)
@@ -19,13 +20,8 @@ public:
 	bool is_grounded = true;
 	vector<CMOGO*> projectiles;
 
-	Vector3 player_pos;
-	Vector3 player_forward;
-	float player_rotation;
 	float spawn_distance;
-	Vector3 sword_spawn;
-
-	Vector3 test;
+	bool is_attacking = false;
 
 protected:
 

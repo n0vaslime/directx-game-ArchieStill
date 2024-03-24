@@ -13,7 +13,7 @@ Player::Player(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF)
 
 	SetDrag(0.7);
 	SetPhysicsOn(true);
-	SetScale(Vector3(2.5f,2.5f,2.5f));
+	SetScale(Vector3(1,2,1));
 }
 
 Player::~Player()
@@ -24,6 +24,7 @@ Player::~Player()
 void Player::Tick(GameData* _GD)
 {
 	spawn_distance = 0.1f;
+	spawn = Vector3(0.2f, -10.0f, 0.2f);
 	std::cout << is_attacking << std::endl;
 
 	switch (_GD->m_GS)
@@ -33,8 +34,17 @@ void Player::Tick(GameData* _GD)
 		{
 			//MOUSE CONTROL SCHEME HERE
 			float speed = 10.0f;
-			m_acc.x += speed * _GD->m_MS.x;
-			m_acc.z += speed * _GD->m_MS.y;
+			if (!is_attacking)
+			{
+				m_acc.x += speed * _GD->m_MS.x;
+				m_acc.z += speed * _GD->m_MS.y;
+			}
+			else
+			{
+				m_acc.x = 0;
+				m_acc.z = 0;
+			}
+
 			break;
 		}
 	}
@@ -52,18 +62,26 @@ void Player::Tick(GameData* _GD)
 			if (_GD->m_KBS.W)
 			{
 				m_acc += forwardMove;
+				if (_GD->m_KBS.LeftShift)
+					m_acc += (forwardMove * 1.1f);
 			}
 			if (_GD->m_KBS.S)
 			{
 				m_acc -= forwardMove;
+				if (_GD->m_KBS.LeftShift)
+					m_acc -= (forwardMove * 1.1f);
 			}
 			if (_GD->m_KBS.A)
 			{
 				m_acc += leftMove;
+				if (_GD->m_KBS.LeftShift)
+					m_acc += (leftMove * 1.1f);
 			}
 			if (_GD->m_KBS.D)
 			{
 				m_acc -= leftMove;
+				if (_GD->m_KBS.LeftShift)
+					m_acc -= (leftMove * 1.1f);
 			}
 			break;
 		}
@@ -72,17 +90,35 @@ void Player::Tick(GameData* _GD)
 
 	//change orientation of player
 	float rotSpeed = 0.5f * _GD->m_dt;
-	if (_GD->m_MS.x)
+	if (!is_attacking)
 	{
-		m_yaw -= rotSpeed * _GD->m_MS.x;
+		if (_GD->m_MS.x)
+		{
+			m_yaw -= rotSpeed * (_GD->m_MS.x / 1.1f);
+		}
+		if (_GD->m_MS.y)
+		{
+			m_pitch -= rotSpeed * (_GD->m_MS.y / 1.1f);
+			if (m_pitch <= -XM_PI / 4)
+				m_pitch = -XM_PI / 4;
+			if (m_pitch >= XM_PI / 2 - 0.05)
+				m_pitch = XM_PI / 2 - 0.05;
+		}
 	}
-	if (_GD->m_MS.y)
+	else
 	{
-		m_pitch -= rotSpeed * _GD->m_MS.y;
-		if (m_pitch <= -XM_PI / 4)
-			m_pitch = -XM_PI / 4;
-		if (m_pitch >= XM_PI / 2 - 0.05)
-			m_pitch = XM_PI / 2 - 0.05;
+		if (_GD->m_MS.x)
+		{
+			m_yaw -= rotSpeed * (_GD->m_MS.x / 4);
+		}
+		if (_GD->m_MS.y)
+		{
+			m_pitch -= rotSpeed * (_GD->m_MS.y / 4);
+			if (m_pitch <= -XM_PI / 4)
+				m_pitch = -XM_PI / 4;
+			if (m_pitch >= XM_PI / 2 - 0.05)
+				m_pitch = XM_PI / 2 - 0.05;
+		}
 	}
 
 	//move player up and down
@@ -92,11 +128,10 @@ void Player::Tick(GameData* _GD)
 		is_grounded = false;
 	}
 
-	// bool foundProjectile = false;
-	for (size_t i = 0; i < projectiles.size(); i++)
+	for (size_t i = 0; i < m_SwordTrigger.size(); i++)
 	{
 		//checks if sword bounds are active
-		if (projectiles[i]->isRendered())
+		if (m_SwordTrigger[i]->isRendered())
 			is_attacking = true;
 		else
 			is_attacking = false;
@@ -104,16 +139,16 @@ void Player::Tick(GameData* _GD)
 		//creating sword bounds
 		if (_GD->m_MS.leftButton)
 		{
-			if (!projectiles[i]->isRendered())
+			if (!m_SwordTrigger[i]->isRendered() && is_grounded)
 			{
-				// std::cout << "Found usable projectile" << std::endl;
 				Vector3 forwardMove = 40.0f * Vector3::Forward;
 				Matrix rotMove = Matrix::CreateRotationY(m_yaw);
-				forwardMove = Vector3::Transform(forwardMove * spawn_distance, rotMove);
-				projectiles[i]->SetPos(this->GetPos() + forwardMove);
-				projectiles[i]->SetRendered(true);
-				projectiles[i]->SetYaw(this->GetYaw());
-				projectiles[i]->SetDrag(0.1f);
+				forwardMove = Vector3::Transform(forwardMove, rotMove);
+				m_SwordTrigger[i]->SetPos(this->GetPos() + forwardMove * spawn);
+				m_SwordTrigger[i]->SetRendered(true);
+				m_SwordTrigger[i]->SetYaw(this->GetYaw());
+				m_SwordTrigger[i]->SetDrag(0.1f);
+				m_vel *= 0;
 			}
 		}
 	}
@@ -134,7 +169,7 @@ void Player::Tick(GameData* _GD)
 
 void Player::Draw(DrawData* _DD)
 {
-	if (false)
+	if (true)
 	{
 		CMOGO::Draw(_DD);
 	}

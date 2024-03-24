@@ -16,7 +16,7 @@
 #include "Terrain.h"
 #include "TextGO2D.h"
 #include "ImageGO2D.h"
-#include "Projectile.h"
+#include "SwordTrigger.h"
 #include "Coin.h"
 
 using std::list;
@@ -122,13 +122,13 @@ private:
     std::vector<CMOGO*> m_TriggerObjects;
     std::vector<CMOGO*> m_Coins;
 
-    std::vector<CMOGO*> m_PlayerProjectiles;
-    std::vector<Projectile*> m_Projectiles;
+    std::vector<CMOGO*> m_SwordTrigger;
+    std::vector<SwordTrigger*> m_SwordTriggerVector;
 
     void CheckCollision();
     void CheckTriggers();
     void CoinCollision();
-                                         
+
     //sound stuff
 	//This uses a simple system, but a better pipeline can be used using Wave Banks
 	//See here: https://github.com/Microsoft/DirectXTK/wiki/Creating-and-playing-sounds Using wave banks Section

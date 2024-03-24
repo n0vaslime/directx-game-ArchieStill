@@ -156,7 +156,7 @@
     <ClInclude Include="GPGO.h">
       <Filter>GameObjects\3D\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Projectile.h">
+    <ClInclude Include="SwordTrigger.h">
       <Filter>GameObjects\3D\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Coin.h">
@@ -233,7 +233,7 @@
     <ClCompile Include="GPGO.cpp">
       <Filter>GameObjects\3D\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Projectile.cpp">
+    <ClCompile Include="SwordTrigger.cpp">
       <Filter>GameObjects\3D\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Coin.cpp">

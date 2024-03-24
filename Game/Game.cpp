@@ -186,21 +186,21 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_cam->SetPos(Vector3(0.0f, 200.0f, 200.0f));
     m_GameObjects.push_back(m_cam);
 
-    //add Projectiles
+    //add Sword Trigger
     for (size_t i = 0; i < 10; i++)
     {
-        Projectile* pProjectile = new Projectile("table", m_d3dDevice.Get(), m_fxFactory);
-        pProjectile->SetRendered(false);
-        m_GameObjects.push_back(pProjectile);
-        m_TriggerObjects.push_back(pProjectile);
-        m_PlayerProjectiles.push_back(pProjectile);
+        SwordTrigger* pSwordTrigger = new SwordTrigger("table", m_d3dDevice.Get(), m_fxFactory);
+        m_GameObjects.push_back(pSwordTrigger);
+        m_TriggerObjects.push_back(pSwordTrigger);
+        m_SwordTrigger.push_back(pSwordTrigger);
+        pSwordTrigger->SetRendered(false);
     }
 
     //add Player
     pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(pPlayer);
     m_PhysicsObjects.push_back(pPlayer);
-    pPlayer->projectiles = m_PlayerProjectiles;
+    pPlayer->m_SwordTrigger = m_SwordTrigger;
 
     m_cam->GetPos() - pPlayer->GetPos() = test;
 

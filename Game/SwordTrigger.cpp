@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "Projectile.h"
+#include "SwordTrigger.h"
 #include <dinput.h>
 #include "GameData.h"
 
-Projectile::Projectile(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF) : CMOGO(_filename, _pd3dDevice, _EF)
+SwordTrigger::SwordTrigger(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF) : CMOGO(_filename, _pd3dDevice, _EF)
 {
 	m_fudge = Matrix::CreateRotationY(XM_PI);
 
@@ -13,16 +13,16 @@ Projectile::Projectile(string _filename, ID3D11Device* _pd3dDevice, IEffectFacto
 	// SetPhysicsOn(true);
 }
 
-Projectile::~Projectile()
+SwordTrigger::~SwordTrigger()
 {
 }
 
-void Projectile::Tick(GameData* _GD)
+void SwordTrigger::Tick(GameData* _GD)
 {
 	if (isRendered())
 	{
 		lifetime += _GD->m_dt;
-		if (lifetime > 2.5f)
+		if (lifetime > 1.0f)
 		{
 			SetRendered(false);
 			lifetime = 0;

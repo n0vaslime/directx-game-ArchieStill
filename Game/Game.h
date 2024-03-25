@@ -140,6 +140,7 @@ private:
 
     Player* pPlayer;
     SwordTrigger* pSwordTrigger;
+    Coin* pSword;
     Terrain* pStartGC;
     Terrain* pGroundCheck;
 
@@ -149,14 +150,11 @@ private:
     Enemy* pEnemy1;
     Enemy* pEnemy2;
 
-
-
     int score;
     TextGO2D* scoreText;
 
     TextGO2D* Text;
     ImageGO2D* title_screen;
-
 
     bool terrain = false;
 

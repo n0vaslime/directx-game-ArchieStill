@@ -150,6 +150,8 @@ void Player::Tick(GameData* _GD)
 		}
 	}
 
+
+
 	//limit motion of the player
 	float length = m_pos.Length();
 	float maxLength = 500.0f;

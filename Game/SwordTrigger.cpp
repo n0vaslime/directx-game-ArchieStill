@@ -28,6 +28,7 @@ void SwordTrigger::Tick(GameData* _GD)
 
 	CMOGO::Tick(_GD);
 
+
 }
 
 void SwordTrigger::Draw(DrawData* _DD)

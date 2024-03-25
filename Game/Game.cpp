@@ -97,7 +97,6 @@ void Game::Initialize(HWND _window, int _width, int _height)
     //find how big my window is to correctly calculate my aspect ratio
     float AR = (float)_width / (float)_height;
 
-
     //example basic 3D stuff
     Terrain* terrain = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3(100.0f, 0.0f, 100.0f), 0.0f, 0.0f, 0.0f, 0.25f * Vector3::One);
     m_GameObjects.push_back(terrain);
@@ -204,6 +203,9 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(pPlayer);
     m_PhysicsObjects.push_back(pPlayer);
     pPlayer->m_SwordTrigger = m_SwordTrigger;
+
+    pSword = new Coin("Sword", m_d3dDevice.Get(), m_fxFactory, pPlayer->GetPos() + Vector3(5,0,5));
+    m_GameObjects.push_back(pSword);
 
     //add a secondary camera
     m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f));
@@ -357,6 +359,10 @@ void Game::Update(DX::StepTimer const& _timer)
     SwordCollision();
 
     m_TPScam->Tick(m_GD);
+
+    pSword->SetPos(pPlayer->GetPos() + Vector3(5, 0, 5));
+    pSword->SetPitch(pPlayer->GetPitch());
+    pSword->SetYaw(pPlayer->GetYaw());
 }
 
 // Draws the scene.

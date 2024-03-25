@@ -23,9 +23,7 @@ Player::~Player()
 
 void Player::Tick(GameData* _GD)
 {
-	spawn_distance = 0.1f;
-	spawn = Vector3(0.2f, -10.0f, 0.2f);
-	std::cout << is_attacking << std::endl;
+	spawn = Vector3(0.15f, -15.0f, 0.15f);
 
 	switch (_GD->m_GS)
 	{
@@ -121,8 +119,8 @@ void Player::Tick(GameData* _GD)
 		}
 	}
 
-	//move player up and down
-	if (_GD->m_KBS.Space && is_grounded)
+	//jumping code
+	if (_GD->m_KBS.Space && is_grounded && !is_attacking)
 	{
 		m_acc.y += 200.0f;
 		is_grounded = false;
@@ -147,7 +145,6 @@ void Player::Tick(GameData* _GD)
 				m_SwordTrigger[i]->SetPos(this->GetPos() + forwardMove * spawn);
 				m_SwordTrigger[i]->SetRendered(true);
 				m_SwordTrigger[i]->SetYaw(this->GetYaw());
-				m_SwordTrigger[i]->SetDrag(0.1f);
 				m_vel *= 0;
 			}
 		}

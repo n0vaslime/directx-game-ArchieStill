@@ -169,6 +169,7 @@
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="DrawData.h" />
     <ClInclude Include="DrawData2D.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="fileVBGO.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Game.h" />
@@ -205,6 +206,7 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="CMOGO.cpp" />
     <ClCompile Include="Coin.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="fileVBGO.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="gameobject.cpp" />

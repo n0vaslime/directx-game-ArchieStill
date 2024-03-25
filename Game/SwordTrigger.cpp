@@ -6,11 +6,7 @@
 SwordTrigger::SwordTrigger(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF) : CMOGO(_filename, _pd3dDevice, _EF)
 {
 	m_fudge = Matrix::CreateRotationY(XM_PI);
-
-	SetRendered(false);
-	SetScale(Vector3::One * 0.05f);
-	// SetDrag(0.7f);
-	// SetPhysicsOn(true);
+	SetScale(Vector3(0.075f,-0.075f,0.05f));
 }
 
 SwordTrigger::~SwordTrigger()
@@ -34,3 +30,11 @@ void SwordTrigger::Tick(GameData* _GD)
 
 }
 
+void SwordTrigger::Draw(DrawData* _DD)
+{
+	// keep false - sword bounds table isn't drawn!
+	if (true)
+	{
+		CMOGO::Draw(_DD);
+	}
+}

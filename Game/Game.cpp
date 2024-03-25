@@ -111,24 +111,30 @@ void Game::Initialize(HWND _window, int _width, int _height)
     // m_GameObjects.push_back(floor);
     // m_ColliderObjects.push_back(floor);
 
+    // pGroundCheck = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0,1,0), 0.0f, 0.0f, 0.0f, Vector3(10, 1, 10));
+    // m_GameObjects.push_back(pGroundCheck);
+    // m_TriggerObjects.push_back(pGroundCheck);
+
     CreateGround();
 
-    pGroundCheck = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(1, 0.05, 1));
-    m_TriggerObjects.push_back(pGroundCheck);
-
-    pCoin1 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(20.0f, 0.0f, 20.0f), Vector3(0.15f, 0.2f, 0.2f));
+    pCoin1 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(20.0f, 0.0f, 20.0f));
     m_GameObjects.push_back(pCoin1);
     m_Coins.push_back(pCoin1);
-    pCoin2 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-20.0f, 0.0f, -20.0f), Vector3(0.15f, 0.2f, 0.2f));
+    pCoin2 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-20.0f, 0.0f, -20.0f));
     m_GameObjects.push_back(pCoin2);
     m_Coins.push_back(pCoin2);
-    pCoin3 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 0.0f, 10.0f), Vector3(0.15f, 0.2f, 0.2f));
+    pCoin3 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 0.0f, 10.0f));
     m_GameObjects.push_back(pCoin3);
     m_Coins.push_back(pCoin3);
 
+    //add Enemy
+    pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(10000.0f, 30.0f, 30.0f));
+    m_GameObjects.push_back(pEnemy1);
+    m_Enemies.push_back(pEnemy1);
+
     //L-system like tree
-    Tree* tree = new Tree(3, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
-    m_GameObjects.push_back(tree);
+    // Tree* tree = new Tree(3, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
+    // m_GameObjects.push_back(tree);
     // todo: add to cmogo
 
     //Vertex Buffer Game Objects
@@ -189,11 +195,8 @@ void Game::Initialize(HWND _window, int _width, int _height)
     //add Sword Trigger
     for (size_t i = 0; i < 10; i++)
     {
-        SwordTrigger* pSwordTrigger = new SwordTrigger("table", m_d3dDevice.Get(), m_fxFactory);
-        m_GameObjects.push_back(pSwordTrigger);
-        m_TriggerObjects.push_back(pSwordTrigger);
+        pSwordTrigger = new SwordTrigger("table", m_d3dDevice.Get(), m_fxFactory);
         m_SwordTrigger.push_back(pSwordTrigger);
-        pSwordTrigger->SetRendered(false);
     }
 
     //add Player
@@ -201,8 +204,6 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(pPlayer);
     m_PhysicsObjects.push_back(pPlayer);
     pPlayer->m_SwordTrigger = m_SwordTrigger;
-
-    m_cam->GetPos() - pPlayer->GetPos() = test;
 
     //add a secondary camera
     m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f));
@@ -292,12 +293,6 @@ void Game::Initialize(HWND _window, int _width, int _height)
     title_screen->SetScale(1.25f);
     m_GameObjects2D.push_back(title_screen);
 
-    Text = new TextGO2D("Hello");
-    Text->SetPos(Vector2(100, 10));
-    Text->SetColour(Color((float*)&Colors::Purple));
-    Text->SetScale(1.5f);
-    m_GameObjects2D.push_back(Text);
-
     //Test Sounds
     Loop* loop = new Loop(m_audioEngine.get(), "NightAmbienceSimple_02");
     loop->SetVolume(0.1f);
@@ -359,6 +354,7 @@ void Game::Update(DX::StepTimer const& _timer)
     CheckCollision();
     CheckTriggers();
     CoinCollision();
+    SwordCollision();
 
     m_TPScam->Tick(m_GD);
 }
@@ -750,8 +746,9 @@ void Game::CheckTriggers()
         {
             if (m_PhysicsObjects[i] == pPlayer)
             {
-                if (m_TriggerObjects[j] == pGroundCheck)
+                if (m_TriggerObjects[j] == pStartGC or m_TriggerObjects[j] == pGroundCheck)
                 {
+                    // std::cout << "HIIIIIIII";
                     pPlayer->is_grounded = true;
                 }
             }
@@ -780,12 +777,22 @@ void Game::CoinCollision()
     }
 }
 
+void Game::SwordCollision()
+{
+    for (int i = 0; i < m_Enemies.size(); i++) for (int j = 0; j < m_SwordTrigger.size(); j++)
+    {
+        if (m_Enemies[i]->isRendered() && m_Enemies[i]->Intersects(*m_SwordTrigger[j]))
+        {
+            m_Enemies[i]->SetRendered(false);
+            std::cout << "SLASH!" << std::endl;
+        }
+    }
+}
 
 void Game::DisplayMenu()
 {
     //set menu active
     m_GD->m_GS = GS_MENU;
-    Text->SetRendered(true);
     title_screen->SetRendered(true);
 
     //set others inactive
@@ -793,6 +800,7 @@ void Game::DisplayMenu()
     pCoin1->SetRendered(false);
     pCoin2->SetRendered(false);
     pCoin3->SetRendered(false);
+    pEnemy1->SetRendered(false);
 
     for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
     {
@@ -808,14 +816,15 @@ void Game::DisplayGame()
     pCoin1->SetRendered(true);
     pCoin2->SetRendered(true);
     pCoin3->SetRendered(true);
+    pEnemy1->SetRendered(true);
 
     for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
     {
         (*it)->SetRendered(true);
     }
+    m_GameObjects.push_back(pSwordTrigger);
 
     //set others inactive
-    Text->SetRendered(false);
     title_screen->SetRendered(false);
 }
 
@@ -835,27 +844,37 @@ void Game::DisplayLoss()
 
 void Game::CreateGround()
 {
-    //place one floor down as start so you have a starting pos (0,0,0)
-    Terrain* tiles = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, -10.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(10,1,10));
-    m_GameObjects.push_back(tiles);
-    m_ColliderObjects.push_back(tiles);
+    //starting tile and grounded check
+    Terrain* pStartTile = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -10, 0), 0.0f, 0.0f, 0.0f, Vector3(10,1,10));
+    m_GameObjects.push_back(pStartTile);
+    m_ColliderObjects.push_back(pStartTile);
 
-    // create variables for adding floors and spacing them out 
-    int floorsX = 1; // number of additional floors to add along the X-axis
-    int floorsZ = 1; // number of additional floors to add along the Z-axis
-    float spacingX = -400.0f; // space between floors/ceilings along the X-axis
-    float spacingZ = 110.0f; // space between floors/ceilings along the Z-axis
+    pStartGC = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 0), 0.0f, 0.0f, 0.0f, Vector3(10, 1, 10));
+    m_TriggerObjects.push_back(pStartGC);
 
-    //  add additional floors in the X and Z 
-    for (int x = 0; x <= floorsX; ++x) {
-        for (int z = 0; z <= floorsZ; ++z) {
-            // skip first avoid dupes
-            if (x == 0 && z == 0) continue;
+    //sets how many tiles to create and the distance between them
+    int xTiles = 2;
+    int zTiles = 2;
+    float xSpacing = -100.0f;
+    float zSpacing = 100.0f;
 
-            Vector3 position(x * spacingX, -10.0f, z * spacingZ); // Offset from initial floor
-            Terrain* extraFloor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, position, 0.0f, 0.0f, 0.0f, Vector3(10,1,10));
-            m_GameObjects.push_back(extraFloor);
-            m_ColliderObjects.push_back(extraFloor);
+    //creates more tiles from tile number
+    for (int xPos = 0; xPos <= xTiles; xPos++) 
+    {
+        for (int zPos = 0; zPos <= zTiles; zPos++) 
+        {
+            if (xPos == 0 && zPos == 0) continue;
+
+            Vector3 position(xPos * xSpacing, -10, zPos * zSpacing);
+            Vector3 checkPos(xPos * xSpacing, 2, zPos * zSpacing);
+
+            Terrain* pExtraTiles = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, position, 0.0f, 0.0f, 0.0f, Vector3(10,1,10));
+            m_GameObjects.push_back(pExtraTiles);
+            m_ColliderObjects.push_back(pExtraTiles);
+
+            pGroundCheck = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, checkPos, 0.0f, 0.0f, 0.0f, Vector3(10, 1, 10));
+            m_GameObjects.push_back(pGroundCheck);
+            m_TriggerObjects.push_back(pGroundCheck);
         }
     }
 }

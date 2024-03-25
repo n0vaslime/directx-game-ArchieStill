@@ -3,11 +3,10 @@
 #include <dinput.h>
 #include "GameData.h"
 
-Coin::Coin(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, Vector3 _pos, Vector3 _scale) : CMOGO(_filename, _pd3dDevice, _EF)
+Coin::Coin(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, Vector3 _pos) : CMOGO(_filename, _pd3dDevice, _EF)
 {
 	m_pos = _pos;
-	m_scale = _scale;
-	//SetPhysicsOn(true);
+	SetScale(Vector3(0.15f, 0.2f, 0.2f));
 }
 
 Coin::~Coin()

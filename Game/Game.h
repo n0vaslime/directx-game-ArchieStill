@@ -18,6 +18,7 @@
 #include "ImageGO2D.h"
 #include "SwordTrigger.h"
 #include "Coin.h"
+#include "Enemy.h"
 
 using std::list;
 
@@ -121,6 +122,7 @@ private:
     std::vector<CMOGO*> m_PhysicsObjects;
     std::vector<CMOGO*> m_TriggerObjects;
     std::vector<CMOGO*> m_Coins;
+    std::vector<CMOGO*> m_Enemies;
 
     std::vector<CMOGO*> m_SwordTrigger;
     std::vector<SwordTrigger*> m_SwordTriggerVector;
@@ -128,6 +130,7 @@ private:
     void CheckCollision();
     void CheckTriggers();
     void CoinCollision();
+    void SwordCollision();
 
     //sound stuff
 	//This uses a simple system, but a better pipeline can be used using Wave Banks
@@ -136,10 +139,17 @@ private:
     list<Sound*>m_Sounds;
 
     Player* pPlayer;
+    SwordTrigger* pSwordTrigger;
+    Terrain* pStartGC;
     Terrain* pGroundCheck;
+
     Coin* pCoin1;
     Coin* pCoin2;
     Coin* pCoin3;
+    Enemy* pEnemy1;
+    Enemy* pEnemy2;
+
+
 
     int score;
     TextGO2D* scoreText;
@@ -149,9 +159,6 @@ private:
 
 
     bool terrain = false;
-
-    Vector3 test;
-
 
     void DisplayMenu();
     void DisplayGame();

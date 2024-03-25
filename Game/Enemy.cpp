@@ -7,6 +7,7 @@ Enemy::Enemy(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, V
 {
 	m_pos = _pos;
 	SetScale(Vector3(0.075f, -0.075f, 0.05f));
+	SetPhysicsOn(true);
 }
 
 Enemy::~Enemy()
@@ -15,5 +16,5 @@ Enemy::~Enemy()
 
 void Enemy::Tick(GameData* _GD)
 {
-
+	CMOGO::Tick(_GD);
 }

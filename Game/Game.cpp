@@ -128,13 +128,13 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_Coins.push_back(pCoin3);
 
     //add Enemy
-    pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(10000.0f, 30.0f, 30.0f));
+    pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 10.0f, 30.0f));
     m_GameObjects.push_back(pEnemy1);
     m_Enemies.push_back(pEnemy1);
 
     //L-system like tree
-    // Tree* tree = new Tree(3, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
-    // m_GameObjects.push_back(tree);
+    Tree* tree = new Tree(3, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
+    m_GameObjects.push_back(tree);
     // todo: add to cmogo
 
     //Vertex Buffer Game Objects
@@ -844,37 +844,47 @@ void Game::DisplayLoss()
 
 void Game::CreateGround()
 {
-    //starting tile and grounded check
-    Terrain* pStartTile = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -10, 0), 0.0f, 0.0f, 0.0f, Vector3(10,1,10));
+    //Floor 1 ground
+    Terrain* pStartTile = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -10, 0), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
     m_GameObjects.push_back(pStartTile);
     m_ColliderObjects.push_back(pStartTile);
 
-    pStartGC = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 0), 0.0f, 0.0f, 0.0f, Vector3(10, 1, 10));
+    pStartGC = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -8, 0), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
     m_TriggerObjects.push_back(pStartGC);
 
-    //sets how many tiles to create and the distance between them
-    int xTiles = 2;
-    int zTiles = 2;
-    float xSpacing = -100.0f;
-    float zSpacing = 100.0f;
 
-    //creates more tiles from tile number
-    for (int xPos = 0; xPos <= xTiles; xPos++) 
-    {
-        for (int zPos = 0; zPos <= zTiles; zPos++) 
-        {
-            if (xPos == 0 && zPos == 0) continue;
 
-            Vector3 position(xPos * xSpacing, -10, zPos * zSpacing);
-            Vector3 checkPos(xPos * xSpacing, 2, zPos * zSpacing);
-
-            Terrain* pExtraTiles = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, position, 0.0f, 0.0f, 0.0f, Vector3(10,1,10));
-            m_GameObjects.push_back(pExtraTiles);
-            m_ColliderObjects.push_back(pExtraTiles);
-
-            pGroundCheck = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, checkPos, 0.0f, 0.0f, 0.0f, Vector3(10, 1, 10));
-            m_GameObjects.push_back(pGroundCheck);
-            m_TriggerObjects.push_back(pGroundCheck);
-        }
-    }
+    // //starting tile and grounded check
+    // Terrain* pStartTile = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -10, 0), 0.0f, 0.0f, 0.0f, Vector3(10,1,10));
+    // m_GameObjects.push_back(pStartTile);
+    // m_ColliderObjects.push_back(pStartTile);
+    // 
+    // pStartGC = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 0), 0.0f, 0.0f, 0.0f, Vector3(10, 1, 10));
+    // m_TriggerObjects.push_back(pStartGC);
+    // 
+    // //sets how many tiles to create and the distance between them
+    // int xTiles = 2;
+    // int zTiles = 2;
+    // float xSpacing = -100.0f;
+    // float zSpacing = 100.0f;
+    // 
+    // //creates more tiles from tile number
+    // for (int xPos = 0; xPos <= xTiles; xPos++) 
+    // {
+    //     for (int zPos = 0; zPos <= zTiles; zPos++) 
+    //     {
+    //         if (xPos == 0 && zPos == 0) continue;
+    // 
+    //         Vector3 position(xPos * xSpacing, -10, zPos * zSpacing);
+    //         Vector3 checkPos(xPos * xSpacing, 2, zPos * zSpacing);
+    // 
+    //         Terrain* pExtraTiles = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, position, 0.0f, 0.0f, 0.0f, Vector3(10,1,10));
+    //         m_GameObjects.push_back(pExtraTiles);
+    //         m_ColliderObjects.push_back(pExtraTiles);
+    // 
+    //         pGroundCheck = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, checkPos, 0.0f, 0.0f, 0.0f, Vector3(10, 1, 10));
+    //         m_GameObjects.push_back(pGroundCheck);
+    //         m_TriggerObjects.push_back(pGroundCheck);
+    //     }
+    // }
 }

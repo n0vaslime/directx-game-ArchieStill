@@ -198,14 +198,15 @@ void Game::Initialize(HWND _window, int _width, int _height)
         m_SwordTrigger.push_back(pSwordTrigger);
     }
 
+    pSword = new SwordObject("Sword", m_d3dDevice.Get(), m_fxFactory);
+    m_SwordObject.push_back(pSword);
+
     //add Player
     pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(pPlayer);
     m_PhysicsObjects.push_back(pPlayer);
-    pPlayer->m_SwordTrigger = m_SwordTrigger;
-
-    pSword = new Coin("Sword", m_d3dDevice.Get(), m_fxFactory, pPlayer->GetPos() + Vector3(5,0,5));
-    m_GameObjects.push_back(pSword);
+    pPlayer->m_PSwordTrigger = m_SwordTrigger;
+    pPlayer->m_PSwordObject = m_SwordObject;
 
     //add a secondary camera
     m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f));
@@ -829,6 +830,7 @@ void Game::DisplayGame()
         (*it)->SetRendered(true);
     }
     m_GameObjects.push_back(pSwordTrigger);
+    m_GameObjects.push_back(pSword);
 
     //set others inactive
     title_screen->SetRendered(false);

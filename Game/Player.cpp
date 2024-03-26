@@ -23,8 +23,6 @@ Player::~Player()
 
 void Player::Tick(GameData* _GD)
 {
-	spawn = Vector3(0.15f, -15.0f, 0.15f);
-
 	switch (_GD->m_GS)
 	{
 	case GS_PLAY_MAIN_CAM:
@@ -126,10 +124,10 @@ void Player::Tick(GameData* _GD)
 		is_grounded = false;
 	}
 
-	for (size_t i = 0; i < m_SwordTrigger.size(); i++)
+	for (size_t i = 0; i < m_PSwordTrigger.size(); i++)
 	{
 		//checks if sword bounds are active
-		if (m_SwordTrigger[i]->isRendered())
+		if (m_PSwordTrigger[i]->isRendered())
 			is_attacking = true;
 		else
 			is_attacking = false;
@@ -137,20 +135,31 @@ void Player::Tick(GameData* _GD)
 		//creating sword bounds
 		if (_GD->m_MS.leftButton)
 		{
-			if (!m_SwordTrigger[i]->isRendered() && is_grounded)
+			if (!m_PSwordTrigger[i]->isRendered() && is_grounded)
 			{
+				Vector3 spawn = Vector3(0.15f, -15.0f, 0.15f);
 				Vector3 forwardMove = 40.0f * Vector3::Forward;
 				Matrix rotMove = Matrix::CreateRotationY(m_yaw);
 				forwardMove = Vector3::Transform(forwardMove, rotMove);
-				m_SwordTrigger[i]->SetPos(this->GetPos() + forwardMove * spawn);
-				m_SwordTrigger[i]->SetRendered(true);
-				m_SwordTrigger[i]->SetYaw(this->GetYaw());
+				m_PSwordTrigger[i]->SetPos(this->GetPos() + forwardMove * spawn);
+				m_PSwordTrigger[i]->SetRendered(true);
+				m_PSwordTrigger[i]->SetYaw(this->GetYaw());
 				m_vel *= 0;
 			}
 		}
 	}
 
-
+	for (size_t i = 0; i < m_PSwordObject.size(); i++)
+	{
+		Vector3 objSpawn = Vector3(2, 0, 2);
+		Vector3 forwardMove = 40.0f * Vector3::Forward;
+		Matrix rotMove = Matrix::CreateRotationY(m_yaw);
+		forwardMove = Vector3::Transform(forwardMove, rotMove);
+		m_PSwordObject[i]->SetRendered(true);
+		m_PSwordObject[i]->SetPos(this->GetPos() + (forwardMove + objSpawn));
+		if (_GD->m_KBS.P)
+			m_PSwordObject[i]->SetRendered(false);
+	}
 
 	//limit motion of the player
 	float length = m_pos.Length();

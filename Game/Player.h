@@ -2,6 +2,7 @@
 #define _PLAYER_H_
 #include "CMOGO.h"
 #include "SwordTrigger.h"
+#include "SwordObject.h"
 
 //=================================================================
 //Base Player Class (i.e. a GO the player controls)
@@ -18,11 +19,9 @@ public:
 	virtual void Tick(GameData* _GD) override;
 
 	bool is_grounded = true;
-	vector<CMOGO*> m_SwordTrigger;
-
-	float spawn_distance;
-	Vector3 spawn;
 	bool is_attacking = false;
+	vector<CMOGO*> m_PSwordTrigger;
+	vector<CMOGO*> m_PSwordObject;
 
 protected:
 

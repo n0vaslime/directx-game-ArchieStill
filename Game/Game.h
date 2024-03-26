@@ -19,6 +19,7 @@
 #include "SwordTrigger.h"
 #include "Coin.h"
 #include "Enemy.h"
+#include "SwordObject.h"
 
 using std::list;
 
@@ -126,6 +127,7 @@ private:
 
     std::vector<CMOGO*> m_SwordTrigger;
     std::vector<SwordTrigger*> m_SwordTriggerVector;
+    std::vector<CMOGO*> m_SwordObject;
 
     void CheckCollision();
     void CheckTriggers();
@@ -140,7 +142,7 @@ private:
 
     Player* pPlayer;
     SwordTrigger* pSwordTrigger;
-    Coin* pSword;
+    SwordObject* pSword;
     Terrain* pStartGC;
     Terrain* pGroundCheck;
 

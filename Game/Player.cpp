@@ -151,14 +151,22 @@ void Player::Tick(GameData* _GD)
 
 	for (size_t i = 0; i < m_PSwordObject.size(); i++)
 	{
-		Vector3 objSpawn = Vector3(2, 0, 2);
-		Vector3 forwardMove = 40.0f * Vector3::Forward;
+		Vector3 objSpawn = Vector3(0, -2, 0);
+		Vector3 forwardMove = 2.5f * Vector3::Forward;
 		Matrix rotMove = Matrix::CreateRotationY(m_yaw);
 		forwardMove = Vector3::Transform(forwardMove, rotMove);
 		m_PSwordObject[i]->SetRendered(true);
 		m_PSwordObject[i]->SetPos(this->GetPos() + (forwardMove + objSpawn));
-		if (_GD->m_KBS.P)
-			m_PSwordObject[i]->SetRendered(false);
+		m_PSwordObject[i]->SetYaw(this->GetYaw());
+		m_PSwordObject[i]->SetPitch(0);
+		if (is_attacking)
+		{
+			m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 4);
+		}
+		else
+		{
+			m_PSwordObject[i]->SetPitch(0);
+		}
 	}
 
 	//limit motion of the player

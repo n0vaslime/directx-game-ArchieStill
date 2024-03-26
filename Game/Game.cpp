@@ -127,9 +127,12 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_Coins.push_back(pCoin3);
 
     //add Enemy
-    pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 10.0f, 30.0f));
+    pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 0.0f, 30.0f),0,45,0);
     m_GameObjects.push_back(pEnemy1);
     m_Enemies.push_back(pEnemy1);
+    pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(- 30.0f, 0.0f, -50.0f), 0, 225, 0);
+    m_GameObjects.push_back(pEnemy2);
+    m_Enemies.push_back(pEnemy2);
 
     //L-system like tree
     Tree* tree = new Tree(3, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
@@ -192,12 +195,10 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(m_cam);
 
     //add Sword Trigger
-    for (size_t i = 0; i < 10; i++)
-    {
-        pSwordTrigger = new SwordTrigger("table", m_d3dDevice.Get(), m_fxFactory);
-        m_SwordTrigger.push_back(pSwordTrigger);
-    }
+    pSwordTrigger = new SwordTrigger("table", m_d3dDevice.Get(), m_fxFactory);
+    m_SwordTrigger.push_back(pSwordTrigger);
 
+    //add Sword Object
     pSword = new SwordObject("Sword", m_d3dDevice.Get(), m_fxFactory);
     m_SwordObject.push_back(pSword);
 
@@ -209,7 +210,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     pPlayer->m_PSwordObject = m_SwordObject;
 
     //add a secondary camera
-    m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f));
+    m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f)); // Vector3(0,0,0.1f)
     m_GameObjects.push_back(m_TPScam);
 
     //test all GPGOs

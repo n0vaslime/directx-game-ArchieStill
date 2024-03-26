@@ -122,7 +122,9 @@ private:
     std::vector<CMOGO*> m_ColliderObjects;
     std::vector<CMOGO*> m_PhysicsObjects;
     std::vector<CMOGO*> m_TriggerObjects;
+
     std::vector<CMOGO*> m_Coins;
+    list<Coin> m_Coin;
     std::vector<CMOGO*> m_Enemies;
 
     std::vector<CMOGO*> m_SwordTrigger;
@@ -133,6 +135,7 @@ private:
     void CheckTriggers();
     void CoinCollision();
     void SwordCollision();
+    void EnemyCollision();
 
     //sound stuff
 	//This uses a simple system, but a better pipeline can be used using Wave Banks
@@ -143,8 +146,8 @@ private:
     Player* pPlayer;
     SwordTrigger* pSwordTrigger;
     SwordObject* pSword;
-    Terrain* pStartGC;
-    Terrain* pGroundCheck;
+    Terrain* pF1GroundCheck;
+    Terrain* pF2GroundCheck;
 
     Coin* pCoin1;
     Coin* pCoin2;
@@ -171,4 +174,5 @@ private:
     void InitLossAssets();
 
     void CreateGround();
+    void EnemyAI();
 };

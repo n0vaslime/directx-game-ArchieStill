@@ -9,7 +9,7 @@ Player::Player(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF)
 	//any special set up for Player goes here
 	m_fudge = Matrix::CreateRotationY(XM_PI);
 
-	m_pos.y = 5.0f;
+	m_pos.y = 1.0f;
 
 	SetDrag(0.7);
 	SetPhysicsOn(true);
@@ -58,26 +58,18 @@ void Player::Tick(GameData* _GD)
 			if (_GD->m_KBS.W)
 			{
 				m_acc += forwardMove;
-				if (_GD->m_KBS.LeftShift)
-					m_acc += (forwardMove * 1.1f);
 			}
 			if (_GD->m_KBS.S)
 			{
 				m_acc -= forwardMove;
-				if (_GD->m_KBS.LeftShift)
-					m_acc -= (forwardMove * 1.1f);
 			}
 			if (_GD->m_KBS.A)
 			{
 				m_acc += leftMove;
-				if (_GD->m_KBS.LeftShift)
-					m_acc += (leftMove * 1.1f);
 			}
 			if (_GD->m_KBS.D)
 			{
 				m_acc -= leftMove;
-				if (_GD->m_KBS.LeftShift)
-					m_acc -= (leftMove * 1.1f);
 			}
 			break;
 		}

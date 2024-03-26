@@ -8,5 +8,8 @@ public:
 	~Enemy();
 
 	virtual void Tick(GameData* _GD) override;
+	void MoveTowards(CMOGO _player);
+
+	float speed;
 };
 

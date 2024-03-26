@@ -97,23 +97,6 @@ void Game::Initialize(HWND _window, int _width, int _height)
     //find how big my window is to correctly calculate my aspect ratio
     float AR = (float)_width / (float)_height;
 
-    //example basic 3D stuff
-    Terrain* terrain = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3(100.0f, 0.0f, 100.0f), 0.0f, 0.0f, 0.0f, 0.25f * Vector3::One);
-    m_GameObjects.push_back(terrain);
-    m_ColliderObjects.push_back(terrain);
-
-    Terrain* terrain2 = new Terrain("table", m_d3dDevice.Get(), m_fxFactory, Vector3(-100.0f, 0.0f, -100.0f), 0.0f, 0.0f, 0.0f, Vector3::One);
-    m_GameObjects.push_back(terrain2);
-    m_TriggerObjects.push_back(terrain2);
-
-    // Terrain* floor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, -50.0f, 0.0f), 0.0f, 0.0f, 0.0f, Vector3(10,10,10));
-    // m_GameObjects.push_back(floor);
-    // m_ColliderObjects.push_back(floor);
-
-    // pGroundCheck = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0,1,0), 0.0f, 0.0f, 0.0f, Vector3(10, 1, 10));
-    // m_GameObjects.push_back(pGroundCheck);
-    // m_TriggerObjects.push_back(pGroundCheck);
-
     CreateGround();
 
     pCoin1 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(20.0f, 0.0f, 20.0f));
@@ -127,67 +110,16 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_Coins.push_back(pCoin3);
 
     //add Enemy
-    pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 0.0f, 30.0f),0,45,0);
+    pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 0.0f, 30.0f),0,0,0);
     m_GameObjects.push_back(pEnemy1);
     m_Enemies.push_back(pEnemy1);
-    pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(- 30.0f, 0.0f, -50.0f), 0, 225, 0);
+    pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(- 30.0f, 0.0f, -50.0f), 0, 0, 0);
     m_GameObjects.push_back(pEnemy2);
     m_Enemies.push_back(pEnemy2);
 
     //L-system like tree
     Tree* tree = new Tree(3, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(tree);
-    // todo: add to cmogo
-
-    //Vertex Buffer Game Objects
-    // FileVBGO* terrainBox = new FileVBGO("terrainTex", m_d3dDevice.Get());
-    // m_GameObjects.push_back(terrainBox);
-
-    /*FileVBGO* Box = new FileVBGO("cube", m_d3dDevice.Get());
-    m_GameObjects.push_back(Box);
-    Box->SetPos(Vector3(0.0f, 0.0f, -100.0f));
-    Box->SetPitch(XM_PIDIV4);
-    Box->SetScale(20.0f);*/
-
-    // VBCube* cube = new VBCube();
-    // cube->init(11, m_d3dDevice.Get());
-    // cube->SetPos(Vector3(100.0f, 0.0f, 0.0f));
-    // cube->SetScale(4.0f);
-    // m_GameObjects.push_back(cube);
-    // Terrain* wall = new Terrain("cube", m_d3dDevice.Get(), m_fxFactory, Vector3(100.0f, 0.0f, 100.0f), 0.0f, 0.0f, 0.0f, 0.25f * Vector3::One);
-    // m_GameObjects.push_back(wall);
-    // m_ColliderObjects.push_back(wall);
-
-    /*VBSpike* spikes = new VBSpike();
-    spikes->init(11, m_d3dDevice.Get());
-    spikes->SetPos(Vector3(0.0f, 0.0f, 100.0f));
-    spikes->SetScale(4.0f);
-    m_GameObjects.push_back(spikes);
-
-    VBSpiral* spiral = new VBSpiral();
-    spiral->init(11, m_d3dDevice.Get());
-    spiral->SetPos(Vector3(-100.0f, 0.0f, 0.0f));
-    spiral->SetScale(4.0f);
-    m_GameObjects.push_back(spiral);
-
-    VBPillow* pillow = new VBPillow();
-    pillow->init(11, m_d3dDevice.Get());
-    pillow->SetPos(Vector3(-100.0f, 0.0f, -100.0f));
-    pillow->SetScale(4.0f);
-    m_GameObjects.push_back(pillow);
-
-    VBSnail* snail = new VBSnail(m_d3dDevice.Get(), "shell", 150, 0.98f, 0.09f * XM_PI, 0.4f, Color(1.0f, 0.0f, 0.0f, 1.0f), Color(0.0f, 0.0f, 1.0f, 1.0f));
-    snail->SetPos(Vector3(-100.0f, 0.0f, 100.0f));
-    snail->SetScale(2.0f);
-    m_GameObjects.push_back(snail);
-
-    //Marching Cubes
-    VBMarchCubes* VBMC = new VBMarchCubes();
-    VBMC->init(Vector3(-8.0f, -8.0f, -17.0f), Vector3(8.0f, 8.0f, 23.0f), 60.0f * Vector3::One, 0.01, m_d3dDevice.Get());
-    VBMC->SetPos(Vector3(100, 0, -100));
-    VBMC->SetPitch(-XM_PIDIV2);
-    VBMC->SetScale(Vector3(3, 3, 1.5));
-    m_GameObjects.push_back(VBMC);*/
 
     //create a base camera
     m_cam = new Camera(0.25f * XM_PI, AR, 1.0f, 10000.0f, Vector3::UnitY, Vector3::Zero);
@@ -212,63 +144,6 @@ void Game::Initialize(HWND _window, int _width, int _height)
     //add a secondary camera
     m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f)); // Vector3(0,0,0.1f)
     m_GameObjects.push_back(m_TPScam);
-
-    //test all GPGOs
-    float* params = new float[3];
-
-    // params[0] = 250.f; params[1] = 10.f; params[2] = 250.f;
-    // GPGO* pGPGO = new GPGO(m_d3dContext.Get(), GPGO_BOX, (float*)&Colors::DarkSeaGreen, params);
-    // pGPGO->SetPos(Vector3(0.f, -2.5f, 0.f));
-    // m_GameObjects.push_back(pGPGO);
-
-    /*params[0] = 10.f;  params[1] = 20.0f; params[2] = 30.f;
-    GPGO* pGPGO = new GPGO(m_d3dContext.Get(), GPGO_BOX, (float*)&Colors::Azure, params);
-    pGPGO->SetPos(Vector3(-50.0f, 10.0f, -100.f));
-    m_GameObjects.push_back(pGPGO);
-    params[0] = params[1] = 20.0f; params[2] = (size_t)32;
-    pGPGO = new GPGO(m_d3dContext.Get(), GPGO_CONE, (float*)&Colors::Navy,params);
-    pGPGO->SetPos(Vector3(-50.0f, 10.0f, -70.f));
-    m_GameObjects.push_back(pGPGO);
-    params[0] = 15.0f;
-    pGPGO = new GPGO(m_d3dContext.Get(), GPGO_CUBE, (float*)&Colors::SeaGreen, params);
-    pGPGO->SetPos(Vector3(-50.0f, 10.0f, -40.f));
-    m_GameObjects.push_back(pGPGO);
-    params[0] = params[1] = 20.0f; params[2] = (size_t)32;
-    pGPGO = new GPGO(m_d3dContext.Get(), GPGO_CYLINDER, (float*)&Colors::OliveDrab, params);
-    pGPGO->SetPos(Vector3(-50.0f, 10.0f, -10.f));
-    m_GameObjects.push_back(pGPGO);
-    params[0] = 15.0f;
-    pGPGO = new GPGO(m_d3dContext.Get(), GPGO_DODECAHEDRON, (float*)&Colors::OrangeRed,params);
-    pGPGO->SetPos(Vector3(-50.0f, 10.0f, 20.f));
-    m_GameObjects.push_back(pGPGO);
-    params[0] =  15.0f; params[1] = (size_t)3;
-    pGPGO = new GPGO(m_d3dContext.Get(), GPGO_GEOSPHERE, (float*)&Colors::BlueViolet, params);
-    pGPGO->SetPos(Vector3(-50.0f, 10.0f, 50.f));
-    m_GameObjects.push_back(pGPGO);
-    params[0] = 20;
-    pGPGO = new GPGO(m_d3dContext.Get(), GPGO_ICOSAHEDRON, (float*)&Colors::DodgerBlue, params);
-    pGPGO->SetPos(Vector3(-50.0f, 10.0f, 80.f));
-    m_GameObjects.push_back(pGPGO);
-    params[0] = 20;
-    pGPGO = new GPGO(m_d3dContext.Get(), GPGO_OCTAHEDRON, (float*)&Colors::PaleTurquoise, params);
-    pGPGO->SetPos(Vector3(-50.0f, 10.0f, 110.f));
-    m_GameObjects.push_back(pGPGO);
-    params[0] = 15.0f; params[1] = (size_t)16;
-    pGPGO = new GPGO(m_d3dContext.Get(), GPGO_SPHERE, (float*)&Colors::LawnGreen, params);
-    pGPGO->SetPos(Vector3(-50.0f, 10.0f, 140.0));
-    m_GameObjects.push_back(pGPGO);
-    params[0] = 15.0f; params[1] = (size_t)8;
-    pGPGO = new GPGO(m_d3dContext.Get(), GPGO_TEAPOT, (float*)&Colors::YellowGreen, params);
-    pGPGO->SetPos(Vector3(-50.0f, 10.0f, 170.0f));
-    m_GameObjects.push_back(pGPGO);
-    params[0] = 20;
-    pGPGO = new GPGO(m_d3dContext.Get(), GPGO_TETRAHEDRON, (float*)&Colors::Firebrick, params);
-    pGPGO->SetPos(Vector3(-50.0f, 10.0f, 200.f));
-    m_GameObjects.push_back(pGPGO);
-    params[0] = 30.0f; params[1] = 10.0f; params[2] = (size_t)32;
-    pGPGO = new GPGO(m_d3dContext.Get(), GPGO_TORUS, (float*)&Colors::Aquamarine, params);
-    pGPGO->SetPos(Vector3(-50.0f, 10.0f, 230.f));
-    m_GameObjects.push_back(pGPGO);*/
 
     //create DrawData struct and populate its pointers
     m_DD = new DrawData;
@@ -344,27 +219,33 @@ void Game::Update(DX::StepTimer const& _timer)
     }
 
     ReadInput();
-
-    //update all objects
-    for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+    
+    if (m_GD->m_GS == GS_GAME)
     {
-        (*it)->Tick(m_GD);
+        //update all objects
+        for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+        {
+            (*it)->Tick(m_GD);
+        }
+        for (list<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
+        {
+            (*it)->Tick(m_GD);
+        }
+
+        CheckCollision();
+        CheckTriggers();
+        CoinCollision();
+        EnemyCollision();
+        SwordCollision();
+
+        EnemyAI();
+
+        m_TPScam->Tick(m_GD);
+
+        pSword->SetPos(pPlayer->GetPos() + Vector3(5, 0, 5));
+        pSword->SetPitch(pPlayer->GetPitch());
+        pSword->SetYaw(pPlayer->GetYaw());
     }
-    for (list<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
-    {
-        (*it)->Tick(m_GD);
-    }
-
-    CheckCollision();
-    CheckTriggers();
-    CoinCollision();
-    SwordCollision();
-
-    m_TPScam->Tick(m_GD);
-
-    pSword->SetPos(pPlayer->GetPos() + Vector3(5, 0, 5));
-    pSword->SetPitch(pPlayer->GetPitch());
-    pSword->SetYaw(pPlayer->GetYaw());
 }
 
 // Draws the scene.
@@ -453,24 +334,28 @@ void Game::Present()
 // Message handlers
 void Game::OnActivated()
 {
-    // TODO: Game is becoming active window.
+    // Game is becoming active window.
+    ShowCursor(false);
 }
 
 void Game::OnDeactivated()
 {
-    // TODO: Game is becoming background window.
+    // Game is becoming background window.
+    ShowCursor(true);
 }
 
 void Game::OnSuspending()
 {
-    // TODO: Game is being power-suspended (or minimized).
+    // Game is being power-suspended (or minimized).
+    ShowCursor(true);
 }
 
 void Game::OnResuming()
 {
     m_timer.ResetElapsedTime();
 
-    // TODO: Game is being power-resumed (or returning from minimize).
+    // Game is being power-resumed (or returning from minimize).
+    ShowCursor(false);
 }
 
 void Game::OnWindowSizeChanged(int _width, int _height)
@@ -479,11 +364,8 @@ void Game::OnWindowSizeChanged(int _width, int _height)
     m_outputHeight = std::max(_height, 1);
 
     CreateResources();
-
-    // TODO: Game window is being resized.
 }
 
-// Properties
 void Game::GetDefaultSize(int& _width, int& _height) const noexcept
 {
     // TODO: Change to desired default window size (note minimum size is 320x200).
@@ -683,6 +565,10 @@ void Game::ReadInput()
     SetCursorPos((window.left + window.right) >> 1, (window.bottom + window.top) >> 1);
 
     //quit game on hitting escape
+    if (m_GD->m_KBS.Escape)
+    {
+        ExitGame();
+    }
 
     switch (m_GD->m_GS)
     {
@@ -693,31 +579,9 @@ void Game::ReadInput()
                 m_GD->m_GS = GS_GAME;
                 DisplayGame();
             }
-            if (m_GD->m_KBS.Escape)
-            {
-                m_GD->m_GS = GS_GAME;
-                ExitGame();
-            }
         }
         case(GS_GAME):
         {
-            if (m_GD->m_KBS.Escape)
-            {
-                DisplayMenu();
-            }
-            //upon space bar switch camera state
-            //see docs here for what's going on: https://github.com/Microsoft/DirectXTK/wiki/Keyboard
-            // if (m_GD->m_KBS_tracker.pressed.Tab)
-            // {
-            //     if (m_GD->m_GS == GS_GAME)
-            //     {
-            //         m_GD->m_GS = GS_PLAY_MAIN_CAM;
-            //     }
-            //     else
-            //     {
-            //         m_GD->m_GS = GS_GAME;
-            //     }
-            // }
 
         }
         case(GS_WIN):
@@ -754,9 +618,8 @@ void Game::CheckTriggers()
         {
             if (m_PhysicsObjects[i] == pPlayer)
             {
-                if (m_TriggerObjects[j] == pStartGC or m_TriggerObjects[j] == pGroundCheck)
+                if (m_TriggerObjects[j] == pF1GroundCheck or m_TriggerObjects[j] == pF2GroundCheck)
                 {
-                    // std::cout << "HIIIIIIII";
                     pPlayer->is_grounded = true;
                 }
             }
@@ -785,6 +648,20 @@ void Game::CoinCollision()
     }
 }
 
+void Game::EnemyCollision()
+{
+    for (int i = 0; i < m_Enemies.size(); i++) for (int j = 0; j < m_PhysicsObjects.size(); j++)
+    {
+        if (m_Enemies[i]->isRendered() && m_Enemies[i]->Intersects(*m_PhysicsObjects[j]))
+        {
+            if (m_PhysicsObjects[j] == pPlayer)
+            {
+                std::cout << "Hi" << std::endl;
+            }
+        }
+    }
+}
+
 void Game::SwordCollision()
 {
     for (int i = 0; i < m_Enemies.size(); i++) for (int j = 0; j < m_SwordTrigger.size(); j++)
@@ -792,7 +669,6 @@ void Game::SwordCollision()
         if (m_Enemies[i]->isRendered() && m_Enemies[i]->Intersects(*m_SwordTrigger[j]))
         {
             m_Enemies[i]->SetRendered(false);
-            std::cout << "SLASH!" << std::endl;
         }
     }
 }
@@ -809,11 +685,11 @@ void Game::DisplayMenu()
     pCoin2->SetRendered(false);
     pCoin3->SetRendered(false);
     pEnemy1->SetRendered(false);
-
+    pEnemy2->SetRendered(false);
+    // for (list <Coin*>::iterator it = m_Coin.begin(); it != m_Coin.end(); it++)
+    // 
     for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
-    {
         (*it)->SetRendered(false);
-    }
 }
 
 void Game::DisplayGame()
@@ -825,11 +701,10 @@ void Game::DisplayGame()
     pCoin2->SetRendered(true);
     pCoin3->SetRendered(true);
     pEnemy1->SetRendered(true);
+    pEnemy2->SetRendered(true);
 
     for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
-    {
         (*it)->SetRendered(true);
-    }
     m_GameObjects.push_back(pSwordTrigger);
     m_GameObjects.push_back(pSword);
 
@@ -849,21 +724,27 @@ void Game::DisplayLoss()
     //set loss active
     m_GD->m_GS = GS_LOSS;
 
+
 }
 
 void Game::CreateGround()
 {
     //Floor 1 ground
-    Terrain* pStartTile = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -10, 0), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
-    m_GameObjects.push_back(pStartTile);
-    m_ColliderObjects.push_back(pStartTile);
+    Terrain* pF1Floor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-10,0), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
+    m_GameObjects.push_back(pF1Floor);
+    m_ColliderObjects.push_back(pF1Floor);
+    pF1GroundCheck = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -8, 0), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
+    m_TriggerObjects.push_back(pF1GroundCheck);
 
-    pStartGC = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -8, 0), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
-    m_TriggerObjects.push_back(pStartGC);
-
-
+    //Floor2 ground
+    Terrain* pF2Floor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -250), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
+    m_GameObjects.push_back(pF2Floor);
+    m_ColliderObjects.push_back(pF2Floor);
+    pF2GroundCheck = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 2, -250), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
+    m_TriggerObjects.push_back(pF2GroundCheck);
 
     // //starting tile and grounded check
+    // 
     // Terrain* pStartTile = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -10, 0), 0.0f, 0.0f, 0.0f, Vector3(10,1,10));
     // m_GameObjects.push_back(pStartTile);
     // m_ColliderObjects.push_back(pStartTile);
@@ -896,4 +777,16 @@ void Game::CreateGround()
     //         m_TriggerObjects.push_back(pGroundCheck);
     //     }
     // }
+}
+
+void Game::EnemyAI()
+{
+    for (int i = 0; i < m_Enemies.size(); i++)
+    {
+        m_Enemies[i]->SetYaw(pPlayer->GetYaw());
+        Vector3 forwardMove = 0.15f * Vector3::Forward;
+        Matrix rotMove = Matrix::CreateRotationY(m_Enemies[i]->GetYaw());
+        forwardMove = Vector3::Transform(forwardMove, rotMove);
+        m_Enemies[i]->SetPos(m_Enemies[i]->GetPos() - forwardMove);
+    }
 }

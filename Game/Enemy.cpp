@@ -11,7 +11,6 @@ Enemy::Enemy(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, V
 	m_roll = _roll;
 
 	SetScale(Vector3(1, 1, 1));
-	// SetPhysicsOn(true);
 
 	speed = 5.0f;
 }

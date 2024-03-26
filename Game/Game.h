@@ -20,6 +20,8 @@
 #include "Coin.h"
 #include "Enemy.h"
 #include "SwordObject.h"
+#include "Sign.h"
+#include "SignTrigger.h"
 
 using std::list;
 
@@ -124,8 +126,8 @@ private:
     std::vector<CMOGO*> m_TriggerObjects;
 
     std::vector<CMOGO*> m_Coins;
-    list<Coin> m_Coin;
     std::vector<CMOGO*> m_Enemies;
+    std::vector<CMOGO*> m_SignTrigger;
 
     std::vector<CMOGO*> m_SwordTrigger;
     std::vector<SwordTrigger*> m_SwordTriggerVector;
@@ -136,6 +138,7 @@ private:
     void CoinCollision();
     void SwordCollision();
     void EnemyCollision();
+    void SignCollision();
 
     //sound stuff
 	//This uses a simple system, but a better pipeline can be used using Wave Banks
@@ -146,6 +149,7 @@ private:
     Player* pPlayer;
     SwordTrigger* pSwordTrigger;
     SwordObject* pSword;
+
     Terrain* pF1GroundCheck;
     Terrain* pF2GroundCheck;
 
@@ -155,10 +159,16 @@ private:
     Enemy* pEnemy1;
     Enemy* pEnemy2;
 
+    TextGO2D* readText;
+    SignTrigger* pSignReadTrigger;
+    bool is_reading = false;
+    Sign* pSigns;
+    Sign* pSign1;
+    ImageGO2D* sign1Image;
+
     int score;
     TextGO2D* scoreText;
 
-    TextGO2D* Text;
     ImageGO2D* title_screen;
 
     bool terrain = false;

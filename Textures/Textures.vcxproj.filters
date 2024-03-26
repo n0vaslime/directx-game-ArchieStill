@@ -6,5 +6,6 @@
     <ImageContentTask Include="white.jpg" />
     <ImageContentTask Include="..\RawAssets\Images\TitleScreen.png" />
     <ImageContentTask Include="..\RawAssets\Images\pain.jpg" />
+    <ImageContentTask Include="..\RawAssets\Images\PlaceholderSign.png" />
   </ItemGroup>
 </Project>

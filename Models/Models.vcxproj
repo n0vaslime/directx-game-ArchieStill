@@ -154,6 +154,7 @@
     <MeshContentTask Include="..\RawAssets\Models\Enemy.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\GreenCube.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Player.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\Sign.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Sword.fbx" />
     <MeshContentTask Include="Bird\BirdModelV1.fbx" />
     <MeshContentTask Include="Table\table.FBX">

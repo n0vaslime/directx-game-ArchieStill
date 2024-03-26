@@ -168,6 +168,12 @@
     <ClInclude Include="SwordObject.h">
       <Filter>Base\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Sign.h">
+      <Filter>GameObjects\3D\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SignTrigger.h">
+      <Filter>Base\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -249,6 +255,12 @@
       <Filter>GameObjects\3D\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SwordObject.cpp">
+      <Filter>Base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sign.cpp">
+      <Filter>GameObjects\3D\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SignTrigger.cpp">
       <Filter>Base\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

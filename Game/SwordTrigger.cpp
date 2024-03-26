@@ -34,7 +34,5 @@ void SwordTrigger::Draw(DrawData* _DD)
 {
 	// keep false - sword bounds table isn't drawn!
 	if (false)
-	{
 		CMOGO::Draw(_DD);
-	}
 }

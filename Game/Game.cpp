@@ -99,6 +99,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
 
     CreateGround();
 
+    //add Coins
     pCoin1 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(20.0f, 0.0f, 20.0f));
     m_GameObjects.push_back(pCoin1);
     m_Coins.push_back(pCoin1);
@@ -109,13 +110,35 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(pCoin3);
     m_Coins.push_back(pCoin3);
 
-    //add Enemy
+    //add Enemies
     pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 0.0f, 30.0f),0,0,0);
     m_GameObjects.push_back(pEnemy1);
     m_Enemies.push_back(pEnemy1);
-    pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(- 30.0f, 0.0f, -50.0f), 0, 0, 0);
+    pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 0.0f, -50.0f), 0, 0, 0);
     m_GameObjects.push_back(pEnemy2);
     m_Enemies.push_back(pEnemy2);
+
+    //add Sign - reading instructions
+    readText = new TextGO2D("Press 'E' to read!");
+    readText->SetPos(Vector2(275, 550));
+    readText->SetColour(Color((float*)&Colors::WhiteSmoke));
+    readText->SetScale(0.75f);
+    m_GameObjects2D.push_back(readText);
+    readText->SetRendered(false);
+    //add Sign - reading trigger
+    pSignReadTrigger = new SignTrigger("Sign", m_d3dDevice.Get(), m_fxFactory);
+    m_GameObjects.push_back(pSignReadTrigger);
+    m_SignTrigger.push_back(pSignReadTrigger);
+    //add Sign - sign objects & text
+    pSign1 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-2,-30));
+    m_GameObjects.push_back(pSign1);
+    m_ColliderObjects.push_back(pSign1);
+    pSign1->m_ReadingTrigger = m_SignTrigger;
+    sign1Image = new ImageGO2D("PlaceholderSign", m_d3dDevice.Get());
+    sign1Image->SetPos(Vector2(400, 300));
+    sign1Image->SetScale(Vector2(1, 0.75f));
+    m_GameObjects2D.push_back(sign1Image);
+    sign1Image->SetRendered(false);
 
     //L-system like tree
     Tree* tree = new Tree(3, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
@@ -126,15 +149,13 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_cam->SetPos(Vector3(0.0f, 200.0f, 200.0f));
     m_GameObjects.push_back(m_cam);
 
-    //add Sword Trigger
+    //add Player - sword trigger bounds
     pSwordTrigger = new SwordTrigger("table", m_d3dDevice.Get(), m_fxFactory);
     m_SwordTrigger.push_back(pSwordTrigger);
-
-    //add Sword Object
+    //add Player - swinging sword object in scene
     pSword = new SwordObject("Sword", m_d3dDevice.Get(), m_fxFactory);
     m_SwordObject.push_back(pSword);
-
-    //add Player
+    //add Player - player object and adding swords to player class
     pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(pPlayer);
     m_PhysicsObjects.push_back(pPlayer);
@@ -237,6 +258,7 @@ void Game::Update(DX::StepTimer const& _timer)
         CoinCollision();
         EnemyCollision();
         SwordCollision();
+        SignCollision();
 
         EnemyAI();
 
@@ -673,6 +695,43 @@ void Game::SwordCollision()
     }
 }
 
+void Game::SignCollision()
+{
+    for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_SignTrigger.size(); j++)
+    {
+        if (m_SignTrigger[j]->isRendered() && m_PhysicsObjects[i]->Intersects(*m_SignTrigger[j]))
+        {
+            if (m_PhysicsObjects[i] == pPlayer)
+            {
+                readText->SetRendered(true);
+                if (m_GD->m_KBS.E)
+                {
+                    if (is_reading == false)
+                    {
+                        is_reading = true;
+                    }
+                }
+            }
+        }
+        else
+        {
+            readText->SetRendered(false);
+            is_reading = false;
+        }
+
+        if (is_reading)
+        {
+            sign1Image->SetRendered(true);
+            readText->SetRendered(false);
+        }
+        else
+        {
+            sign1Image->SetRendered(false);
+        }
+    }
+}
+
+
 void Game::DisplayMenu()
 {
     //set menu active
@@ -742,41 +801,6 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pF2Floor);
     pF2GroundCheck = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 2, -250), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
     m_TriggerObjects.push_back(pF2GroundCheck);
-
-    // //starting tile and grounded check
-    // 
-    // Terrain* pStartTile = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -10, 0), 0.0f, 0.0f, 0.0f, Vector3(10,1,10));
-    // m_GameObjects.push_back(pStartTile);
-    // m_ColliderObjects.push_back(pStartTile);
-    // 
-    // pStartGC = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 0), 0.0f, 0.0f, 0.0f, Vector3(10, 1, 10));
-    // m_TriggerObjects.push_back(pStartGC);
-    // 
-    // //sets how many tiles to create and the distance between them
-    // int xTiles = 2;
-    // int zTiles = 2;
-    // float xSpacing = -100.0f;
-    // float zSpacing = 100.0f;
-    // 
-    // //creates more tiles from tile number
-    // for (int xPos = 0; xPos <= xTiles; xPos++) 
-    // {
-    //     for (int zPos = 0; zPos <= zTiles; zPos++) 
-    //     {
-    //         if (xPos == 0 && zPos == 0) continue;
-    // 
-    //         Vector3 position(xPos * xSpacing, -10, zPos * zSpacing);
-    //         Vector3 checkPos(xPos * xSpacing, 2, zPos * zSpacing);
-    // 
-    //         Terrain* pExtraTiles = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, position, 0.0f, 0.0f, 0.0f, Vector3(10,1,10));
-    //         m_GameObjects.push_back(pExtraTiles);
-    //         m_ColliderObjects.push_back(pExtraTiles);
-    // 
-    //         pGroundCheck = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, checkPos, 0.0f, 0.0f, 0.0f, Vector3(10, 1, 10));
-    //         m_GameObjects.push_back(pGroundCheck);
-    //         m_TriggerObjects.push_back(pGroundCheck);
-    //     }
-    // }
 }
 
 void Game::EnemyAI()
@@ -784,7 +808,7 @@ void Game::EnemyAI()
     for (int i = 0; i < m_Enemies.size(); i++)
     {
         m_Enemies[i]->SetYaw(pPlayer->GetYaw());
-        Vector3 forwardMove = 0.15f * Vector3::Forward;
+        Vector3 forwardMove = 0.175f * Vector3::Forward;
         Matrix rotMove = Matrix::CreateRotationY(m_Enemies[i]->GetYaw());
         forwardMove = Vector3::Transform(forwardMove, rotMove);
         m_Enemies[i]->SetPos(m_Enemies[i]->GetPos() - forwardMove);

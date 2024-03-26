@@ -178,7 +178,5 @@ void Player::Tick(GameData* _GD)
 void Player::Draw(DrawData* _DD)
 {
 	if (true)
-	{
 		CMOGO::Draw(_DD);
-	}
 }

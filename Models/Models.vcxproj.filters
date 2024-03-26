@@ -26,5 +26,6 @@
     <MeshContentTask Include="..\RawAssets\Models\Coin.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Sword.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Enemy.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\Sign.fbx" />
   </ItemGroup>
 </Project>

@@ -149,6 +149,7 @@
     <Text Include="terrainTex.txt" />
   </ItemGroup>
   <ItemGroup>
+    <MeshContentTask Include="..\RawAssets\Models\CaveCube.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Coin.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Cube.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Enemy.fbx" />

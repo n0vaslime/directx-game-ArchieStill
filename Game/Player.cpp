@@ -23,31 +23,9 @@ Player::~Player()
 
 void Player::Tick(GameData* _GD)
 {
-	switch (_GD->m_GS)
-	{
-	case GS_PLAY_MAIN_CAM:
-	{
-		{
-			//MOUSE CONTROL SCHEME HERE
-			float speed = 10.0f;
-			if (!is_attacking)
-			{
-				m_acc.x += speed * _GD->m_MS.x;
-				m_acc.z += speed * _GD->m_MS.y;
-			}
-			else
-			{
-				m_acc.x = 0;
-				m_acc.z = 0;
-			}
-
-			break;
-		}
-	}
-	case GS_GAME:
+	if (_GD->m_GS == GS_INTRO or _GD->m_GS == GS_GAME) 
 	{
 		//MOVEMENT CONTROL HERE
-
 		Vector3 forwardMove = 40.0f * Vector3::Forward;
 		Vector3 leftMove = 40.0f * Vector3::Left;
 		Matrix rotMove = Matrix::CreateRotationY(m_yaw);
@@ -71,108 +49,106 @@ void Player::Tick(GameData* _GD)
 			{
 				m_acc -= leftMove;
 			}
-			break;
 		}
-	}
-	}
 
-	//change orientation of player
-	float rotSpeed = 0.5f * _GD->m_dt;
-	if (!is_attacking)
-	{
-		if (_GD->m_MS.x)
+		//change orientation of player
+		float rotSpeed = 0.5f * _GD->m_dt;
+		if (!is_attacking)
 		{
-			m_yaw -= rotSpeed * (_GD->m_MS.x / 1.1f);
-		}
-		if (_GD->m_MS.y)
-		{
-			m_pitch -= rotSpeed * (_GD->m_MS.y / 1.1f);
-			if (m_pitch <= -XM_PI / 4)
-				m_pitch = -XM_PI / 4;
-			if (m_pitch >= XM_PI / 2 - 0.05)
-				m_pitch = XM_PI / 2 - 0.05;
-		}
-	}
-	else
-	{
-		if (_GD->m_MS.x)
-		{
-			m_yaw -= rotSpeed * (_GD->m_MS.x / 4);
-		}
-		if (_GD->m_MS.y)
-		{
-			m_pitch -= rotSpeed * (_GD->m_MS.y / 4);
-			if (m_pitch <= -XM_PI / 4)
-				m_pitch = -XM_PI / 4;
-			if (m_pitch >= XM_PI / 2 - 0.05)
-				m_pitch = XM_PI / 2 - 0.05;
-		}
-	}
-
-	//jumping code
-	if (_GD->m_KBS.Space && is_grounded && !is_attacking)
-	{
-		m_acc.y += 200.0f;
-		is_grounded = false;
-	}
-
-	for (size_t i = 0; i < m_PSwordTrigger.size(); i++)
-	{
-		//checks if sword bounds are active
-		if (m_PSwordTrigger[i]->isRendered())
-			is_attacking = true;
-		else
-			is_attacking = false;
-
-		//creating sword bounds
-		if (_GD->m_MS.leftButton)
-		{
-			if (!m_PSwordTrigger[i]->isRendered() && is_grounded)
+			if (_GD->m_MS.x)
 			{
-				Vector3 spawn = Vector3(0.15f, -15.0f, 0.15f);
-				Vector3 forwardMove = 40.0f * Vector3::Forward;
-				Matrix rotMove = Matrix::CreateRotationY(m_yaw);
-				forwardMove = Vector3::Transform(forwardMove, rotMove);
-				m_PSwordTrigger[i]->SetPos(this->GetPos() + forwardMove * spawn);
-				m_PSwordTrigger[i]->SetRendered(true);
-				m_PSwordTrigger[i]->SetYaw(this->GetYaw());
-				m_vel *= 0;
+				m_yaw -= rotSpeed * (_GD->m_MS.x / 1.1f);
+			}
+			if (_GD->m_MS.y)
+			{
+				m_pitch -= rotSpeed * (_GD->m_MS.y / 1.1f);
+				if (m_pitch <= -XM_PI / 4)
+					m_pitch = -XM_PI / 4;
+				if (m_pitch >= XM_PI / 2 - 0.05)
+					m_pitch = XM_PI / 2 - 0.05;
 			}
 		}
-	}
-
-	for (size_t i = 0; i < m_PSwordObject.size(); i++)
-	{
-		Vector3 objSpawn = Vector3(0, -2, 0);
-		Vector3 forwardMove = 2.5f * Vector3::Forward;
-		Matrix rotMove = Matrix::CreateRotationY(m_yaw);
-		forwardMove = Vector3::Transform(forwardMove, rotMove);
-		m_PSwordObject[i]->SetRendered(true);
-		m_PSwordObject[i]->SetPos(this->GetPos() + (forwardMove + objSpawn));
-		m_PSwordObject[i]->SetYaw(this->GetYaw());
-		m_PSwordObject[i]->SetPitch(0);
-		if (is_attacking)
-		{
-			m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 4);
-		}
 		else
 		{
-			m_PSwordObject[i]->SetPitch(0);
+			if (_GD->m_MS.x)
+			{
+				m_yaw -= rotSpeed * (_GD->m_MS.x / 4);
+			}
+			if (_GD->m_MS.y)
+			{
+				m_pitch -= rotSpeed * (_GD->m_MS.y / 4);
+				if (m_pitch <= -XM_PI / 4)
+					m_pitch = -XM_PI / 4;
+				if (m_pitch >= XM_PI / 2 - 0.05)
+					m_pitch = XM_PI / 2 - 0.05;
+			}
 		}
-	}
 
-	//limit motion of the player
-	float length = m_pos.Length();
-	float maxLength = 500.0f;
-	if (length > maxLength)
-	{
-		m_pos.Normalize();
-		m_pos *= maxLength;
-		m_vel *= -0.9; //VERY simple bounce back
-	}
+		//jumping code
+		if (_GD->m_KBS.Space && is_grounded && !is_attacking)
+		{
+			m_acc.y += 200.0f;
+			is_grounded = false;
+		}
 
-	//apply my base behaviour
-	CMOGO::Tick(_GD);
+		for (size_t i = 0; i < m_PSwordTrigger.size(); i++)
+		{
+			//checks if sword bounds are active
+			if (m_PSwordTrigger[i]->isRendered())
+				is_attacking = true;
+			else
+				is_attacking = false;
+
+			//creating sword bounds
+			if (_GD->m_MS.leftButton)
+			{
+				if (!m_PSwordTrigger[i]->isRendered() && is_grounded)
+				{
+					Vector3 spawn = Vector3(0.15f, -15.0f, 0.15f);
+					Vector3 forwardMove = 40.0f * Vector3::Forward;
+					Matrix rotMove = Matrix::CreateRotationY(m_yaw);
+					forwardMove = Vector3::Transform(forwardMove, rotMove);
+					m_PSwordTrigger[i]->SetPos(this->GetPos() + forwardMove * spawn);
+					m_PSwordTrigger[i]->SetRendered(true);
+					m_PSwordTrigger[i]->SetYaw(this->GetYaw());
+					m_vel *= 0;
+				}
+			}
+		}
+
+		for (size_t i = 0; i < m_PSwordObject.size(); i++)
+		{
+			Vector3 objSpawn = Vector3(0, -2, 0);
+			Vector3 forwardMove = 2.5f * Vector3::Forward;
+			Matrix rotMove = Matrix::CreateRotationY(m_yaw);
+			forwardMove = Vector3::Transform(forwardMove, rotMove);
+			m_PSwordObject[i]->SetRendered(true);
+			m_PSwordObject[i]->SetPos(this->GetPos() + (forwardMove + objSpawn));
+			m_PSwordObject[i]->SetYaw(this->GetYaw());
+			m_PSwordObject[i]->SetPitch(0);
+			if (is_attacking)
+			{
+				m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 4);
+			}
+			else
+			{
+				m_PSwordObject[i]->SetPitch(0);
+			}
+		}
+
+		//limit motion of the player
+		float length = m_pos.Length();
+		float maxLength = 500.0f;
+		if (length > maxLength)
+		{
+			m_pos.Normalize();
+			m_pos *= maxLength;
+			m_vel *= -0.9; //VERY simple bounce back
+		}
+
+		//apply my base behaviour
+		CMOGO::Tick(_GD);
+	}
 }
 
 void Player::Draw(DrawData* _DD)

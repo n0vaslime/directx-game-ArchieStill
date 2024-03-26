@@ -116,7 +116,8 @@ private:
     std::unique_ptr<DirectX::Mouse> m_mouse;
 
     list<GameObject*> m_GameObjects; //data structure to hold pointers to the 3D Game Objects
-    list<GameObject2D*> m_GameObjects2D; //data structure to hold pointers to the 2D Game Objects 
+    list<GameObject2D*> m_GameObjects2D; //data structure to hold pointers to the 2D Game Objects
+    list<GameObject*> m_IntroGOs;
 
     //list<CMOGO*> m_CMOGameObjects; //data structure to hold pointers to all 3D CMO Game Objects
     //list<CMOGO*> m_PhysicsObjects
@@ -156,6 +157,9 @@ private:
     Coin* pCoin1;
     Coin* pCoin2;
     Coin* pCoin3;
+
+    Terrain* EnemySensor;
+    bool player_spotted = false;
     Enemy* pEnemy1;
     Enemy* pEnemy2;
 
@@ -174,6 +178,7 @@ private:
     bool terrain = false;
 
     void DisplayMenu();
+    void DisplayIntro();
     void DisplayGame();
     void DisplayWin();
     void DisplayLoss();
@@ -184,5 +189,6 @@ private:
     void InitLossAssets();
 
     void CreateGround();
+    void CreateIntroGround();
     void EnemyAI();
 };

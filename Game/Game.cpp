@@ -97,6 +97,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     //find how big my window is to correctly calculate my aspect ratio
     float AR = (float)_width / (float)_height;
 
+    CreateIntroGround();
     CreateGround();
 
     //add Coins
@@ -158,6 +159,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     //add Player - player object and adding swords to player class
     pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(pPlayer);
+    m_IntroGOs.push_back(pPlayer);
     m_PhysicsObjects.push_back(pPlayer);
     pPlayer->m_PSwordTrigger = m_SwordTrigger;
     pPlayer->m_PSwordObject = m_SwordObject;
@@ -174,9 +176,6 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_DD->m_light = m_light;
 
     //example basic 2D stuff
-    // ImageGO2D* logo = new ImageGO2D("logo_small", m_d3dDevice.Get());
-    // logo->SetPos(200.0f * Vector2::One);
-    // m_GameObjects2D.push_back(logo);
     ImageGO2D* bug_test = new ImageGO2D("pain", m_d3dDevice.Get());
     bug_test->SetPos(150.0f * Vector2::One);
     bug_test->SetScale(0.1f);
@@ -594,7 +593,7 @@ void Game::ReadInput()
 
     switch (m_GD->m_GS)
     {
-    case(GS_MENU):
+        case(GS_MENU):
         {
             if (m_GD->m_KBS.Enter)
             {
@@ -643,6 +642,11 @@ void Game::CheckTriggers()
                 if (m_TriggerObjects[j] == pF1GroundCheck or m_TriggerObjects[j] == pF2GroundCheck)
                 {
                     pPlayer->is_grounded = true;
+                }
+                if (m_TriggerObjects[j] == EnemySensor)
+                {
+                    std::cout << "Spotted!" << std::endl;
+                    player_spotted = true;
                 }
             }
         }
@@ -740,15 +744,27 @@ void Game::DisplayMenu()
 
     //set others inactive
     scoreText->SetRendered(false);
-    pCoin1->SetRendered(false);
-    pCoin2->SetRendered(false);
-    pCoin3->SetRendered(false);
-    pEnemy1->SetRendered(false);
-    pEnemy2->SetRendered(false);
-    // for (list <Coin*>::iterator it = m_Coin.begin(); it != m_Coin.end(); it++)
-    // 
     for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
         (*it)->SetRendered(false);
+}
+
+void Game::DisplayIntro()
+{
+    //set intro active
+    m_GD->m_GS = GS_INTRO;
+    for (list<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
+        (*it)->SetRendered(true);
+    scoreText->SetRendered(true);
+
+    //set others inactive
+    title_screen->SetRendered(false);
+    for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+    {
+        if (*it == pPlayer)
+            (*it)->SetRendered(true);
+        else
+            (*it)->SetRendered(false);
+    }
 }
 
 void Game::DisplayGame()
@@ -756,12 +772,6 @@ void Game::DisplayGame()
     //set game active
     m_GD->m_GS = GS_GAME;
     scoreText->SetRendered(true);
-    pCoin1->SetRendered(true);
-    pCoin2->SetRendered(true);
-    pCoin3->SetRendered(true);
-    pEnemy1->SetRendered(true);
-    pEnemy2->SetRendered(true);
-
     for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
         (*it)->SetRendered(true);
     m_GameObjects.push_back(pSwordTrigger);
@@ -769,6 +779,8 @@ void Game::DisplayGame()
 
     //set others inactive
     title_screen->SetRendered(false);
+    for (list<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
+        (*it)->SetRendered(false);
 }
 
 void Game::DisplayWin()
@@ -803,14 +815,32 @@ void Game::CreateGround()
     m_TriggerObjects.push_back(pF2GroundCheck);
 }
 
+void Game::CreateIntroGround()
+{
+    Terrain* pIntroFloor = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -10, 10), 0.0f, 0.0f, 0.0f, Vector3(1, 1, 1));
+    m_IntroGOs.push_back(pIntroFloor);
+    m_ColliderObjects.push_back(pIntroFloor);
+}
+
 void Game::EnemyAI()
 {
-    for (int i = 0; i < m_Enemies.size(); i++)
+    if (m_GD->m_GS == GS_GAME)
     {
-        m_Enemies[i]->SetYaw(pPlayer->GetYaw());
-        Vector3 forwardMove = 0.175f * Vector3::Forward;
-        Matrix rotMove = Matrix::CreateRotationY(m_Enemies[i]->GetYaw());
-        forwardMove = Vector3::Transform(forwardMove, rotMove);
-        m_Enemies[i]->SetPos(m_Enemies[i]->GetPos() - forwardMove);
+        for (int i = 0; i < m_Enemies.size(); i++)
+        {
+            EnemySensor = new Terrain("Enemy", m_d3dDevice.Get(), m_fxFactory, m_Enemies[i]->GetPos(), 
+                m_Enemies[i]->GetPitch(), m_Enemies[i]->GetYaw(), 0.0f, Vector3(7.5f, 0.01, 7.5f));
+            m_GameObjects.push_back(EnemySensor);
+            m_TriggerObjects.push_back(EnemySensor);
+            EnemySensor->SetRendered(true);
+            if (player_spotted)
+            {
+                m_Enemies[i]->SetYaw(pPlayer->GetYaw());
+                Vector3 forwardMove = 0.2f * Vector3::Forward;
+                Matrix rotMove = Matrix::CreateRotationY(m_Enemies[i]->GetYaw());
+                forwardMove = Vector3::Transform(forwardMove, rotMove);
+                m_Enemies[i]->SetPos(m_Enemies[i]->GetPos() - forwardMove);
+            }
+        }
     }
 }

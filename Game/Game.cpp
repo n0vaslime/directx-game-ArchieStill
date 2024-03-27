@@ -681,7 +681,6 @@ void Game::CoinCollision()
         }
     }
 }
-
 void Game::EnemyCollision()
 {
     for (int i = 0; i < m_Enemies.size(); i++) for (int j = 0; j < m_PhysicsObjects.size(); j++)
@@ -697,7 +696,6 @@ void Game::EnemyCollision()
         }
     }
 }
-
 void Game::SensorCollision()
 {
     for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_EnemySensors.size(); j++)
@@ -711,7 +709,6 @@ void Game::SensorCollision()
         }
     }
 }
-
 void Game::SwordCollision()
 {
     for (int i = 0; i < m_Enemies.size(); i++) for (int j = 0; j < m_SwordTrigger.size(); j++)
@@ -722,7 +719,6 @@ void Game::SwordCollision()
         }
     }
 }
-
 void Game::SignCollision()
 {
     for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_SignTrigger.size(); j++)
@@ -844,24 +840,24 @@ void Game::CreateIntroGround()
 
 void Game::EnemyAI()
 {
-    if (m_GD->m_GS == GS_GAME)
-    {
-        for (int i = 0; i < m_Enemies.size(); i++)
-        {
-            EnemySensor = new Terrain("Enemy", m_d3dDevice.Get(), m_fxFactory, m_Enemies[i]->GetPos(), 
-                m_Enemies[i]->GetPitch(), m_Enemies[i]->GetYaw(), 0.0f, Vector3(7.5f, 0.01f, 7.5f));
-            m_EnemySensors.push_back(EnemySensor);
-            EnemySensor->SetRendered(true);
-            if (m_Enemies[i]->player_spotted)
-            {
-                m_EnemySensors.clear();
-                m_Enemies[i]->SetYaw(pPlayer->GetYaw());
-                Vector3 forwardMove = 0.2f * Vector3::Forward;
-                Matrix rotMove = Matrix::CreateRotationY(m_Enemies[i]->GetYaw());
-                forwardMove = Vector3::Transform(forwardMove, rotMove);
-                m_Enemies[i]->SetPos(m_Enemies[i]->GetPos() - forwardMove);
-                m_EnemySensors.push_back(EnemySensor);
-            }
-        }
-    }
+    // if (m_GD->m_GS == GS_GAME)
+    // {
+    //     for (int i = 0; i < m_Enemies.size(); i++)
+    //     {
+    //         EnemySensor = new Terrain("Enemy", m_d3dDevice.Get(), m_fxFactory, m_Enemies[i]->GetPos(), 
+    //             m_Enemies[i]->GetPitch(), m_Enemies[i]->GetYaw(), 0.0f, Vector3(7.5f, 0.01f, 7.5f));
+    //         m_EnemySensors.push_back(EnemySensor);
+    //         EnemySensor->SetRendered(true);
+    //         if (m_Enemies[i]->player_spotted)
+    //         {
+    //             m_EnemySensors.clear();
+    //             m_Enemies[i]->SetYaw(pPlayer->GetYaw());
+    //             Vector3 forwardMove = 0.2f * Vector3::Forward;
+    //             Matrix rotMove = Matrix::CreateRotationY(m_Enemies[i]->GetYaw());
+    //             forwardMove = Vector3::Transform(forwardMove, rotMove);
+    //             m_Enemies[i]->SetPos(m_Enemies[i]->GetPos() - forwardMove);
+    //             m_EnemySensors.push_back(EnemySensor);
+    //         }
+    //     }
+    // }
 }

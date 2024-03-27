@@ -9,9 +9,11 @@ public:
 
 	virtual void Tick(GameData* _GD) override;
 	void MoveTowards(CMOGO _player);
+	void EnemyAI(GameData* _GD);
 
 	float speed;
 	bool player_spotted;
+	CMOGO* EnemySensor1;
 
 	vector<CMOGO*> m_ESensor;
 };

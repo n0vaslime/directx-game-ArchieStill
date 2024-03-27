@@ -128,6 +128,7 @@ private:
 
     std::vector<CMOGO*> m_Coins;
     std::vector<CMOGO*> m_Enemies;
+    std::vector<CMOGO*> m_EnemySensors;
     std::vector<CMOGO*> m_SignTrigger;
 
     std::vector<CMOGO*> m_SwordTrigger;
@@ -139,6 +140,7 @@ private:
     void CoinCollision();
     void SwordCollision();
     void EnemyCollision();
+    void SensorCollision();
     void SignCollision();
 
     //sound stuff

@@ -142,7 +142,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     sign1Image->SetRendered(false);
 
     //L-system like tree
-    Tree* tree = new Tree(3, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
+    Tree* tree = new Tree(1, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(tree);
 
     //create a base camera
@@ -256,6 +256,7 @@ void Game::Update(DX::StepTimer const& _timer)
         CheckTriggers();
         CoinCollision();
         EnemyCollision();
+        SensorCollision();
         SwordCollision();
         SignCollision();
 
@@ -645,7 +646,6 @@ void Game::CheckTriggers()
                 }
                 if (m_TriggerObjects[j] == EnemySensor)
                 {
-                    std::cout << "Spotted!" << std::endl;
                     player_spotted = true;
                 }
             }
@@ -683,6 +683,20 @@ void Game::EnemyCollision()
             if (m_PhysicsObjects[j] == pPlayer)
             {
                 std::cout << "Hi" << std::endl;
+            }
+        }
+    }
+}
+
+void Game::SensorCollision()
+{
+    for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_EnemySensors.size(); j++)
+    {
+        if (m_PhysicsObjects[i]->Intersects(*m_EnemySensors[j]))
+        {
+            if (m_PhysicsObjects[i] == pPlayer)
+            {
+                player_spotted = true;
             }
         }
     }
@@ -735,7 +749,6 @@ void Game::SignCollision()
     }
 }
 
-
 void Game::DisplayMenu()
 {
     //set menu active
@@ -787,15 +800,12 @@ void Game::DisplayWin()
 {
     //set win active
     m_GD->m_GS = GS_WIN;
-
 }
 
 void Game::DisplayLoss()
 {
     //set loss active
     m_GD->m_GS = GS_LOSS;
-
-
 }
 
 void Game::CreateGround()
@@ -829,8 +839,9 @@ void Game::EnemyAI()
         for (int i = 0; i < m_Enemies.size(); i++)
         {
             EnemySensor = new Terrain("Enemy", m_d3dDevice.Get(), m_fxFactory, m_Enemies[i]->GetPos(), 
-                m_Enemies[i]->GetPitch(), m_Enemies[i]->GetYaw(), 0.0f, Vector3(7.5f, 0.01, 7.5f));
+                m_Enemies[i]->GetPitch(), m_Enemies[i]->GetYaw(), 0.0f, Vector3(7.5f, 0.01f, 7.5f));
             m_GameObjects.push_back(EnemySensor);
+            m_EnemySensors.push_back(EnemySensor);
             m_TriggerObjects.push_back(EnemySensor);
             EnemySensor->SetRendered(true);
             if (player_spotted)

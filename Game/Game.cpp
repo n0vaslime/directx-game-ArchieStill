@@ -158,6 +158,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_SwordObject.push_back(pSword);
     //add Player - player object and adding swords to player class
     pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
+
     m_GameObjects.push_back(pPlayer);
     m_IntroGOs.push_back(pPlayer);
     m_PhysicsObjects.push_back(pPlayer);
@@ -296,6 +297,13 @@ void Game::Render()
 
     //Draw 3D Game Objects
     for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+    {
+        if ((*it)->isRendered())
+        {
+            (*it)->Draw(m_DD);
+        }
+    }
+    for (std::vector<CMOGO*>::iterator it = m_EnemySensors.begin(); it != m_EnemySensors.end(); it++)
     {
         if ((*it)->isRendered())
         {
@@ -682,7 +690,9 @@ void Game::EnemyCollision()
         {
             if (m_PhysicsObjects[j] == pPlayer)
             {
-                std::cout << "Hi" << std::endl;
+                health--;
+                std::cout << health << std::endl;
+                pPlayer->is_respawning = true;
             }
         }
     }
@@ -696,7 +706,7 @@ void Game::SensorCollision()
         {
             if (m_PhysicsObjects[i] == pPlayer)
             {
-                player_spotted = true;
+                m_Enemies[i]->player_spotted = true;
             }
         }
     }
@@ -840,17 +850,17 @@ void Game::EnemyAI()
         {
             EnemySensor = new Terrain("Enemy", m_d3dDevice.Get(), m_fxFactory, m_Enemies[i]->GetPos(), 
                 m_Enemies[i]->GetPitch(), m_Enemies[i]->GetYaw(), 0.0f, Vector3(7.5f, 0.01f, 7.5f));
-            m_GameObjects.push_back(EnemySensor);
             m_EnemySensors.push_back(EnemySensor);
-            m_TriggerObjects.push_back(EnemySensor);
             EnemySensor->SetRendered(true);
-            if (player_spotted)
+            if (m_Enemies[i]->player_spotted)
             {
+                m_EnemySensors.clear();
                 m_Enemies[i]->SetYaw(pPlayer->GetYaw());
                 Vector3 forwardMove = 0.2f * Vector3::Forward;
                 Matrix rotMove = Matrix::CreateRotationY(m_Enemies[i]->GetYaw());
                 forwardMove = Vector3::Transform(forwardMove, rotMove);
                 m_Enemies[i]->SetPos(m_Enemies[i]->GetPos() - forwardMove);
+                m_EnemySensors.push_back(EnemySensor);
             }
         }
     }

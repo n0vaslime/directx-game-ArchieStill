@@ -20,8 +20,10 @@ public:
 
 	bool is_grounded = true;
 	bool is_attacking = false;
-	vector<CMOGO*> m_PSwordTrigger;
-	vector<CMOGO*> m_PSwordObject;
+	bool is_respawning = false;
+
+	vector<SwordTrigger*> m_PSwordTrigger;
+	vector<SwordObject*> m_PSwordObject;
 
 protected:
 

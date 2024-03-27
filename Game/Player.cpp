@@ -87,7 +87,8 @@ void Player::Tick(GameData* _GD)
 		//jumping code
 		if (_GD->m_KBS.Space && is_grounded && !is_attacking)
 		{
-			m_acc.y += 200.0f;
+			//m_acc.y += 200.0f;
+			m_vel.y = 30;
 			is_grounded = false;
 		}
 
@@ -126,14 +127,34 @@ void Player::Tick(GameData* _GD)
 			m_PSwordObject[i]->SetPos(this->GetPos() + (forwardMove + objSpawn));
 			m_PSwordObject[i]->SetYaw(this->GetYaw());
 			m_PSwordObject[i]->SetPitch(0);
-			if (is_attacking)
+
+			for (size_t j = 0; j < m_PSwordTrigger.size(); j++)
 			{
-				m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 4);
+				if (is_attacking)
+				{
+					m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 4);
+					// if (m_PSwordTrigger[j]->lifetime == 0.1f)
+					// 	m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 8);
+					// else if (m_PSwordTrigger[j]->lifetime == 0.2f)
+					// 	m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 4);
+					// else if (m_PSwordTrigger[j]->lifetime == 0.3f)
+					// 	m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 8);
+					// else if (m_PSwordTrigger[j]->lifetime == 0.1f)
+					// 	m_PSwordObject[i]->SetPitch(0);
+				}
+				else
+				{
+					m_PSwordObject[i]->SetPitch(0);
+				}
 			}
-			else
-			{
-				m_PSwordObject[i]->SetPitch(0);
-			}
+			// if (is_attacking)
+			// {
+			// 	m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 4);
+			// }
+			// else
+			// {
+			// 	m_PSwordObject[i]->SetPitch(0);
+			// }
 		}
 
 		//limit motion of the player
@@ -144,6 +165,16 @@ void Player::Tick(GameData* _GD)
 			m_pos.Normalize();
 			m_pos *= maxLength;
 			m_vel *= -0.9; //VERY simple bounce back
+		}
+
+		if (is_respawning)
+		{
+			this->SetPos(Vector3(0, 5, 0));
+			this->SetPitch(0);
+			this->SetYaw(0);
+			m_vel.x = 0;
+			m_vel.z = 0;
+			is_respawning = false;
 		}
 
 		//apply my base behaviour

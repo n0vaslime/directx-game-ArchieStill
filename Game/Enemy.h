@@ -11,5 +11,8 @@ public:
 	void MoveTowards(CMOGO _player);
 
 	float speed;
+	bool player_spotted;
+
+	vector<CMOGO*> m_ESensor;
 };
 

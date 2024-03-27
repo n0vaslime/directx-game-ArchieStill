@@ -127,13 +127,13 @@ private:
     std::vector<CMOGO*> m_TriggerObjects;
 
     std::vector<CMOGO*> m_Coins;
-    std::vector<CMOGO*> m_Enemies;
+    std::vector<Enemy*> m_Enemies;
     std::vector<CMOGO*> m_EnemySensors;
     std::vector<CMOGO*> m_SignTrigger;
 
-    std::vector<CMOGO*> m_SwordTrigger;
+    std::vector<SwordTrigger*> m_SwordTrigger;
     std::vector<SwordTrigger*> m_SwordTriggerVector;
-    std::vector<CMOGO*> m_SwordObject;
+    std::vector<SwordObject*> m_SwordObject;
 
     void CheckCollision();
     void CheckTriggers();
@@ -174,6 +174,7 @@ private:
 
     int score;
     TextGO2D* scoreText;
+    int health = 5;
 
     ImageGO2D* title_screen;
 

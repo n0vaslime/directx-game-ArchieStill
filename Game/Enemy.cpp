@@ -13,6 +13,7 @@ Enemy::Enemy(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, V
 	SetScale(Vector3(1, 1, 1));
 
 	speed = 5.0f;
+	player_spotted = false;
 }
 
 Enemy::~Enemy()
@@ -21,14 +22,14 @@ Enemy::~Enemy()
 
 void Enemy::Tick(GameData* _GD)
 {
-	CMOGO::Tick(_GD);
-}
+	for (int i = 0; i < m_ESensor.size(); i++)
+	{
+		m_ESensor[i]->SetScale(Vector3(10, 0.1f, 10));
+		m_ESensor[i]->SetRendered(true);
+		m_ESensor[i]->SetPos(Vector3(10,10,10));
+		m_ESensor[i]->SetPitch(this->GetPitch());
+		m_ESensor[i]->SetYaw(this->GetYaw());
+	}
 
-void Enemy::MoveTowards(CMOGO _player)
-{
-	this->SetYaw(_player.GetYaw());
-	Vector3 forwardMove = 40.0f * Vector3::Forward;
-	Matrix rotMove = Matrix::CreateRotationY(m_yaw);
-	forwardMove = Vector3::Transform(forwardMove, rotMove);
-	m_acc += forwardMove;
+	CMOGO::Tick(_GD);
 }

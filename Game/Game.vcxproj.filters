@@ -165,14 +165,14 @@
     <ClInclude Include="Enemy.h">
       <Filter>GameObjects\3D\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SwordObject.h">
-      <Filter>Base\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Sign.h">
       <Filter>GameObjects\3D\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SignTrigger.h">
-      <Filter>Base\Header Files</Filter>
+      <Filter>GameObjects\3D\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SwordObject.h">
+      <Filter>GameObjects\3D\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -254,14 +254,14 @@
     <ClCompile Include="Enemy.cpp">
       <Filter>GameObjects\3D\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SwordObject.cpp">
-      <Filter>Base\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Sign.cpp">
       <Filter>GameObjects\3D\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SwordObject.cpp">
+      <Filter>GameObjects\3D\Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="SignTrigger.cpp">
-      <Filter>Base\Source Files</Filter>
+      <Filter>GameObjects\3D\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

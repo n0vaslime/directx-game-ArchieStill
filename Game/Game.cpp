@@ -139,13 +139,15 @@ void Game::Initialize(HWND _window, int _width, int _height)
     pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 1.0f, 30.0f),0,0,0);
     m_GameObjects.push_back(pEnemy1);
     m_GameObjects.push_back(pEnemy1->EnemySensor1);
-    m_EnemySensors.push_back(pEnemy1->EnemySensor1);
+    m_TriggerObjects.push_back(pEnemy1);
+    // m_EnemySensors.push_back(pEnemy1->EnemySensor1);
     // m_ColliderObjects.push_back(pEnemy1);
     m_Enemies.push_back(pEnemy1);
     pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 1.0f, -50.0f), 0, 0, 0);
     m_GameObjects.push_back(pEnemy2);
     m_GameObjects.push_back(pEnemy2->EnemySensor1);
-    m_EnemySensors.push_back(pEnemy2->EnemySensor1);
+    m_TriggerObjects.push_back(pEnemy2);
+    // m_EnemySensors.push_back(pEnemy2->EnemySensor1);
     // m_ColliderObjects.push_back(pEnemy2);
     m_Enemies.push_back(pEnemy2);
 
@@ -660,9 +662,14 @@ void Game::CheckTriggers()
                 {
                     pPlayer->is_grounded = true;
                 }
-                if (m_TriggerObjects[j] == EnemySensor)
+                if (m_TriggerObjects[j] == pEnemy1)
                 {
-                    player_spotted = true;
+                    pEnemy1->player_spotted = true;
+                    std::cout << "hi";
+                }
+                else if (m_TriggerObjects[j] == pEnemy2)
+                {
+                    pEnemy2->player_spotted = true;
                 }
             }
         }
@@ -709,6 +716,7 @@ void Game::SensorCollision()
     for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_EnemySensors.size(); j++)
     {
         if (m_PhysicsObjects[i]->Intersects(*m_EnemySensors[j]))
+            std::cout << "hii" << std::endl;
         {
             if (m_PhysicsObjects[i] == pPlayer)
             {

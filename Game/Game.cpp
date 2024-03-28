@@ -100,6 +100,30 @@ void Game::Initialize(HWND _window, int _width, int _height)
     CreateIntroGround();
     CreateGround();
 
+    //create a base camera
+    m_cam = new Camera(0.25f * XM_PI, AR, 1.0f, 10000.0f, Vector3::UnitY, Vector3::Zero);
+    m_cam->SetPos(Vector3(0.0f, 200.0f, 200.0f));
+    m_GameObjects.push_back(m_cam);
+
+    //add Player - sword trigger bounds
+    pSwordTrigger = new SwordTrigger("table", m_d3dDevice.Get(), m_fxFactory);
+    m_SwordTrigger.push_back(pSwordTrigger);
+    //add Player - swinging sword object in scene
+    pSword = new SwordObject("Sword", m_d3dDevice.Get(), m_fxFactory);
+    m_SwordObject.push_back(pSword);
+    //add Player - player object and adding swords to player class
+    pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
+
+    m_GameObjects.push_back(pPlayer);
+    m_IntroGOs.push_back(pPlayer);
+    m_PhysicsObjects.push_back(pPlayer);
+    pPlayer->m_PSwordTrigger = m_SwordTrigger;
+    pPlayer->m_PSwordObject = m_SwordObject;
+
+    //add a secondary camera
+    m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f)); // Vector3(0,0,0.1f)
+    m_GameObjects.push_back(m_TPScam);
+
     //add Coins
     pCoin1 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(20.0f, 0.0f, 20.0f));
     m_GameObjects.push_back(pCoin1);
@@ -112,11 +136,17 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_Coins.push_back(pCoin3);
 
     //add Enemies
-    pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 0.0f, 30.0f),0,0,0);
+    pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 1.0f, 30.0f),0,0,0);
     m_GameObjects.push_back(pEnemy1);
+    m_GameObjects.push_back(pEnemy1->EnemySensor1);
+    m_EnemySensors.push_back(pEnemy1->EnemySensor1);
+    // m_ColliderObjects.push_back(pEnemy1);
     m_Enemies.push_back(pEnemy1);
-    pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 0.0f, -50.0f), 0, 0, 0);
+    pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 1.0f, -50.0f), 0, 0, 0);
     m_GameObjects.push_back(pEnemy2);
+    m_GameObjects.push_back(pEnemy2->EnemySensor1);
+    m_EnemySensors.push_back(pEnemy2->EnemySensor1);
+    // m_ColliderObjects.push_back(pEnemy2);
     m_Enemies.push_back(pEnemy2);
 
     //add Sign - reading instructions
@@ -144,30 +174,6 @@ void Game::Initialize(HWND _window, int _width, int _height)
     //L-system like tree
     Tree* tree = new Tree(1, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(tree);
-
-    //create a base camera
-    m_cam = new Camera(0.25f * XM_PI, AR, 1.0f, 10000.0f, Vector3::UnitY, Vector3::Zero);
-    m_cam->SetPos(Vector3(0.0f, 200.0f, 200.0f));
-    m_GameObjects.push_back(m_cam);
-
-    //add Player - sword trigger bounds
-    pSwordTrigger = new SwordTrigger("table", m_d3dDevice.Get(), m_fxFactory);
-    m_SwordTrigger.push_back(pSwordTrigger);
-    //add Player - swinging sword object in scene
-    pSword = new SwordObject("Sword", m_d3dDevice.Get(), m_fxFactory);
-    m_SwordObject.push_back(pSword);
-    //add Player - player object and adding swords to player class
-    pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
-
-    m_GameObjects.push_back(pPlayer);
-    m_IntroGOs.push_back(pPlayer);
-    m_PhysicsObjects.push_back(pPlayer);
-    pPlayer->m_PSwordTrigger = m_SwordTrigger;
-    pPlayer->m_PSwordObject = m_SwordObject;
-
-    //add a secondary camera
-    m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f)); // Vector3(0,0,0.1f)
-    m_GameObjects.push_back(m_TPScam);
 
     //create DrawData struct and populate its pointers
     m_DD = new DrawData;
@@ -261,6 +267,8 @@ void Game::Update(DX::StepTimer const& _timer)
         SwordCollision();
         SignCollision();
 
+        pEnemy1->player_facing = pPlayer->GetYaw();
+        pEnemy2->player_facing = pPlayer->GetYaw();
         EnemyAI();
 
         m_TPScam->Tick(m_GD);

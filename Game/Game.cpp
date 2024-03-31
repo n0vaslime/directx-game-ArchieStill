@@ -106,18 +106,20 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(m_cam);
 
     //add Player - sword trigger bounds
-    pSwordTrigger = new SwordTrigger("table", m_d3dDevice.Get(), m_fxFactory);
-    m_SwordTrigger.push_back(pSwordTrigger);
+    // pSwordTrigger = new SwordTrigger("table", m_d3dDevice.Get(), m_fxFactory);
+    // m_SwordTrigger.push_back(pSwordTrigger);
     //add Player - swinging sword object in scene
     pSword = new SwordObject("Sword", m_d3dDevice.Get(), m_fxFactory);
     m_SwordObject.push_back(pSword);
     //add Player - player object and adding swords to player class
     pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
+    m_SwordTriggerNEW.push_back(pPlayer->SwordTrigger1);
 
     m_GameObjects.push_back(pPlayer);
     m_IntroGOs.push_back(pPlayer);
     m_PhysicsObjects.push_back(pPlayer);
-    pPlayer->m_PSwordTrigger = m_SwordTrigger;
+    //pPlayer->m_PSwordTrigger = m_SwordTrigger;
+    pPlayer->m_STrigger = m_SwordTriggerNEW;
     pPlayer->m_PSwordObject = m_SwordObject;
 
     //add a secondary camera
@@ -125,27 +127,24 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(m_TPScam);
 
     //add Coins
-    pCoin1 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(20.0f, 0.0f, 20.0f));
+        pCoin1 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(20.0f, 0.0f, 20.0f));
     m_GameObjects.push_back(pCoin1);
     m_Coins.push_back(pCoin1);
-    pCoin2 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-20.0f, 0.0f, -20.0f));
+        pCoin2 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-20.0f, 0.0f, -20.0f));
     m_GameObjects.push_back(pCoin2);
     m_Coins.push_back(pCoin2);
-    pCoin3 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 0.0f, 10.0f));
+        pCoin3 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 0.0f, 10.0f));
     m_GameObjects.push_back(pCoin3);
     m_Coins.push_back(pCoin3);
 
     //add Enemies
-    pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 1.0f, 30.0f),0,0,0);
+        pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 1.0f, 30.0f),0,0,0);
     m_GameObjects.push_back(pEnemy1);
-    m_TriggerObjects.push_back(pEnemy1);
     m_Enemies.push_back(pEnemy1);
     m_GameObjects.push_back(pEnemy1->EnemySensor);
     m_EnemySensors.push_back(pEnemy1->EnemySensor);
-    
-    pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 1.0f, -50.0f), 0, 0, 0);
+        pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 1.0f, -50.0f), 0, 0, 0);
     m_GameObjects.push_back(pEnemy2);
-    m_TriggerObjects.push_back(pEnemy2);
     m_Enemies.push_back(pEnemy2);
     m_GameObjects.push_back(pEnemy2->EnemySensor);
     m_EnemySensors.push_back(pEnemy2->EnemySensor);
@@ -156,13 +155,12 @@ void Game::Initialize(HWND _window, int _width, int _height)
     readText->SetColour(Color((float*)&Colors::WhiteSmoke));
     readText->SetScale(0.75f);
     m_GameObjects2D.push_back(readText);
-    readText->SetRendered(false);
     //add Sign - reading trigger
     pSignReadTrigger = new SignTrigger("Sign", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(pSignReadTrigger);
     m_SignTrigger.push_back(pSignReadTrigger);
     //add Sign - sign objects & text
-    pSign1 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-2,-30));
+        pSign1 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-2,-30));
     m_GameObjects.push_back(pSign1);
     m_ColliderObjects.push_back(pSign1);
     pSign1->m_ReadingTrigger = m_SignTrigger;
@@ -170,7 +168,6 @@ void Game::Initialize(HWND _window, int _width, int _height)
     sign1Image->SetPos(Vector2(400, 300));
     sign1Image->SetScale(Vector2(1, 0.75f));
     m_GameObjects2D.push_back(sign1Image);
-    sign1Image->SetRendered(false);
 
     //L-system like tree
     Tree* tree = new Tree(1, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
@@ -275,10 +272,6 @@ void Game::Update(DX::StepTimer const& _timer)
         }
 
         m_TPScam->Tick(m_GD);
-
-        pSword->SetPos(pPlayer->GetPos() + Vector3(5, 0, 5));
-        pSword->SetPitch(pPlayer->GetPitch());
-        pSword->SetYaw(pPlayer->GetYaw());
     }
 }
 
@@ -723,9 +716,9 @@ void Game::SensorCollision()
 
 void Game::SwordCollision()
 {
-    for (int i = 0; i < m_Enemies.size(); i++) for (int j = 0; j < m_SwordTrigger.size(); j++)
+    for (int i = 0; i < m_Enemies.size(); i++) for (int j = 0; j < m_SwordTriggerNEW.size(); j++)
     {
-        if (m_Enemies[i]->isRendered() && m_Enemies[i]->Intersects(*m_SwordTrigger[j]))
+        if (m_Enemies[i]->isRendered() && m_Enemies[i]->Intersects(*m_SwordTriggerNEW[j]))
         {
             m_Enemies[i]->SetRendered(false);
             m_Enemies[i]->EnemySensor->SetRendered(false);

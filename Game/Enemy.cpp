@@ -15,11 +15,9 @@ Enemy::Enemy(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, V
 	speed = 5.0f;
 	player_spotted = false;
 
-    EnemySensor1 = new CMOGO("Enemy", _pd3dDevice, _EF);
-    EnemySensor1->SetScale(5, 0.01f, 5);
-    EnemySensor1->SetRendered(true);
-    EnemySensor1->SetPos(this->GetPos());
-    // SET IT TO GAMEOBJECT/render it in some way
+    EnemySensor = new CMOGO("Enemy", _pd3dDevice, _EF);
+    EnemySensor->SetScale(7.5f, 1, 7.5f);
+    EnemySensor->SetPos(this->GetPos());
 }
 
 Enemy::~Enemy()
@@ -46,11 +44,12 @@ void Enemy::EnemyAI(GameData* _GD)
         if (player_spotted)
         {
             this->SetYaw(player_facing);
-            // PASS IN THE PLAYER!!!
             Vector3 forwardMove = 0.2f * Vector3::Forward;
             Matrix rotMove = Matrix::CreateRotationY(this->GetYaw());
             forwardMove = Vector3::Transform(forwardMove, rotMove);
             this->SetPos(this->GetPos() - forwardMove);
+            EnemySensor->SetPos(this->GetPos());
+            EnemySensor->SetYaw(this->GetYaw());
         }
 
         // if (m_Enemies[i]->player_spotted)

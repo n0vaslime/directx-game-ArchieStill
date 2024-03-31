@@ -193,5 +193,4 @@ private:
 
     void CreateGround();
     void CreateIntroGround();
-    void EnemyAI();
 };

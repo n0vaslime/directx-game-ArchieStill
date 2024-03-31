@@ -138,18 +138,17 @@ void Game::Initialize(HWND _window, int _width, int _height)
     //add Enemies
     pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 1.0f, 30.0f),0,0,0);
     m_GameObjects.push_back(pEnemy1);
-    m_GameObjects.push_back(pEnemy1->EnemySensor1);
     m_TriggerObjects.push_back(pEnemy1);
-    // m_EnemySensors.push_back(pEnemy1->EnemySensor1);
-    // m_ColliderObjects.push_back(pEnemy1);
     m_Enemies.push_back(pEnemy1);
+    m_GameObjects.push_back(pEnemy1->EnemySensor);
+    m_EnemySensors.push_back(pEnemy1->EnemySensor);
+    
     pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 1.0f, -50.0f), 0, 0, 0);
     m_GameObjects.push_back(pEnemy2);
-    m_GameObjects.push_back(pEnemy2->EnemySensor1);
     m_TriggerObjects.push_back(pEnemy2);
-    // m_EnemySensors.push_back(pEnemy2->EnemySensor1);
-    // m_ColliderObjects.push_back(pEnemy2);
     m_Enemies.push_back(pEnemy2);
+    m_GameObjects.push_back(pEnemy2->EnemySensor);
+    m_EnemySensors.push_back(pEnemy2->EnemySensor);
 
     //add Sign - reading instructions
     readText = new TextGO2D("Press 'E' to read!");
@@ -269,9 +268,11 @@ void Game::Update(DX::StepTimer const& _timer)
         SwordCollision();
         SignCollision();
 
-        pEnemy1->player_facing = pPlayer->GetYaw();
-        pEnemy2->player_facing = pPlayer->GetYaw();
-        EnemyAI();
+        for (int i = 0; i < m_Enemies.size(); i++)
+        {
+            m_Enemies[i]->player_facing = pPlayer->GetYaw();
+            m_Enemies[i]->EnemySensor->SetRendered(false);
+        }
 
         m_TPScam->Tick(m_GD);
 
@@ -662,15 +663,6 @@ void Game::CheckTriggers()
                 {
                     pPlayer->is_grounded = true;
                 }
-                if (m_TriggerObjects[j] == pEnemy1)
-                {
-                    pEnemy1->player_spotted = true;
-                    std::cout << "hi";
-                }
-                else if (m_TriggerObjects[j] == pEnemy2)
-                {
-                    pEnemy2->player_spotted = true;
-                }
             }
         }
     }
@@ -716,15 +708,19 @@ void Game::SensorCollision()
     for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_EnemySensors.size(); j++)
     {
         if (m_PhysicsObjects[i]->Intersects(*m_EnemySensors[j]))
-            std::cout << "hii" << std::endl;
         {
             if (m_PhysicsObjects[i] == pPlayer)
             {
-                m_Enemies[i]->player_spotted = true;
+                m_Enemies[j]->player_spotted = true;
             }
         }
+        else
+        {
+            m_Enemies[j]->player_spotted = false;
+        }   
     }
 }
+
 void Game::SwordCollision()
 {
     for (int i = 0; i < m_Enemies.size(); i++) for (int j = 0; j < m_SwordTrigger.size(); j++)
@@ -732,6 +728,7 @@ void Game::SwordCollision()
         if (m_Enemies[i]->isRendered() && m_Enemies[i]->Intersects(*m_SwordTrigger[j]))
         {
             m_Enemies[i]->SetRendered(false);
+            m_Enemies[i]->EnemySensor->SetRendered(false);
         }
     }
 }
@@ -854,26 +851,3 @@ void Game::CreateIntroGround()
     m_ColliderObjects.push_back(pIntroFloor);
 }
 
-void Game::EnemyAI()
-{
-    // if (m_GD->m_GS == GS_GAME)
-    // {
-    //     for (int i = 0; i < m_Enemies.size(); i++)
-    //     {
-    //         EnemySensor = new Terrain("Enemy", m_d3dDevice.Get(), m_fxFactory, m_Enemies[i]->GetPos(), 
-    //             m_Enemies[i]->GetPitch(), m_Enemies[i]->GetYaw(), 0.0f, Vector3(7.5f, 0.01f, 7.5f));
-    //         m_EnemySensors.push_back(EnemySensor);
-    //         EnemySensor->SetRendered(true);
-    //         if (m_Enemies[i]->player_spotted)
-    //         {
-    //             m_EnemySensors.clear();
-    //             m_Enemies[i]->SetYaw(pPlayer->GetYaw());
-    //             Vector3 forwardMove = 0.2f * Vector3::Forward;
-    //             Matrix rotMove = Matrix::CreateRotationY(m_Enemies[i]->GetYaw());
-    //             forwardMove = Vector3::Transform(forwardMove, rotMove);
-    //             m_Enemies[i]->SetPos(m_Enemies[i]->GetPos() - forwardMove);
-    //             m_EnemySensors.push_back(EnemySensor);
-    //         }
-    //     }
-    // }
-}

@@ -133,28 +133,20 @@ void Player::Tick(GameData* _GD)
 				if (is_attacking)
 				{
 					m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 4);
-					// if (m_PSwordTrigger[j]->lifetime == 0.1f)
-					// 	m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 8);
-					// else if (m_PSwordTrigger[j]->lifetime == 0.2f)
-					// 	m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 4);
-					// else if (m_PSwordTrigger[j]->lifetime == 0.3f)
-					// 	m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 8);
-					// else if (m_PSwordTrigger[j]->lifetime == 0.1f)
-					// 	m_PSwordObject[i]->SetPitch(0);
+					if (m_PSwordTrigger[j]->lifetime < 0.1f)
+						m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 8);
+					else if (m_PSwordTrigger[j]->lifetime < 0.2f)
+						m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 4);
+					else if (m_PSwordTrigger[j]->lifetime < 0.3f)
+						m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 8);
+					else if (m_PSwordTrigger[j]->lifetime < 0.4f)
+						m_PSwordObject[i]->SetPitch(0);				
 				}
 				else
 				{
 					m_PSwordObject[i]->SetPitch(0);
 				}
 			}
-			// if (is_attacking)
-			// {
-			// 	m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 4);
-			// }
-			// else
-			// {
-			// 	m_PSwordObject[i]->SetPitch(0);
-			// }
 		}
 
 		//limit motion of the player
@@ -164,7 +156,7 @@ void Player::Tick(GameData* _GD)
 		{
 			m_pos.Normalize();
 			m_pos *= maxLength;
-			m_vel *= -0.9; //VERY simple bounce back
+			m_vel *= -0.9;
 		}
 
 		if (is_respawning)

@@ -17,6 +17,7 @@ public:
 
 	virtual void Draw(DrawData* _DD) override;
 	virtual void Tick(GameData* _GD) override;
+	void PlayerMovement(GameData* _GD);
 	void SwordTriggers(GameData* _GD);
 	void SwordObjects();
 
@@ -27,10 +28,9 @@ public:
 	float lifetime = 0.0f;
 
 	vector<SwordTrigger*> m_PSwordTrigger;
-	vector<CMOGO*> m_STrigger;
-	SwordTrigger* sword_trigger;
 	CMOGO* SwordTrigger1;
-	vector<SwordObject*> m_PSwordObject;
+	CMOGO* SwordObject1;
+	// vector<SwordObject*> m_PSwordObject;
 
 protected:
 

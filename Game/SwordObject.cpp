@@ -15,5 +15,5 @@ SwordObject::~SwordObject()
 
 void SwordObject::Tick(GameData* _GD)
 {
-	CMOGO::Tick(_GD);
+	// CMOGO::Tick(_GD);
 }

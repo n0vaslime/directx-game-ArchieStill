@@ -14,6 +14,7 @@ Enemy::Enemy(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, V
 
 	speed = 5.0f;
 	player_spotted = false;
+    player_facing = 0.0f;
 
     EnemySensor = new CMOGO("Enemy", _pd3dDevice, _EF);
     EnemySensor->SetScale(7.5f, 1, 7.5f);

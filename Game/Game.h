@@ -115,9 +115,9 @@ private:
     std::unique_ptr<DirectX::Keyboard> m_keyboard;
     std::unique_ptr<DirectX::Mouse> m_mouse;
 
-    list<GameObject*> m_GameObjects; //data structure to hold pointers to the 3D Game Objects
-    list<GameObject2D*> m_GameObjects2D; //data structure to hold pointers to the 2D Game Objects
-    list<GameObject*> m_IntroGOs;
+    std::vector<GameObject*> m_GameObjects; //data structure to hold pointers to the 3D Game Objects
+    std::vector<GameObject2D*> m_GameObjects2D; //data structure to hold pointers to the 2D Game Objects
+    std::vector<GameObject*> m_IntroGOs;
 
     //list<CMOGO*> m_CMOGameObjects; //data structure to hold pointers to all 3D CMO Game Objects
     //list<CMOGO*> m_PhysicsObjects
@@ -133,8 +133,7 @@ private:
 
     std::vector<CMOGO*> m_SwordTriggerNEW;
     std::vector<SwordTrigger*> m_SwordTrigger;
-    std::vector<SwordTrigger*> m_SwordTriggerVector;
-    std::vector<SwordObject*> m_SwordObject;
+    // std::vector<SwordObject*> m_SwordObject;
 
     void CheckCollision();
     void CheckTriggers();
@@ -148,7 +147,7 @@ private:
 	//This uses a simple system, but a better pipeline can be used using Wave Banks
 	//See here: https://github.com/Microsoft/DirectXTK/wiki/Creating-and-playing-sounds Using wave banks Section
     std::unique_ptr<DirectX::AudioEngine> m_audioEngine;
-    list<Sound*>m_Sounds;
+    std::vector<Sound*>m_Sounds;
 
     Player* pPlayer;
     SwordTrigger* pSwordTrigger;

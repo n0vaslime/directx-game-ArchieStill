@@ -105,23 +105,26 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_cam->SetPos(Vector3(0.0f, 200.0f, 200.0f));
     m_GameObjects.push_back(m_cam);
 
-    //add Player - sword trigger bounds
-    // pSwordTrigger = new SwordTrigger("table", m_d3dDevice.Get(), m_fxFactory);
-    // m_SwordTrigger.push_back(pSwordTrigger);
-    //add Player - swinging sword object in scene
-    pSword = new SwordObject("Sword", m_d3dDevice.Get(), m_fxFactory);
-    m_SwordObject.push_back(pSword);
-    //add Player - player object and adding swords to player class
-    pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
-    m_SwordTriggerNEW.push_back(pPlayer->SwordTrigger1);
 
+    // ### add Player - sword trigger bounds
+    pSwordTrigger = new SwordTrigger("table", m_d3dDevice.Get(), m_fxFactory);
+    m_SwordTrigger.push_back(pSwordTrigger);
+
+    // ### add Player - swinging sword object in scene
+    //pSword = new SwordObject("Sword", m_d3dDevice.Get(), m_fxFactory);
+    //m_SwordObject.push_back(pSword);
+
+    // ### add Player - player object and adding swords to player class
+    pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(pPlayer);
     m_IntroGOs.push_back(pPlayer);
     m_PhysicsObjects.push_back(pPlayer);
-    m_GameObjects.push_back(pPlayer->SwordTrigger1);
-    //pPlayer->m_PSwordTrigger = m_SwordTrigger;
-    pPlayer->m_STrigger = m_SwordTriggerNEW;
-    pPlayer->m_PSwordObject = m_SwordObject;
+    // m_GameObjects.push_back(pPlayer->SwordTrigger1);
+    // m_SwordTriggerNEW.push_back(pPlayer->SwordTrigger1);
+    pPlayer->m_PSwordTrigger = m_SwordTrigger;
+    //pPlayer->m_STrigger = m_SwordTriggerNEW;
+    //pPlayer->m_PSwordObject = m_SwordObject;
+
 
     //add a secondary camera
     m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f)); // Vector3(0,0,0.1f)
@@ -238,7 +241,7 @@ void Game::Update(DX::StepTimer const& _timer)
     else
     {
         //update sounds playing
-        for (list<Sound*>::iterator it = m_Sounds.begin(); it != m_Sounds.end(); it++)
+        for (std::vector<Sound*>::iterator it = m_Sounds.begin(); it != m_Sounds.end(); it++)
         {
             (*it)->Tick(m_GD);
         }
@@ -249,11 +252,11 @@ void Game::Update(DX::StepTimer const& _timer)
     if (m_GD->m_GS == GS_GAME)
     {
         //update all objects
-        for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+        for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
         {
             (*it)->Tick(m_GD);
         }
-        for (list<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
+        for (std::vector<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
         {
             (*it)->Tick(m_GD);
         }
@@ -301,7 +304,7 @@ void Game::Render()
     VBGO::UpdateConstantBuffer(m_DD);
 
     //Draw 3D Game Objects
-    for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+    for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
     {
         if ((*it)->isRendered())
         {
@@ -318,7 +321,7 @@ void Game::Render()
 
     // Draw sprite batch stuff 
     m_DD2D->m_Sprites->Begin(SpriteSortMode_Deferred, m_states->NonPremultiplied());
-    for (list<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
+    for (std::vector<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
     {
         if ((*it)->isRendered())
         {
@@ -669,7 +672,7 @@ void Game::CoinCollision()
         {
             if (m_PhysicsObjects[j] == pPlayer)
             {
-                m_GameObjects2D.remove(scoreText);
+                m_GameObjects2D.pop_back();
                 m_Coins[i]->SetRendered(false);
                 score++;
                 scoreText = new TextGO2D(std::to_string(score));
@@ -715,9 +718,9 @@ void Game::SensorCollision()
 }
 void Game::SwordCollision()
 {
-    for (int i = 0; i < m_Enemies.size(); i++) for (int j = 0; j < m_SwordTriggerNEW.size(); j++)
+    for (int i = 0; i < m_Enemies.size(); i++) for (int j = 0; j < m_SwordTrigger.size(); j++)
     {
-        if (m_Enemies[i]->isRendered() && m_Enemies[i]->Intersects(*m_SwordTriggerNEW[j]))
+        if (m_Enemies[i]->isRendered() && m_Enemies[i]->Intersects(*m_SwordTrigger[j]))
         {
             m_Enemies[i]->SetRendered(false);
             m_Enemies[i]->EnemySensor->SetRendered(false);
@@ -768,20 +771,20 @@ void Game::DisplayMenu()
 
     //set others inactive
     scoreText->SetRendered(false);
-    for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+    for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
         (*it)->SetRendered(false);
 }
 void Game::DisplayIntro()
 {
     //set intro active
     m_GD->m_GS = GS_INTRO;
-    for (list<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
+    for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
         (*it)->SetRendered(true);
     scoreText->SetRendered(true);
 
     //set others inactive
     title_screen->SetRendered(false);
-    for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+    for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
     {
         if (*it == pPlayer)
             (*it)->SetRendered(true);
@@ -794,14 +797,14 @@ void Game::DisplayGame()
     //set game active
     m_GD->m_GS = GS_GAME;
     scoreText->SetRendered(true);
-    for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+    for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
         (*it)->SetRendered(true);
-    m_GameObjects.push_back(pSwordTrigger);
-    m_GameObjects.push_back(pSword);
+    // m_GameObjects.push_back(pSwordTrigger);
+    // m_GameObjects.push_back(pSword);
 
     //set others inactive
     title_screen->SetRendered(false);
-    for (list<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
+    for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
         (*it)->SetRendered(false);
 }
 void Game::DisplayWin()

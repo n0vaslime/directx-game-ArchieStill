@@ -16,7 +16,5 @@ public:
 	bool player_spotted;
 	CMOGO* EnemySensor;
 	float player_facing;
-
-	vector<CMOGO*> m_ESensor;
 };
 

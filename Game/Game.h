@@ -131,6 +131,7 @@ private:
     std::vector<CMOGO*> m_EnemySensors;
     std::vector<CMOGO*> m_SignTrigger;
 
+    std::vector<CMOGO*> m_SwordTriggerNEW;
     std::vector<SwordTrigger*> m_SwordTrigger;
     std::vector<SwordTrigger*> m_SwordTriggerVector;
     std::vector<SwordObject*> m_SwordObject;

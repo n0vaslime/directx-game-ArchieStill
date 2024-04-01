@@ -118,6 +118,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(pPlayer);
     m_IntroGOs.push_back(pPlayer);
     m_PhysicsObjects.push_back(pPlayer);
+    m_GameObjects.push_back(pPlayer->SwordTrigger1);
     //pPlayer->m_PSwordTrigger = m_SwordTrigger;
     pPlayer->m_STrigger = m_SwordTriggerNEW;
     pPlayer->m_PSwordObject = m_SwordObject;
@@ -226,7 +227,7 @@ void Game::Update(DX::StepTimer const& _timer)
     float elapsedTime = float(_timer.GetElapsedSeconds());
     m_GD->m_dt = elapsedTime;
 
-    //this will update the audio engine but give us chance to do somehting else if that isn't working
+    //this will update the audio engine but give us chance to do something else if that isn't working
     if (!m_audioEngine->Update())
     {
         if (m_audioEngine->IsCriticalError())
@@ -643,7 +644,6 @@ void Game::CheckCollision()
         }
     }
 }
-
 void Game::CheckTriggers()
 {
     for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_TriggerObjects.size(); j++)
@@ -713,7 +713,6 @@ void Game::SensorCollision()
         }   
     }
 }
-
 void Game::SwordCollision()
 {
     for (int i = 0; i < m_Enemies.size(); i++) for (int j = 0; j < m_SwordTriggerNEW.size(); j++)
@@ -772,7 +771,6 @@ void Game::DisplayMenu()
     for (list<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
         (*it)->SetRendered(false);
 }
-
 void Game::DisplayIntro()
 {
     //set intro active
@@ -791,7 +789,6 @@ void Game::DisplayIntro()
             (*it)->SetRendered(false);
     }
 }
-
 void Game::DisplayGame()
 {
     //set game active
@@ -807,13 +804,11 @@ void Game::DisplayGame()
     for (list<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
         (*it)->SetRendered(false);
 }
-
 void Game::DisplayWin()
 {
     //set win active
     m_GD->m_GS = GS_WIN;
 }
-
 void Game::DisplayLoss()
 {
     //set loss active
@@ -836,7 +831,6 @@ void Game::CreateGround()
     pF2GroundCheck = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 2, -250), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
     m_TriggerObjects.push_back(pF2GroundCheck);
 }
-
 void Game::CreateIntroGround()
 {
     Terrain* pIntroFloor = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -10, 10), 0.0f, 0.0f, 0.0f, Vector3(1, 1, 1));

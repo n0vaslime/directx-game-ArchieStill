@@ -118,7 +118,6 @@ void Player::Tick(GameData* _GD)
 			is_respawning = false;
 		}
 
-		//apply my base behaviour
 		CMOGO::Tick(_GD);
 	}
 }
@@ -128,7 +127,7 @@ void Player::SwordTriggers(GameData* _GD)
 	for (size_t i = 0; i < m_STrigger.size(); i++)
 	{
 		//checks if sword bounds are active
-		if (m_STrigger[i]->isRendered())
+		/*if (m_STrigger[i]->isRendered())
 			is_attacking = true;
 		else
 			is_attacking = false;
@@ -152,6 +151,32 @@ void Player::SwordTriggers(GameData* _GD)
 				//m_PSwordTrigger.push_back(sword_trigger);
 				m_vel *= 0;
 			}
+		}*/
+	}
+	//checks if sword bounds are active
+	if (SwordTrigger1->isRendered())
+		is_attacking = true;
+	else
+		is_attacking = false;
+
+	//creating sword bounds
+	if (_GD->m_MS.leftButton)
+	{
+		if (!SwordTrigger1->isRendered() && is_grounded)
+		{
+			//m_PSwordTrigger.clear();
+			Vector3 spawn = Vector3(0.15f, -15.0f, 0.15f);
+			Vector3 forwardMove = 40.0f * Vector3::Forward;
+			Matrix rotMove = Matrix::CreateRotationY(m_yaw);
+			forwardMove = Vector3::Transform(forwardMove, rotMove);
+			SwordTrigger1->SetPos(this->GetPos() + forwardMove * spawn);
+			SwordTrigger1->SetRendered(true);
+			SwordTrigger1->SetYaw(this->GetYaw());
+			// m_PSwordTrigger[i]->SetPos(this->GetPos() + forwardMove * spawn);
+			// m_PSwordTrigger[i]->SetRendered(true);
+			// m_PSwordTrigger[i]->SetYaw(this->GetYaw());
+			//m_PSwordTrigger.push_back(sword_trigger);
+			m_vel *= 0;
 		}
 	}
 }

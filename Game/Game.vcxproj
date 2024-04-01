@@ -187,9 +187,6 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Sign.h" />
-    <ClInclude Include="SignTrigger.h" />
-    <ClInclude Include="SwordObject.h" />
-    <ClInclude Include="SwordTrigger.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="StepTimer.h" />
     <ClInclude Include="Terrain.h" />
@@ -227,9 +224,6 @@
     </ClCompile>
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Sign.cpp" />
-    <ClCompile Include="SignTrigger.cpp" />
-    <ClCompile Include="SwordObject.cpp" />
-    <ClCompile Include="SwordTrigger.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TestSound.cpp" />

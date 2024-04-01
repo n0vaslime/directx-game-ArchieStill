@@ -10,6 +10,5 @@ public:
 	virtual void Draw(DrawData* _DD) override;
 	virtual void Tick(GameData* _GD) override;
 
-	vector<CMOGO*> m_ReadingTrigger;
+	CMOGO* pSignTrigger;
 };
-

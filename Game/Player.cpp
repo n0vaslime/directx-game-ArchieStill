@@ -13,16 +13,16 @@ Player::Player(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF)
 	SetPhysicsOn(true);
 	SetScale(Vector3(1,2,1));
 
-	SwordTrigger1 = new CMOGO("table", _pd3dDevice, _EF);
-	SwordTrigger1->SetScale(Vector3(0.075f, -0.075f, 0.05f));
+	pSwordTrigger = new CMOGO("table", _pd3dDevice, _EF);
+	pSwordTrigger->SetScale(Vector3(0.075f, -0.075f, 0.075f));
+	pSwordTrigger->SetRendered(false);
 
-	SwordObject1 = new CMOGO("Sword", _pd3dDevice, _EF);
-	SwordObject1->SetScale(Vector3(0.15f, 0.2f, 0.2f));
+	pSwordObject = new CMOGO("Sword", _pd3dDevice, _EF);
+	pSwordObject->SetScale(Vector3(0.15f, 0.2f, 0.2f));
 }
 
 Player::~Player()
 {
-	//tidy up anything I've created
 }
 
 void Player::Tick(GameData* _GD)
@@ -34,16 +34,17 @@ void Player::Tick(GameData* _GD)
 		SwordObjects();
 
 		//time that sword trigger is active (0.4s)
-		if (SwordTrigger1->isRendered())
+		if (pSwordTrigger->isRendered())
 		{
 			lifetime += _GD->m_dt;
 			if (lifetime > 0.4f)
 			{
-				SetRendered(false);
+				pSwordTrigger->SetRendered(false);
 				lifetime = 0;
 			}
 		}
 
+		//if the player dies, they respawn at start
 		if (is_respawning)
 		{
 			this->SetPos(Vector3(0, 5, 0));
@@ -86,36 +87,24 @@ void Player::PlayerMovement(GameData* _GD)
 
 	//change orientation of player
 	float rotSpeed = 0.5f * _GD->m_dt;
-	if (!is_attacking)
+	if (is_attacking || is_reading)
 	{
 		if (_GD->m_MS.x)
-		{
-			m_yaw -= rotSpeed * (_GD->m_MS.x / 1.1f);
-		}
+			m_yaw -= rotSpeed * (_GD->m_MS.x / 6);
 		if (_GD->m_MS.y)
-		{
-			m_pitch -= rotSpeed * (_GD->m_MS.y / 1.1f);
-			if (m_pitch <= -XM_PI / 4)
-				m_pitch = -XM_PI / 4;
-			if (m_pitch >= XM_PI / 2 - 0.05)
-				m_pitch = XM_PI / 2 - 0.05;
-		}
+			m_pitch -= rotSpeed * (_GD->m_MS.y / 6);
 	}
 	else
 	{
 		if (_GD->m_MS.x)
-		{
-			m_yaw -= rotSpeed * (_GD->m_MS.x / 4);
-		}
+			m_yaw -= rotSpeed * (_GD->m_MS.x / 1.1f);
 		if (_GD->m_MS.y)
-		{
-			m_pitch -= rotSpeed * (_GD->m_MS.y / 4);
-			if (m_pitch <= -XM_PI / 4)
-				m_pitch = -XM_PI / 4;
-			if (m_pitch >= XM_PI / 2 - 0.05)
-				m_pitch = XM_PI / 2 - 0.05;
-		}
+			m_pitch -= rotSpeed * (_GD->m_MS.y / 1.1f);
 	}
+	if (m_pitch <= -XM_PI / 4)
+		m_pitch = -XM_PI / 4;
+	if (m_pitch >= XM_PI / 2 - 0.05)
+		m_pitch = XM_PI / 2 - 0.05;
 
 	//jumping code
 	if (_GD->m_KBS.Space && is_grounded && !is_attacking)
@@ -138,124 +127,54 @@ void Player::PlayerMovement(GameData* _GD)
 
 void Player::SwordTriggers(GameData* _GD)
 {
-	for (size_t i = 0; i < m_PSwordTrigger.size(); i++)
-	{
-		//checks if sword bounds are active
-		if (m_PSwordTrigger[i]->isRendered())
-			is_attacking = true;
-		else
-			is_attacking = false;
+	//checks if sword bounds are active
+	if (pSwordTrigger->isRendered())
+		is_attacking = true;
+	else
+		is_attacking = false;
 
-		//creating sword bounds
-		if (_GD->m_MS.leftButton)
+	//creating sword bounds
+	if (_GD->m_MS.leftButton)
+	{
+		if (!pSwordTrigger->isRendered() && is_grounded)
 		{
-			if (!m_PSwordTrigger[i]->isRendered() && is_grounded)
-			{
-				//m_PSwordTrigger.clear();
-				Vector3 spawn = Vector3(0.15f, -15.0f, 0.15f);
-				Vector3 forwardMove = 40.0f * Vector3::Forward;
-				Matrix rotMove = Matrix::CreateRotationY(m_yaw);
-				forwardMove = Vector3::Transform(forwardMove, rotMove);
-				// SwordTrigger1->SetPos(this->GetPos() + forwardMove * spawn);
-				// SwordTrigger1->SetRendered(true);
-				// SwordTrigger1->SetYaw(this->GetYaw());
-				m_PSwordTrigger[i]->SetPos(this->GetPos() + forwardMove * spawn);
-				m_PSwordTrigger[i]->SetRendered(true);
-				m_PSwordTrigger[i]->SetYaw(this->GetYaw());
-				//m_PSwordTrigger.push_back(sword_trigger);
-				m_vel *= 0;
-			}
+			Vector3 spawn = Vector3(0.15f, -15.0f, 0.15f);
+			Vector3 forwardMove = 40.0f * Vector3::Forward;
+			Matrix rotMove = Matrix::CreateRotationY(m_yaw);
+			forwardMove = Vector3::Transform(forwardMove, rotMove);
+			pSwordTrigger->SetPos(this->GetPos() + forwardMove * spawn);
+			pSwordTrigger->SetRendered(true);
+			pSwordTrigger->SetYaw(this->GetYaw());
+			m_vel *= 0;
 		}
 	}
 }
 
 void Player::SwordObjects()
 {
-	/*for (size_t i = 0; i < m_PSwordObject.size(); i++)
-	{
-		Vector3 objSpawn = Vector3(0, -2, 0);
-		Vector3 forwardMove = 3 * Vector3::Forward;
-		Matrix rotMove = Matrix::CreateRotationY(m_yaw);
-		forwardMove = Vector3::Transform(forwardMove, rotMove);
-		// m_PSwordObject[i]->SetRendered(true);
-		// m_PSwordObject[i]->SetPos(this->GetPos() + (forwardMove + objSpawn));
-		// m_PSwordObject[i]->SetYaw(this->GetYaw());
-		// m_PSwordObject[i]->SetPitch(0);
-
-		SwordObject1->SetRendered(true);
-		SwordObject1->SetPos(this->GetPos() + (forwardMove + objSpawn));
-		SwordObject1->SetYaw(this->GetYaw());
-		SwordObject1->SetPitch(0);
-
-		if (is_attacking)
-		{
-			m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 4);
-			if (lifetime < 0.1f)
-				m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 8);
-			else if (lifetime < 0.2f)
-				m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 4);
-			else if (lifetime < 0.3f)
-				m_PSwordObject[i]->SetPitch(m_PSwordObject[i]->GetPitch() - XM_PI / 8);
-			else if (lifetime < 0.4f)
-				m_PSwordObject[i]->SetPitch(0);
-		}
-		else
-		{
-			m_PSwordObject[i]->SetPitch(0);
-		}
-
-		for (size_t j = 0; j < m_PSwordTrigger.size(); j++)
-		{
-			if (is_attacking)
-			{
-				SwordObject1->SetPitch(SwordObject1->GetPitch() - XM_PI / 4);
-				if (m_PSwordTrigger[j]->lifetime < 0.1f)
-					SwordObject1->SetPitch(SwordObject1->GetPitch() - XM_PI / 8);
-				else if (m_PSwordTrigger[j]->lifetime < 0.2f)
-					SwordObject1->SetPitch(SwordObject1->GetPitch() - XM_PI / 4);
-				else if (m_PSwordTrigger[j]->lifetime < 0.3f)
-					SwordObject1->SetPitch(SwordObject1->GetPitch() - XM_PI / 8);
-				else if (m_PSwordTrigger[j]->lifetime < 0.4f)
-					SwordObject1->SetPitch(0);
-			}
-			else
-			{
-				SwordObject1->SetPitch(0);
-			}
-		}
-	}*/
-
 	Vector3 objSpawn = Vector3(0, -2, 0);
 	Vector3 forwardMove = 3 * Vector3::Forward;
 	Matrix rotMove = Matrix::CreateRotationY(m_yaw);
 	forwardMove = Vector3::Transform(forwardMove, rotMove);
-	// m_PSwordObject[i]->SetRendered(true);
-	// m_PSwordObject[i]->SetPos(this->GetPos() + (forwardMove + objSpawn));
-	// m_PSwordObject[i]->SetYaw(this->GetYaw());
-	// m_PSwordObject[i]->SetPitch(0);
-	SwordObject1->SetRendered(true);
-	SwordObject1->SetPos(this->GetPos() + (forwardMove + objSpawn));
-	SwordObject1->SetYaw(this->GetYaw());
-	SwordObject1->SetPitch(0);
+	pSwordObject->SetRendered(true);
+	pSwordObject->SetPos(this->GetPos() + (forwardMove + objSpawn));
+	pSwordObject->SetYaw(this->GetYaw());
+	pSwordObject->SetPitch(0);
 
-
-	for (size_t j = 0; j < m_PSwordTrigger.size(); j++)
+	if (is_attacking)
 	{
-		if (is_attacking)
-		{
-			SwordObject1->SetPitch(SwordObject1->GetPitch() - XM_PI / 4);
-			if (m_PSwordTrigger[j]->lifetime < 0.1f)
-				SwordObject1->SetPitch(SwordObject1->GetPitch() - XM_PI / 8);
-			else if (m_PSwordTrigger[j]->lifetime < 0.2f)
-				SwordObject1->SetPitch(SwordObject1->GetPitch() - XM_PI / 4);
-			else if (m_PSwordTrigger[j]->lifetime < 0.3f)
-				SwordObject1->SetPitch(SwordObject1->GetPitch() - XM_PI / 8);
-			else if (m_PSwordTrigger[j]->lifetime < 0.4f)
-				SwordObject1->SetPitch(0);
-		}
-		else
-		{
-			SwordObject1->SetPitch(0);
-		}
+		pSwordObject->SetPitch(pSwordObject->GetPitch() - XM_PI / 4);
+		if (lifetime < 0.1f)
+			pSwordObject->SetPitch(pSwordObject->GetPitch() - XM_PI / 8);
+		else if (lifetime < 0.2f)
+			pSwordObject->SetPitch(pSwordObject->GetPitch() - XM_PI / 4);
+		else if (lifetime < 0.3f)
+			pSwordObject->SetPitch(pSwordObject->GetPitch() - XM_PI / 8);
+		else if (lifetime < 0.4f)
+			pSwordObject->SetPitch(0);
+	}
+	else
+	{
+		pSwordObject->SetPitch(0);
 	}
 }

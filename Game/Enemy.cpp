@@ -12,7 +12,7 @@ Enemy::Enemy(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, V
 
 	SetScale(Vector3(1, 1, 1));
 
-	speed = 5.0f;
+	speed = 0.75f;
 	player_spotted = false;
     player_facing = 0.0f;
 
@@ -27,6 +27,8 @@ Enemy::~Enemy()
 
 void Enemy::Tick(GameData* _GD)
 {
+    //idle??
+    m_yaw += _GD->m_dt / 4;
     EnemyAI(_GD);
 
 	CMOGO::Tick(_GD);
@@ -48,21 +50,9 @@ void Enemy::EnemyAI(GameData* _GD)
             Vector3 forwardMove = 0.2f * Vector3::Forward;
             Matrix rotMove = Matrix::CreateRotationY(this->GetYaw());
             forwardMove = Vector3::Transform(forwardMove, rotMove);
-            this->SetPos(this->GetPos() - forwardMove);
+            this->SetPos(this->GetPos() - forwardMove * speed);
             EnemySensor->SetPos(this->GetPos());
             EnemySensor->SetYaw(this->GetYaw());
         }
-
-        // if (m_Enemies[i]->player_spotted)
-        // {
-        //     m_EnemySensors.clear();
-        //     m_Enemies[i]->SetYaw(pPlayer->GetYaw());
-        //     Vector3 forwardMove = 0.2f * Vector3::Forward;
-        //     Matrix rotMove = Matrix::CreateRotationY(m_Enemies[i]->GetYaw());
-        //     forwardMove = Vector3::Transform(forwardMove, rotMove);
-        //     m_Enemies[i]->SetPos(m_Enemies[i]->GetPos() - forwardMove);
-        //     m_EnemySensors.push_back(EnemySensor);
-        // }
-
     }
 }

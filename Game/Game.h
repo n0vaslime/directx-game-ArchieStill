@@ -16,12 +16,9 @@
 #include "Terrain.h"
 #include "TextGO2D.h"
 #include "ImageGO2D.h"
-#include "SwordTrigger.h"
 #include "Coin.h"
 #include "Enemy.h"
-#include "SwordObject.h"
 #include "Sign.h"
-#include "SignTrigger.h"
 
 using std::list;
 
@@ -130,10 +127,7 @@ private:
     std::vector<Enemy*> m_Enemies;
     std::vector<CMOGO*> m_EnemySensors;
     std::vector<CMOGO*> m_SignTrigger;
-
-    std::vector<CMOGO*> m_SwordTriggerNEW;
-    std::vector<SwordTrigger*> m_SwordTrigger;
-    // std::vector<SwordObject*> m_SwordObject;
+    std::vector<CMOGO*> m_SwordTrigger;
 
     void CheckCollision();
     void CheckTriggers();
@@ -150,8 +144,6 @@ private:
     std::vector<Sound*>m_Sounds;
 
     Player* pPlayer;
-    SwordTrigger* pSwordTrigger;
-    SwordObject* pSword;
 
     Terrain* pF1GroundCheck;
     Terrain* pF2GroundCheck;
@@ -160,15 +152,10 @@ private:
     Coin* pCoin2;
     Coin* pCoin3;
 
-    Terrain* EnemySensor;
-    bool player_spotted = false;
     Enemy* pEnemy1;
     Enemy* pEnemy2;
 
     TextGO2D* readText;
-    SignTrigger* pSignReadTrigger;
-    bool is_reading = false;
-    Sign* pSigns;
     Sign* pSign1;
     ImageGO2D* sign1Image;
 
@@ -177,8 +164,6 @@ private:
     int health = 5;
 
     ImageGO2D* title_screen;
-
-    bool terrain = false;
 
     void DisplayMenu();
     void DisplayIntro();

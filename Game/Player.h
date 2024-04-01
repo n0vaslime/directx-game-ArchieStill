@@ -1,8 +1,6 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 #include "CMOGO.h"
-#include "SwordTrigger.h"
-#include "SwordObject.h"
 
 //=================================================================
 //Base Player Class (i.e. a GO the player controls)
@@ -24,13 +22,12 @@ public:
 	bool is_grounded = true;
 	bool is_attacking = false;
 	bool is_respawning = false;
+	bool is_reading = false;
 
 	float lifetime = 0.0f;
 
-	vector<SwordTrigger*> m_PSwordTrigger;
-	CMOGO* SwordTrigger1;
-	CMOGO* SwordObject1;
-	// vector<SwordObject*> m_PSwordObject;
+	CMOGO* pSwordTrigger;
+	CMOGO* pSwordObject;
 
 protected:
 

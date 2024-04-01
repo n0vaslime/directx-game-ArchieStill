@@ -105,25 +105,13 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_cam->SetPos(Vector3(0.0f, 200.0f, 200.0f));
     m_GameObjects.push_back(m_cam);
 
-
-    // ### add Player - sword trigger bounds
-    pSwordTrigger = new SwordTrigger("table", m_d3dDevice.Get(), m_fxFactory);
-    m_SwordTrigger.push_back(pSwordTrigger);
-
-    // ### add Player - swinging sword object in scene
-    //pSword = new SwordObject("Sword", m_d3dDevice.Get(), m_fxFactory);
-    //m_SwordObject.push_back(pSword);
-
     // ### add Player - player object and adding swords to player class
     pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(pPlayer);
     m_IntroGOs.push_back(pPlayer);
     m_PhysicsObjects.push_back(pPlayer);
-    // m_GameObjects.push_back(pPlayer->SwordTrigger1);
-    // m_SwordTriggerNEW.push_back(pPlayer->SwordTrigger1);
-    pPlayer->m_PSwordTrigger = m_SwordTrigger;
-    //pPlayer->m_STrigger = m_SwordTriggerNEW;
-    //pPlayer->m_PSwordObject = m_SwordObject;
+    m_GameObjects.push_back(pPlayer->pSwordTrigger);
+    m_GameObjects.push_back(pPlayer->pSwordObject);
 
 
     //add a secondary camera
@@ -143,11 +131,13 @@ void Game::Initialize(HWND _window, int _width, int _height)
 
     //add Enemies
         pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 1.0f, 30.0f),0,0,0);
+        pEnemy1->SetRendered(true);
     m_GameObjects.push_back(pEnemy1);
     m_Enemies.push_back(pEnemy1);
     m_GameObjects.push_back(pEnemy1->EnemySensor);
     m_EnemySensors.push_back(pEnemy1->EnemySensor);
         pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 1.0f, -50.0f), 0, 0, 0);
+        pEnemy2->SetRendered(true);
     m_GameObjects.push_back(pEnemy2);
     m_Enemies.push_back(pEnemy2);
     m_GameObjects.push_back(pEnemy2->EnemySensor);
@@ -159,15 +149,14 @@ void Game::Initialize(HWND _window, int _width, int _height)
     readText->SetColour(Color((float*)&Colors::WhiteSmoke));
     readText->SetScale(0.75f);
     m_GameObjects2D.push_back(readText);
-    //add Sign - reading trigger
-    pSignReadTrigger = new SignTrigger("Sign", m_d3dDevice.Get(), m_fxFactory);
-    m_GameObjects.push_back(pSignReadTrigger);
-    m_SignTrigger.push_back(pSignReadTrigger);
+
     //add Sign - sign objects & text
         pSign1 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-2,-30));
     m_GameObjects.push_back(pSign1);
     m_ColliderObjects.push_back(pSign1);
-    pSign1->m_ReadingTrigger = m_SignTrigger;
+    m_GameObjects.push_back(pSign1->pSignTrigger);
+    m_SignTrigger.push_back(pSign1->pSignTrigger);
+
     sign1Image = new ImageGO2D("PlaceholderSign", m_d3dDevice.Get());
     sign1Image->SetPos(Vector2(400, 300));
     sign1Image->SetScale(Vector2(1, 0.75f));
@@ -306,7 +295,9 @@ void Game::Render()
     //Draw 3D Game Objects
     for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
     {
-        if ((*it)->isRendered())
+        if ((*it)->isRendered() 
+            && (*it) != pPlayer->pSwordTrigger
+            && (*it) != pSign1->pSignTrigger)
         {
             (*it)->Draw(m_DD);
         }
@@ -672,7 +663,7 @@ void Game::CoinCollision()
         {
             if (m_PhysicsObjects[j] == pPlayer)
             {
-                m_GameObjects2D.pop_back();
+                scoreText->SetRendered(false);
                 m_Coins[i]->SetRendered(false);
                 score++;
                 scoreText = new TextGO2D(std::to_string(score));
@@ -718,6 +709,12 @@ void Game::SensorCollision()
 }
 void Game::SwordCollision()
 {
+    if (pPlayer->is_attacking)
+        m_SwordTrigger.push_back(pPlayer->pSwordTrigger);
+
+    if (pPlayer->lifetime == 0.0f)
+        m_SwordTrigger.clear();
+
     for (int i = 0; i < m_Enemies.size(); i++) for (int j = 0; j < m_SwordTrigger.size(); j++)
     {
         if (m_Enemies[i]->isRendered() && m_Enemies[i]->Intersects(*m_SwordTrigger[j]))
@@ -738,9 +735,9 @@ void Game::SignCollision()
                 readText->SetRendered(true);
                 if (m_GD->m_KBS.E)
                 {
-                    if (is_reading == false)
+                    if (pPlayer->is_reading == false)
                     {
-                        is_reading = true;
+                        pPlayer->is_reading = true;
                     }
                 }
             }
@@ -748,11 +745,12 @@ void Game::SignCollision()
         else
         {
             readText->SetRendered(false);
-            is_reading = false;
+            pPlayer->is_reading = false;
         }
 
-        if (is_reading)
+        if (pPlayer->is_reading)
         {
+
             sign1Image->SetRendered(true);
             readText->SetRendered(false);
         }
@@ -799,8 +797,7 @@ void Game::DisplayGame()
     scoreText->SetRendered(true);
     for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
         (*it)->SetRendered(true);
-    // m_GameObjects.push_back(pSwordTrigger);
-    // m_GameObjects.push_back(pSword);
+    pPlayer->pSwordTrigger->SetRendered(false);
 
     //set others inactive
     title_screen->SetRendered(false);

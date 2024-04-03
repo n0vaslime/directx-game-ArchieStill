@@ -20,6 +20,7 @@ public:
 	void SwordObjects();
 
 	bool is_grounded = true;
+	bool has_sword = false;
 	bool is_attacking = false;
 	bool is_respawning = false;
 	bool is_reading = false;

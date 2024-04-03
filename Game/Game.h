@@ -125,6 +125,7 @@ private:
 
     std::vector<CMOGO*> m_Coins;
     std::vector<Enemy*> m_Enemies;
+    std::vector<CMOGO*> m_Destructibles;
     std::vector<CMOGO*> m_EnemySensors;
     std::vector<CMOGO*> m_SignTrigger;
     std::vector<CMOGO*> m_SwordTrigger;
@@ -144,6 +145,7 @@ private:
     std::vector<Sound*>m_Sounds;
 
     Player* pPlayer;
+    Coin* pFloatingSword;
 
     Terrain* pIntroGroundCheck;
     Terrain* pF1GroundCheck;
@@ -157,6 +159,8 @@ private:
     Enemy* pEnemy2;
 
     TextGO2D* readText;
+    Sign* pSignIntro;
+    ImageGO2D* signIntroImage;
     Sign* pSign1;
     ImageGO2D* sign1Image;
 

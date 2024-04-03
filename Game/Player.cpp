@@ -30,8 +30,11 @@ void Player::Tick(GameData* _GD)
 	if (_GD->m_GS == GS_GAME || _GD->m_GS == GS_INTRO)
 	{
 		PlayerMovement(_GD);
-		SwordTriggers(_GD);
-		SwordObjects();
+		if (has_sword)
+		{
+			SwordTriggers(_GD);
+			SwordObjects();
+		}
 
 		//time that sword trigger is active (0.4s)
 		if (pSwordTrigger->isRendered())
@@ -122,8 +125,6 @@ void Player::PlayerMovement(GameData* _GD)
 		m_pos.Normalize();
 		m_pos *= maxLength;
 		m_vel *= -0.9;
-		// pSwordObject->GetPos().Normalize();
-		// pSwordObject->SetPos(pSwordObject->GetPos() *= maxLength);
 	}
 }
 

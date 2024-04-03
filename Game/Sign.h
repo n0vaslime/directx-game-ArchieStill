@@ -1,5 +1,6 @@
 #pragma once
 #include "CMOGO.h"
+#include "ImageGO2D.h"
 
 class Sign : public CMOGO
 {

@@ -28,7 +28,7 @@ Enemy::~Enemy()
 void Enemy::Tick(GameData* _GD)
 {
     //idle??
-    m_yaw += _GD->m_dt / 4;
+    m_yaw -= _GD->m_dt / 4;
     EnemyAI(_GD);
 
 	CMOGO::Tick(_GD);

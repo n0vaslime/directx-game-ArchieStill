@@ -153,6 +153,11 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects2D.push_back(readText);
 
     //add Sign - sign objects & text
+        pSignIntro = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -35));
+    m_IntroGOs.push_back(pSignIntro);
+    m_ColliderObjects.push_back(pSignIntro);
+    m_IntroGOs.push_back(pSignIntro->pSignTrigger);
+    m_SignTrigger.push_back(pSignIntro->pSignTrigger);
         pSign1 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-2,-30));
     m_GameObjects.push_back(pSign1);
     m_ColliderObjects.push_back(pSign1);
@@ -181,7 +186,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     bug_test->SetScale(0.1f);
     m_GameObjects2D.push_back(bug_test);
 
-    scoreText = new TextGO2D(std::to_string(score));
+    scoreText = new TextGO2D("Coins: " + std::to_string(score));
     scoreText->SetPos(Vector2(100, 10));
     scoreText->SetColour(Color((float*)&Colors::Yellow));
     scoreText->SetScale(1.5f);
@@ -279,8 +284,11 @@ void Game::Update(DX::StepTimer const& _timer)
                 (*it)->Tick(m_GD);
             }
         }
+
         CheckCollision();
         CheckTriggers();
+        SwordCollision();
+        SignCollision();
         m_TPScam->Tick(m_GD);
     }
 }
@@ -686,6 +694,11 @@ void Game::CheckTriggers()
                     {
                         pPlayer->is_grounded = true;
                     }
+                    if (m_TriggerObjects[j] == pFloatingSword)
+                    {
+                        pFloatingSword->SetRendered(false);
+                        pPlayer->has_sword = true;
+                    }
                 }
             }
         }
@@ -703,7 +716,7 @@ void Game::CoinCollision()
                 scoreText->SetRendered(false);
                 m_Coins[i]->SetRendered(false);
                 score++;
-                scoreText = new TextGO2D(std::to_string(score));
+                scoreText = new TextGO2D("Coins: " + std::to_string(score));
                 scoreText->SetPos(Vector2(100, 10));
                 scoreText->SetColour(Color((float*)&Colors::Yellow));
                 scoreText->SetScale(1.5f);
@@ -752,12 +765,19 @@ void Game::SwordCollision()
     if (pPlayer->lifetime == 0.0f)
         m_SwordTrigger.clear();
 
-    for (int i = 0; i < m_Enemies.size(); i++) for (int j = 0; j < m_SwordTrigger.size(); j++)
+    for (int i = 0; i < m_Enemies.size(); i++) for (int j = 0; j < m_Destructibles.size(); j++)
+        for (int sword = 0; sword < m_SwordTrigger.size(); sword++)
     {
-        if (m_Enemies[i]->isRendered() && m_Enemies[i]->Intersects(*m_SwordTrigger[j]))
+        if (m_Enemies[i]->isRendered() && m_Enemies[i]->Intersects(*m_SwordTrigger[sword]))
         {
             m_Enemies[i]->SetRendered(false);
             m_Enemies[i]->EnemySensor->SetRendered(false);
+        }
+        if (m_Destructibles[j]->isRendered() && m_Destructibles[j]->Intersects(*m_SwordTrigger[sword]))
+        {
+            std::cout << "h";
+            m_Destructibles[j]->SetRendered(false);
+            //m_Enemies[i]->EnemySensor->SetRendered(false);
         }
     }
 }
@@ -911,4 +931,12 @@ void Game::CreateIntroGround()
     Terrain* pIntroBreakable = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -132.5f), 0.0f, 0.0f, 0.0f, Vector3(2, 5, 1));
     m_IntroGOs.push_back(pIntroBreakable);
     m_ColliderObjects.push_back(pIntroBreakable);
+    m_Destructibles.push_back(pIntroBreakable);
+
+    pFloatingSword = new Coin("Sword", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -75));
+    //pFloatingSword->SetPos(Vector3(0, -5, -20));
+    pFloatingSword->SetYaw(90);
+    pFloatingSword->SetScale(Vector3(0.25f, 0.3f, 0.25f));
+    m_IntroGOs.push_back(pFloatingSword);
+    m_TriggerObjects.push_back(pFloatingSword);
 }

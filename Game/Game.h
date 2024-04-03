@@ -145,6 +145,7 @@ private:
 
     Player* pPlayer;
 
+    Terrain* pIntroGroundCheck;
     Terrain* pF1GroundCheck;
     Terrain* pF2GroundCheck;
 

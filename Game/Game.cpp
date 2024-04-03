@@ -101,22 +101,24 @@ void Game::Initialize(HWND _window, int _width, int _height)
     CreateGround();
 
     //create a base camera
-    m_cam = new Camera(0.25f * XM_PI, AR, 1.0f, 10000.0f, Vector3::UnitY, Vector3::Zero);
-    m_cam->SetPos(Vector3(0.0f, 200.0f, 200.0f));
-    m_GameObjects.push_back(m_cam);
+    // m_cam = new Camera(0.25f * XM_PI, AR, 1.0f, 10000.0f, Vector3::UnitY, Vector3::Zero);
+    // m_cam->SetPos(Vector3(0.0f, 200.0f, 200.0f));
+    // m_GameObjects.push_back(m_cam);
 
-    // ### add Player - player object and adding swords to player class
+    //add Player - player object and adding swords to player class
     pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(pPlayer);
     m_IntroGOs.push_back(pPlayer);
     m_PhysicsObjects.push_back(pPlayer);
     m_GameObjects.push_back(pPlayer->pSwordTrigger);
     m_GameObjects.push_back(pPlayer->pSwordObject);
+    m_IntroGOs.push_back(pPlayer->pSwordTrigger);
+    m_IntroGOs.push_back(pPlayer->pSwordObject);
 
-
-    //add a secondary camera
+    //add a PRIMARY camera
     m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f)); // Vector3(0,0,0.1f)
     m_GameObjects.push_back(m_TPScam);
+    m_IntroGOs.push_back(m_TPScam);
 
     //add Coins
         pCoin1 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(20.0f, 0.0f, 20.0f));
@@ -170,7 +172,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_DD = new DrawData;
     m_DD->m_pd3dImmediateContext = nullptr;
     m_DD->m_states = m_states;
-    m_DD->m_cam = m_cam;
+    m_DD->m_cam = m_TPScam;
     m_DD->m_light = m_light;
 
     //example basic 2D stuff
@@ -238,16 +240,18 @@ void Game::Update(DX::StepTimer const& _timer)
 
     ReadInput();
     
-    if (m_GD->m_GS == GS_GAME)
+    if (m_GD->m_GS == GS_GAME) // || m_GD->m_GS == GS_INTRO
     {
         //update all objects
         for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
         {
-            (*it)->Tick(m_GD);
+            if ((*it)->isRendered())
+                (*it)->Tick(m_GD);
         }
         for (std::vector<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
         {
-            (*it)->Tick(m_GD);
+            if ((*it)->isRendered())
+                (*it)->Tick(m_GD);
         }
 
         CheckCollision();
@@ -264,6 +268,19 @@ void Game::Update(DX::StepTimer const& _timer)
             m_Enemies[i]->EnemySensor->SetRendered(false);
         }
 
+        m_TPScam->Tick(m_GD);
+    }
+    else if (m_GD->m_GS == GS_INTRO)
+    {
+        for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
+        {
+            if ((*it)->isRendered())
+            {
+                (*it)->Tick(m_GD);
+            }
+        }
+        CheckCollision();
+        CheckTriggers();
         m_TPScam->Tick(m_GD);
     }
 }
@@ -283,7 +300,7 @@ void Game::Render()
     m_DD->m_pd3dImmediateContext = m_d3dContext.Get();
 
     //set which camera to be used
-    m_DD->m_cam = m_cam;
+    m_DD->m_cam = m_TPScam;
     if (m_GD->m_GS == GS_GAME)
     {
         m_DD->m_cam = m_TPScam;
@@ -293,20 +310,37 @@ void Game::Render()
     VBGO::UpdateConstantBuffer(m_DD);
 
     //Draw 3D Game Objects
-    for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+    if (m_GD->m_GS == GS_GAME)
     {
-        if ((*it)->isRendered() 
-            && (*it) != pPlayer->pSwordTrigger
-            && (*it) != pSign1->pSignTrigger)
+        for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
         {
-            (*it)->Draw(m_DD);
+            if ((*it)->isRendered()
+                && (*it) != pPlayer->pSwordTrigger
+                && (*it) != pSign1->pSignTrigger
+                && (*it) != pF1GroundCheck
+                && (*it) != pF2GroundCheck)
+            {
+                (*it)->Draw(m_DD);
+            }
+        }
+        for (std::vector<CMOGO*>::iterator it = m_EnemySensors.begin(); it != m_EnemySensors.end(); it++)
+        {
+            if ((*it)->isRendered())
+            {
+                (*it)->Draw(m_DD);
+            }
         }
     }
-    for (std::vector<CMOGO*>::iterator it = m_EnemySensors.begin(); it != m_EnemySensors.end(); it++)
+    else if (m_GD->m_GS == GS_INTRO)
     {
-        if ((*it)->isRendered())
+        for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
         {
-            (*it)->Draw(m_DD);
+            if ((*it)->isRendered()
+                && (*it) != pPlayer->pSwordTrigger
+                && (*it) != pIntroGroundCheck)
+            {
+                (*it)->Draw(m_DD);
+            }
         }
     }
 
@@ -605,21 +639,17 @@ void Game::ReadInput()
         {
             if (m_GD->m_KBS.Enter)
             {
+                m_GD->m_GS = GS_INTRO;
+                DisplayIntro();
+            }
+        }
+        case(GS_INTRO):
+        {
+            if (m_GD->m_KBS.Tab)
+            {
                 m_GD->m_GS = GS_GAME;
                 DisplayGame();
             }
-        }
-        case(GS_GAME):
-        {
-
-        }
-        case(GS_WIN):
-        {
-
-        }
-        case(GS_LOSS):
-        {
-
         }
     default:
         break;
@@ -632,9 +662,12 @@ void Game::CheckCollision()
     {
         if (m_PhysicsObjects[i]->Intersects(*m_ColliderObjects[j])) //std::cout << "Collision Detected!" << std::endl;
         {
-            XMFLOAT3 eject_vect = Collision::ejectionCMOGO(*m_PhysicsObjects[i], *m_ColliderObjects[j]);
-            auto pos = m_PhysicsObjects[i]->GetPos();
-            m_PhysicsObjects[i]->SetPos(pos - eject_vect);
+            if (m_ColliderObjects[j]->isRendered())
+            {
+                XMFLOAT3 eject_vect = Collision::ejectionCMOGO(*m_PhysicsObjects[i], *m_ColliderObjects[j]);
+                auto pos = m_PhysicsObjects[i]->GetPos();
+                m_PhysicsObjects[i]->SetPos(pos - eject_vect);
+            }
         }
     }
 }
@@ -644,11 +677,15 @@ void Game::CheckTriggers()
     {
         if (m_PhysicsObjects[i]->Intersects(*m_TriggerObjects[j])) //std::cout << "Trigger Detected!" << std::endl;
         {
-            if (m_PhysicsObjects[i] == pPlayer)
+            if (m_TriggerObjects[j]->isRendered())
             {
-                if (m_TriggerObjects[j] == pF1GroundCheck or m_TriggerObjects[j] == pF2GroundCheck)
+                if (m_PhysicsObjects[i] == pPlayer)
                 {
-                    pPlayer->is_grounded = true;
+                    if (m_TriggerObjects[j] == pIntroGroundCheck || 
+                        pF1GroundCheck || pF2GroundCheck)
+                    {
+                        pPlayer->is_grounded = true;
+                    }
                 }
             }
         }
@@ -776,15 +813,19 @@ void Game::DisplayIntro()
 {
     //set intro active
     m_GD->m_GS = GS_INTRO;
-    for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
-        (*it)->SetRendered(true);
     scoreText->SetRendered(true);
+    readText->SetRendered(false);
+    for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
+    {
+        (*it)->SetRendered(true);
+    }
+    pPlayer->pSwordTrigger->SetRendered(false);
 
     //set others inactive
     title_screen->SetRendered(false);
     for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
     {
-        if (*it == pPlayer)
+        if ((*it) == pPlayer)
             (*it)->SetRendered(true);
         else
             (*it)->SetRendered(false);
@@ -794,15 +835,24 @@ void Game::DisplayGame()
 {
     //set game active
     m_GD->m_GS = GS_GAME;
+    pPlayer->is_respawning = true;
     scoreText->SetRendered(true);
     for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+    {
         (*it)->SetRendered(true);
+    }
+    pIntroGroundCheck->SetRendered(false);
     pPlayer->pSwordTrigger->SetRendered(false);
 
     //set others inactive
     title_screen->SetRendered(false);
     for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
-        (*it)->SetRendered(false);
+    {
+        if ((*it) == pPlayer)
+            (*it)->SetRendered(true);
+        else
+            (*it)->SetRendered(false);
+    }
 }
 void Game::DisplayWin()
 {
@@ -822,6 +872,7 @@ void Game::CreateGround()
     m_GameObjects.push_back(pF1Floor);
     m_ColliderObjects.push_back(pF1Floor);
     pF1GroundCheck = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -8, 0), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
+    m_GameObjects.push_back(pF1GroundCheck);
     m_TriggerObjects.push_back(pF1GroundCheck);
 
     //Floor2 ground
@@ -829,12 +880,35 @@ void Game::CreateGround()
     m_GameObjects.push_back(pF2Floor);
     m_ColliderObjects.push_back(pF2Floor);
     pF2GroundCheck = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 2, -250), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
+    m_GameObjects.push_back(pF2GroundCheck);
     m_TriggerObjects.push_back(pF2GroundCheck);
 }
 void Game::CreateIntroGround()
 {
-    Terrain* pIntroFloor = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -10, 10), 0.0f, 0.0f, 0.0f, Vector3(1, 1, 1));
+    Terrain* pIntroFloor = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -10, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 35));
     m_IntroGOs.push_back(pIntroFloor);
     m_ColliderObjects.push_back(pIntroFloor);
-}
+    pIntroGroundCheck = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -8, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 35));
+    m_IntroGOs.push_back(pIntroGroundCheck);
+    m_TriggerObjects.push_back(pIntroGroundCheck);
 
+    Terrain* pIntroLWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 10, 35));
+    m_IntroGOs.push_back(pIntroLWall);
+    m_ColliderObjects.push_back(pIntroLWall);
+    Terrain* pIntroRWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 10, 35));
+    m_IntroGOs.push_back(pIntroRWall);
+    m_ColliderObjects.push_back(pIntroRWall);
+    Terrain* pIntroCeiling = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 25, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 35));
+    m_IntroGOs.push_back(pIntroCeiling);
+    m_ColliderObjects.push_back(pIntroCeiling);
+    Terrain* pIntroBackWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 5), 0.0f, 0.0f, 0.0f, Vector3(15, 10, 1));
+    m_IntroGOs.push_back(pIntroBackWall);
+    m_ColliderObjects.push_back(pIntroBackWall);
+    Terrain* pIntroFrontWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -135), 0.0f, 0.0f, 0.0f, Vector3(15, 10, 1));
+    m_IntroGOs.push_back(pIntroFrontWall);
+    m_ColliderObjects.push_back(pIntroFrontWall);
+
+    Terrain* pIntroBreakable = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -132.5f), 0.0f, 0.0f, 0.0f, Vector3(2, 5, 1));
+    m_IntroGOs.push_back(pIntroBreakable);
+    m_ColliderObjects.push_back(pIntroBreakable);
+}

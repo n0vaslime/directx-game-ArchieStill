@@ -145,29 +145,38 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(pEnemy2->EnemySensor);
     m_EnemySensors.push_back(pEnemy2->EnemySensor);
 
-    //add Sign - reading instructions
-    readText = new TextGO2D("Press 'E' to read!");
-    readText->SetPos(Vector2(275, 550));
-    readText->SetColour(Color((float*)&Colors::WhiteSmoke));
-    readText->SetScale(0.75f);
-    m_GameObjects2D.push_back(readText);
 
     //add Sign - sign objects & text
         pSignIntro = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -35));
     m_IntroGOs.push_back(pSignIntro);
+    m_Signs.push_back(pSignIntro);
     m_ColliderObjects.push_back(pSignIntro);
     m_IntroGOs.push_back(pSignIntro->pSignTrigger);
-    m_SignTrigger.push_back(pSignIntro->pSignTrigger);
         pSign1 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-2,-30));
     m_GameObjects.push_back(pSign1);
+    m_Signs.push_back(pSign1);
     m_ColliderObjects.push_back(pSign1);
     m_GameObjects.push_back(pSign1->pSignTrigger);
-    m_SignTrigger.push_back(pSign1->pSignTrigger);
+        pSign2 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(25, -2, -60));
+    m_GameObjects.push_back(pSign2);
+    m_Signs.push_back(pSign2);
+    m_ColliderObjects.push_back(pSign2);
+    m_GameObjects.push_back(pSign2->pSignTrigger);
 
-    sign1Image = new ImageGO2D("PlaceholderSign", m_d3dDevice.Get());
+        sign1Image = new ImageGO2D("PlaceholderSign", m_d3dDevice.Get());
     sign1Image->SetPos(Vector2(400, 300));
     sign1Image->SetScale(Vector2(1, 0.75f));
     m_GameObjects2D.push_back(sign1Image);
+        sign2Image = new ImageGO2D("pain", m_d3dDevice.Get());
+    sign2Image->SetPos(Vector2(400, 300));
+    sign2Image->SetScale(Vector2(1, 0.75f));
+    m_GameObjects2D.push_back(sign2Image);
+
+    m_GameObjects2D.push_back(pSignIntro->pReadText);
+    m_GameObjects2D.push_back(pSign1->pReadText);
+    m_GameObjects2D.push_back(pSign2->pReadText);
+
+
 
     //L-system like tree
     Tree* tree = new Tree(1, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
@@ -244,53 +253,45 @@ void Game::Update(DX::StepTimer const& _timer)
     }
 
     ReadInput();
-    
-    if (m_GD->m_GS == GS_GAME) // || m_GD->m_GS == GS_INTRO
+
+    //update all objects
+    if (m_GD->m_GS == GS_GAME)
     {
-        //update all objects
         for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
         {
             if ((*it)->isRendered())
                 (*it)->Tick(m_GD);
         }
-        for (std::vector<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
-        {
-            if ((*it)->isRendered())
-                (*it)->Tick(m_GD);
-        }
-
-        CheckCollision();
-        CheckTriggers();
-        CoinCollision();
-        EnemyCollision();
-        SensorCollision();
-        SwordCollision();
-        SignCollision();
-
         for (int i = 0; i < m_Enemies.size(); i++)
         {
             m_Enemies[i]->player_facing = pPlayer->GetYaw();
             m_Enemies[i]->EnemySensor->SetRendered(false);
         }
-
-        m_TPScam->Tick(m_GD);
     }
-    else if (m_GD->m_GS == GS_INTRO)
+
+    if (m_GD->m_GS == GS_INTRO)
     {
         for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
         {
             if ((*it)->isRendered())
-            {
                 (*it)->Tick(m_GD);
-            }
         }
-
-        CheckCollision();
-        CheckTriggers();
-        SwordCollision();
-        SignCollision();
-        m_TPScam->Tick(m_GD);
     }
+
+    for (std::vector<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
+    {
+        if ((*it)->isRendered())
+            (*it)->Tick(m_GD);
+    }
+
+    CheckCollision();
+    CheckTriggers();
+    CoinCollision();
+    EnemyCollision();
+    SensorCollision();
+    SwordCollision();
+    SignReading();
+    m_TPScam->Tick(m_GD);
 }
 
 // Draws the scene.
@@ -325,6 +326,7 @@ void Game::Render()
             if ((*it)->isRendered()
                 && (*it) != pPlayer->pSwordTrigger
                 && (*it) != pSign1->pSignTrigger
+                && (*it) != pSign2->pSignTrigger
                 && (*it) != pF1GroundCheck
                 && (*it) != pF2GroundCheck)
             {
@@ -345,6 +347,7 @@ void Game::Render()
         {
             if ((*it)->isRendered()
                 && (*it) != pPlayer->pSwordTrigger
+                && (*it) != pSignIntro->pSignTrigger
                 && (*it) != pIntroGroundCheck)
             {
                 (*it)->Draw(m_DD);
@@ -668,14 +671,11 @@ void Game::CheckCollision()
 {
     for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_ColliderObjects.size(); j++)
     {
-        if (m_PhysicsObjects[i]->Intersects(*m_ColliderObjects[j])) //std::cout << "Collision Detected!" << std::endl;
+        if (m_ColliderObjects[j]->isRendered() && m_PhysicsObjects[i]->Intersects(*m_ColliderObjects[j]))
         {
-            if (m_ColliderObjects[j]->isRendered())
-            {
-                XMFLOAT3 eject_vect = Collision::ejectionCMOGO(*m_PhysicsObjects[i], *m_ColliderObjects[j]);
-                auto pos = m_PhysicsObjects[i]->GetPos();
-                m_PhysicsObjects[i]->SetPos(pos - eject_vect);
-            }
+            XMFLOAT3 eject_vect = Collision::ejectionCMOGO(*m_PhysicsObjects[i], *m_ColliderObjects[j]);
+            auto pos = m_PhysicsObjects[i]->GetPos();
+            m_PhysicsObjects[i]->SetPos(pos - eject_vect);
         }
     }
 }
@@ -775,46 +775,43 @@ void Game::SwordCollision()
         }
         if (m_Destructibles[j]->isRendered() && m_Destructibles[j]->Intersects(*m_SwordTrigger[sword]))
         {
-            std::cout << "h";
             m_Destructibles[j]->SetRendered(false);
-            //m_Enemies[i]->EnemySensor->SetRendered(false);
         }
     }
 }
-void Game::SignCollision()
+void Game::SignReading()
 {
-    for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_SignTrigger.size(); j++)
+    for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_Signs.size(); j++)
     {
-        if (m_SignTrigger[j]->isRendered() && m_PhysicsObjects[i]->Intersects(*m_SignTrigger[j]))
+        if (m_Signs[j]->pSignTrigger->isRendered() && m_PhysicsObjects[i]->Intersects(*m_Signs[j]->pSignTrigger))
         {
             if (m_PhysicsObjects[i] == pPlayer)
             {
-                readText->SetRendered(true);
-                if (m_GD->m_KBS.E)
+                m_Signs[j]->pReadText->SetRendered(true);
+                if (m_GD->m_KBS.E && !pPlayer->is_reading)
                 {
-                    if (pPlayer->is_reading == false)
-                    {
-                        pPlayer->is_reading = true;
-                    }
+                    m_Signs[j]->is_reading = true;
                 }
             }
         }
         else
         {
-            readText->SetRendered(false);
-            pPlayer->is_reading = false;
-        }
-
-        if (pPlayer->is_reading)
-        {
-
-            sign1Image->SetRendered(true);
-            readText->SetRendered(false);
-        }
-        else
-        {
+            m_Signs[j]->pReadText->SetRendered(false);
+            m_Signs[j]->is_reading = false;
             sign1Image->SetRendered(false);
+            sign2Image->SetRendered(false);
         }
+
+        //choosing image to render depending on the sign
+        if (pSignIntro->is_reading)
+            sign1Image->SetRendered(true);
+        if (pSign1->is_reading)
+            sign2Image->SetRendered(true);
+        if (pSign2->is_reading)
+            sign1Image->SetRendered(true);
+        //removing read prompt while player is reading
+        if (m_Signs[j]->is_reading)
+            m_Signs[j]->pReadText->SetRendered(false);
     }
 }
 
@@ -834,7 +831,6 @@ void Game::DisplayIntro()
     //set intro active
     m_GD->m_GS = GS_INTRO;
     scoreText->SetRendered(true);
-    readText->SetRendered(false);
     for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
     {
         (*it)->SetRendered(true);
@@ -861,7 +857,6 @@ void Game::DisplayGame()
     {
         (*it)->SetRendered(true);
     }
-    pIntroGroundCheck->SetRendered(false);
     pPlayer->pSwordTrigger->SetRendered(false);
 
     //set others inactive
@@ -934,7 +929,6 @@ void Game::CreateIntroGround()
     m_Destructibles.push_back(pIntroBreakable);
 
     pFloatingSword = new Coin("Sword", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -75));
-    //pFloatingSword->SetPos(Vector3(0, -5, -20));
     pFloatingSword->SetYaw(90);
     pFloatingSword->SetScale(Vector3(0.25f, 0.3f, 0.25f));
     m_IntroGOs.push_back(pFloatingSword);

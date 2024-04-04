@@ -124,11 +124,11 @@ private:
     std::vector<CMOGO*> m_TriggerObjects;
 
     std::vector<CMOGO*> m_Coins;
+    std::vector<CMOGO*> m_SwordTrigger;
     std::vector<Enemy*> m_Enemies;
     std::vector<CMOGO*> m_Destructibles;
     std::vector<CMOGO*> m_EnemySensors;
-    std::vector<CMOGO*> m_SignTrigger;
-    std::vector<CMOGO*> m_SwordTrigger;
+    std::vector<Sign*>  m_Signs;
 
     void CheckCollision();
     void CheckTriggers();
@@ -136,7 +136,7 @@ private:
     void SwordCollision();
     void EnemyCollision();
     void SensorCollision();
-    void SignCollision();
+    void SignReading();
 
     //sound stuff
 	//This uses a simple system, but a better pipeline can be used using Wave Banks
@@ -158,11 +158,12 @@ private:
     Enemy* pEnemy1;
     Enemy* pEnemy2;
 
-    TextGO2D* readText;
     Sign* pSignIntro;
     ImageGO2D* signIntroImage;
     Sign* pSign1;
     ImageGO2D* sign1Image;
+    Sign* pSign2;
+    ImageGO2D* sign2Image;
 
     int score;
     TextGO2D* scoreText;

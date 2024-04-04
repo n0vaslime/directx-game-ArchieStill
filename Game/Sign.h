@@ -1,5 +1,6 @@
 #pragma once
 #include "CMOGO.h"
+#include "TextGO2D.h"
 #include "ImageGO2D.h"
 
 class Sign : public CMOGO
@@ -10,6 +11,12 @@ public:
 
 	virtual void Draw(DrawData* _DD) override;
 	virtual void Tick(GameData* _GD) override;
+	void SetTriggerPos(GameData* _GD);
+	void CreateText();
 
 	CMOGO* pSignTrigger;
+
+	bool can_read = false;
+	bool is_reading = false;
+	TextGO2D* pReadText;
 };

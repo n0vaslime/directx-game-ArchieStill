@@ -147,34 +147,40 @@ void Game::Initialize(HWND _window, int _width, int _height)
 
 
     //add Sign - sign objects & text
-        pSignIntro = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -35));
-    m_IntroGOs.push_back(pSignIntro);
-    m_Signs.push_back(pSignIntro);
-    m_ColliderObjects.push_back(pSignIntro);
-    m_IntroGOs.push_back(pSignIntro->pSignTrigger);
-        pSign1 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-2,-30));
-    m_GameObjects.push_back(pSign1);
+        pSign1 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -35));
+    m_IntroGOs.push_back(pSign1);
     m_Signs.push_back(pSign1);
     m_ColliderObjects.push_back(pSign1);
-    m_GameObjects.push_back(pSign1->pSignTrigger);
-        pSign2 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(25, -2, -60));
-    m_GameObjects.push_back(pSign2);
+    m_IntroGOs.push_back(pSign1->pSignTrigger);
+        pSign2 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -85));
+    m_IntroGOs.push_back(pSign2);
     m_Signs.push_back(pSign2);
     m_ColliderObjects.push_back(pSign2);
-    m_GameObjects.push_back(pSign2->pSignTrigger);
+    m_IntroGOs.push_back(pSign2->pSignTrigger);
+        pSign3 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2, -30));
+    m_GameObjects.push_back(pSign3);
+    m_Signs.push_back(pSign3);
+    m_ColliderObjects.push_back(pSign3);
+    m_GameObjects.push_back(pSign3->pSignTrigger);
+        pSign4 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(25, -2, -60));
+    m_GameObjects.push_back(pSign4);
+    m_Signs.push_back(pSign4);
+    m_ColliderObjects.push_back(pSign4);
+    m_GameObjects.push_back(pSign4->pSignTrigger);
 
-        sign1Image = new ImageGO2D("PlaceholderSign", m_d3dDevice.Get());
+        sign1Image = new ImageGO2D("IntroLoreSign", m_d3dDevice.Get());
     sign1Image->SetPos(Vector2(400, 300));
-    sign1Image->SetScale(Vector2(1, 0.75f));
+    sign1Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign1Image);
-        sign2Image = new ImageGO2D("pain", m_d3dDevice.Get());
+        sign2Image = new ImageGO2D("IntroHTPSign", m_d3dDevice.Get());
     sign2Image->SetPos(Vector2(400, 300));
-    sign2Image->SetScale(Vector2(1, 0.75f));
+    sign2Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign2Image);
 
-    m_GameObjects2D.push_back(pSignIntro->pReadText);
     m_GameObjects2D.push_back(pSign1->pReadText);
     m_GameObjects2D.push_back(pSign2->pReadText);
+    m_GameObjects2D.push_back(pSign3->pReadText);
+    m_GameObjects2D.push_back(pSign4->pReadText);
 
 
 
@@ -325,8 +331,8 @@ void Game::Render()
         {
             if ((*it)->isRendered()
                 && (*it) != pPlayer->pSwordTrigger
-                && (*it) != pSign1->pSignTrigger
-                && (*it) != pSign2->pSignTrigger
+                && (*it) != pSign3->pSignTrigger
+                && (*it) != pSign4->pSignTrigger
                 && (*it) != pF1GroundCheck
                 && (*it) != pF2GroundCheck)
             {
@@ -347,7 +353,8 @@ void Game::Render()
         {
             if ((*it)->isRendered()
                 && (*it) != pPlayer->pSwordTrigger
-                && (*it) != pSignIntro->pSignTrigger
+                && (*it) != pSign1->pSignTrigger
+                && (*it) != pSign2->pSignTrigger
                 && (*it) != pIntroGroundCheck)
             {
                 (*it)->Draw(m_DD);
@@ -699,6 +706,12 @@ void Game::CheckTriggers()
                         pFloatingSword->SetRendered(false);
                         pPlayer->has_sword = true;
                     }
+                    if (m_TriggerObjects[j] == pDeathTrigger)
+                    {
+                        health--;
+                        std::cout << health << std::endl;
+                        pPlayer->is_respawning = true;
+                    }
                 }
             }
         }
@@ -803,11 +816,13 @@ void Game::SignReading()
         }
 
         //choosing image to render depending on the sign
-        if (pSignIntro->is_reading)
-            sign1Image->SetRendered(true);
         if (pSign1->is_reading)
-            sign2Image->SetRendered(true);
+            sign1Image->SetRendered(true);
         if (pSign2->is_reading)
+            sign2Image->SetRendered(true);
+        if (pSign3->is_reading)
+            sign2Image->SetRendered(true);
+        if (pSign4->is_reading)
             sign1Image->SetRendered(true);
         //removing read prompt while player is reading
         if (m_Signs[j]->is_reading)
@@ -882,6 +897,11 @@ void Game::DisplayLoss()
 
 void Game::CreateGround()
 {
+    //Death trigger
+    pDeathTrigger = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -50, 0), 0.0f, 0.0f, 0.0f, Vector3(1000, 1, 1000));
+    m_GameObjects.push_back(pDeathTrigger);
+    m_TriggerObjects.push_back(pDeathTrigger);
+
     //Floor 1 ground
     Terrain* pF1Floor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-10,0), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
     m_GameObjects.push_back(pF1Floor);

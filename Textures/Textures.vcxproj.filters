@@ -7,5 +7,7 @@
     <ImageContentTask Include="..\RawAssets\Images\TitleScreen.png" />
     <ImageContentTask Include="..\RawAssets\Images\pain.jpg" />
     <ImageContentTask Include="..\RawAssets\Images\PlaceholderSign.png" />
+    <ImageContentTask Include="..\RawAssets\Images\IntroLoreSign.png" />
+    <ImageContentTask Include="..\RawAssets\Images\IntroHTPSign.png" />
   </ItemGroup>
 </Project>

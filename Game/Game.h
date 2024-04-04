@@ -147,6 +147,7 @@ private:
     Player* pPlayer;
     Coin* pFloatingSword;
 
+    Terrain* pDeathTrigger;
     Terrain* pIntroGroundCheck;
     Terrain* pF1GroundCheck;
     Terrain* pF2GroundCheck;
@@ -158,11 +159,11 @@ private:
     Enemy* pEnemy1;
     Enemy* pEnemy2;
 
-    Sign* pSignIntro;
-    ImageGO2D* signIntroImage;
     Sign* pSign1;
-    ImageGO2D* sign1Image;
     Sign* pSign2;
+    Sign* pSign3;
+    Sign* pSign4;
+    ImageGO2D* sign1Image;
     ImageGO2D* sign2Image;
 
     int score;

@@ -149,9 +149,9 @@ private:
 
     Terrain* pIntroExit;
     Terrain* pDeathTrigger;
-    Terrain* pIntroGroundCheck;
-    Terrain* pF1GroundCheck;
-    Terrain* pF2GroundCheck;
+    Terrain* pIntroFloor;
+    Terrain* pF1Floor;
+    Terrain* pF2Floor;
 
     Coin* pCoin1;
     Coin* pCoin2;

@@ -16,6 +16,8 @@ public:
 
 	void Tick(GameData* _GD) override { _GD; };
 
+	CMOGO* GroundCheck;
+
 protected:
 
 };

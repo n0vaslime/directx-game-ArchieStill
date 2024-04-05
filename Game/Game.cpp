@@ -343,8 +343,8 @@ void Game::Render()
                 && (*it) != pPlayer->pSwordTrigger
                 && (*it) != pSign3->pSignTrigger
                 && (*it) != pSign4->pSignTrigger
-                && (*it) != pF1GroundCheck
-                && (*it) != pF2GroundCheck)
+                && (*it) != pF1Floor->GroundCheck
+                && (*it) != pF2Floor->GroundCheck)
             {
                 (*it)->Draw(m_DD);
             }
@@ -365,7 +365,7 @@ void Game::Render()
                 && (*it) != pPlayer->pSwordTrigger
                 && (*it) != pSign1->pSignTrigger
                 && (*it) != pSign2->pSignTrigger
-                && (*it) != pIntroGroundCheck)
+                && (*it) != pIntroFloor->GroundCheck)
             {
                 (*it)->Draw(m_DD);
             }
@@ -699,8 +699,8 @@ void Game::CheckTriggers()
             {
                 if (m_PhysicsObjects[i] == pPlayer)
                 {
-                    if (m_TriggerObjects[j] == pIntroGroundCheck || 
-                        pF1GroundCheck || pF2GroundCheck)
+                    if (m_TriggerObjects[j] == pIntroFloor->GroundCheck || 
+                        pF1Floor->GroundCheck || pF2Floor->GroundCheck)
                     {
                         pPlayer->is_grounded = true;
                     }
@@ -918,35 +918,32 @@ void Game::CreateGround()
     m_GameObjects.push_back(pDeathTrigger);
     m_TriggerObjects.push_back(pDeathTrigger);
 
-    //Cave outside
+    //Cave exterior
     Terrain* pCave = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 200), 0.0f, 0.0f, 0.0f, Vector3(15, 15, 50));
     m_GameObjects.push_back(pCave);
     m_ColliderObjects.push_back(pCave);
 
     //Floor 1 ground
-    Terrain* pF1Floor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-10,0), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 25));
+    pF1Floor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-10,0), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 25));
     m_GameObjects.push_back(pF1Floor);
     m_ColliderObjects.push_back(pF1Floor);
-    pF1GroundCheck = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -8, 0), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 25));
-    m_GameObjects.push_back(pF1GroundCheck);
-    m_TriggerObjects.push_back(pF1GroundCheck);
+    m_GameObjects.push_back(pF1Floor->GroundCheck);
+    m_TriggerObjects.push_back(pF1Floor->GroundCheck);
 
     //Floor2 ground
-    Terrain* pF2Floor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -250), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
+    pF2Floor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -250), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
     m_GameObjects.push_back(pF2Floor);
     m_ColliderObjects.push_back(pF2Floor);
-    pF2GroundCheck = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 2, -250), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
-    m_GameObjects.push_back(pF2GroundCheck);
-    m_TriggerObjects.push_back(pF2GroundCheck);
+    m_GameObjects.push_back(pF2Floor->GroundCheck);
+    m_TriggerObjects.push_back(pF2Floor->GroundCheck);
 }
 void Game::CreateIntroGround()
 {
-    Terrain* pIntroFloor = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -10, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 35));
+    pIntroFloor = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -10, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 35));
     m_IntroGOs.push_back(pIntroFloor);
     m_ColliderObjects.push_back(pIntroFloor);
-    pIntroGroundCheck = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -8, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 35));
-    m_IntroGOs.push_back(pIntroGroundCheck);
-    m_TriggerObjects.push_back(pIntroGroundCheck);
+    m_IntroGOs.push_back(pIntroFloor->GroundCheck);
+    m_TriggerObjects.push_back(pIntroFloor->GroundCheck);
 
     Terrain* pIntroLWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 10, 35));
     m_IntroGOs.push_back(pIntroLWall);

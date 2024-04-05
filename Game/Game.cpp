@@ -201,11 +201,16 @@ void Game::Initialize(HWND _window, int _width, int _height)
     bug_test->SetScale(0.1f);
     m_GameObjects2D.push_back(bug_test);
 
-    scoreText = new TextGO2D("Coins: " + std::to_string(score));
+        scoreText = new TextGO2D("Coins: " + std::to_string(score));
     scoreText->SetPos(Vector2(100, 10));
     scoreText->SetColour(Color((float*)&Colors::Yellow));
-    scoreText->SetScale(1.5f);
+    scoreText->SetScale(1);
     m_GameObjects2D.push_back(scoreText);
+        livesText = new TextGO2D("Lives: " + std::to_string(lives));
+    livesText->SetPos(Vector2(100, 30));
+    livesText->SetColour(Color((float*)&Colors::Red));
+    livesText->SetScale(1);
+    m_GameObjects2D.push_back(livesText);
 
     title_screen = new ImageGO2D("TitleScreen", m_d3dDevice.Get());
     title_screen->SetPos(Vector2(400,300));
@@ -217,6 +222,11 @@ void Game::Initialize(HWND _window, int _width, int _height)
     loop->SetVolume(0.1f);
     loop->Play();
     m_Sounds.push_back(loop);
+
+    // Loop* introMusic = new Loop(m_audioEngine.get(), "BondsOfSeaAndFlame");
+    // introMusic->SetVolume(0.25f);
+    // introMusic->Play();
+    // m_Sounds.push_back(introMusic);
 
     // TestSound* TS = new TestSound(m_audioEngine.get(), "Explo1");
     // m_Sounds.push_back(TS);
@@ -658,15 +668,8 @@ void Game::ReadInput()
             if (m_GD->m_KBS.Enter)
             {
                 m_GD->m_GS = GS_INTRO;
+                //introMusic->Play();
                 DisplayIntro();
-            }
-        }
-        case(GS_INTRO):
-        {
-            if (m_GD->m_KBS.Tab)
-            {
-                m_GD->m_GS = GS_GAME;
-                DisplayGame();
             }
         }
     default:
@@ -706,11 +709,14 @@ void Game::CheckTriggers()
                         pFloatingSword->SetRendered(false);
                         pPlayer->has_sword = true;
                     }
+                    if (m_TriggerObjects[j] == pIntroExit)
+                    {
+                        m_GD->m_GS = GS_GAME;
+                        DisplayGame();
+                    }
                     if (m_TriggerObjects[j] == pDeathTrigger)
                     {
-                        health--;
-                        std::cout << health << std::endl;
-                        pPlayer->is_respawning = true;
+                        LoseLife();
                     }
                 }
             }
@@ -732,7 +738,7 @@ void Game::CoinCollision()
                 scoreText = new TextGO2D("Coins: " + std::to_string(score));
                 scoreText->SetPos(Vector2(100, 10));
                 scoreText->SetColour(Color((float*)&Colors::Yellow));
-                scoreText->SetScale(1.5f);
+                scoreText->SetScale(1);
                 m_GameObjects2D.push_back(scoreText);
             }
         }
@@ -746,9 +752,7 @@ void Game::EnemyCollision()
         {
             if (m_PhysicsObjects[j] == pPlayer)
             {
-                health--;
-                std::cout << health << std::endl;
-                pPlayer->is_respawning = true;
+                LoseLife();
             }
         }
     }
@@ -830,6 +834,18 @@ void Game::SignReading()
     }
 }
 
+void Game::LoseLife()
+{
+    livesText->SetRendered(false);
+    lives--;
+    livesText = new TextGO2D("Lives: " + std::to_string(lives));
+    livesText->SetPos(Vector2(100, 30));
+    livesText->SetColour(Color((float*)&Colors::Red));
+    livesText->SetScale(1);
+    m_GameObjects2D.push_back(livesText);
+    pPlayer->is_respawning = true;
+}
+
 void Game::DisplayMenu()
 {
     //set menu active
@@ -898,15 +914,20 @@ void Game::DisplayLoss()
 void Game::CreateGround()
 {
     //Death trigger
-    pDeathTrigger = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -50, 0), 0.0f, 0.0f, 0.0f, Vector3(1000, 1, 1000));
+    pDeathTrigger = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -50, 0), 0.0f, 0.0f, 0.0f, Vector3(1000, 1, 1000));
     m_GameObjects.push_back(pDeathTrigger);
     m_TriggerObjects.push_back(pDeathTrigger);
 
+    //Cave outside
+    Terrain* pCave = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 200), 0.0f, 0.0f, 0.0f, Vector3(15, 15, 50));
+    m_GameObjects.push_back(pCave);
+    m_ColliderObjects.push_back(pCave);
+
     //Floor 1 ground
-    Terrain* pF1Floor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-10,0), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
+    Terrain* pF1Floor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-10,0), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 25));
     m_GameObjects.push_back(pF1Floor);
     m_ColliderObjects.push_back(pF1Floor);
-    pF1GroundCheck = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -8, 0), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
+    pF1GroundCheck = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -8, 0), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 25));
     m_GameObjects.push_back(pF1GroundCheck);
     m_TriggerObjects.push_back(pF1GroundCheck);
 
@@ -943,10 +964,13 @@ void Game::CreateIntroGround()
     m_IntroGOs.push_back(pIntroFrontWall);
     m_ColliderObjects.push_back(pIntroFrontWall);
 
-    Terrain* pIntroBreakable = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -132.5f), 0.0f, 0.0f, 0.0f, Vector3(2, 5, 1));
+    Terrain* pIntroBreakable = new Terrain("CrackedWall", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2.5f, -134), 0.0f, 0.0f, 0.0f, Vector3(4, 5, 3));
     m_IntroGOs.push_back(pIntroBreakable);
     m_ColliderObjects.push_back(pIntroBreakable);
     m_Destructibles.push_back(pIntroBreakable);
+    pIntroExit = new Terrain("IntroExit", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2.5f, -135.25f), 0.0f, 0.0f, 0.0f, Vector3(3, 5, 3));
+    m_IntroGOs.push_back(pIntroExit);
+    m_TriggerObjects.push_back(pIntroExit);
 
     pFloatingSword = new Coin("Sword", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -75));
     pFloatingSword->SetYaw(90);

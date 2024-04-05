@@ -149,11 +149,13 @@
     <Text Include="terrainTex.txt" />
   </ItemGroup>
   <ItemGroup>
+    <MeshContentTask Include="..\..\..\..\..\..\OneDrive - UWE Bristol\Second Year\More Games in C++\3D Models\CrackedWall.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\CaveCube.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Coin.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Cube.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Enemy.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\GreenCube.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\IntroExit.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Player.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Sign.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Sword.fbx" />

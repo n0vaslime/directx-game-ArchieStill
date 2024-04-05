@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Media Include="..\RawAssets\Audio\BondsOfSeaAndFlame.wav" />
     <Media Include="Explo1.wav" />
     <Media Include="NightAmbienceSimple_02.wav" />
   </ItemGroup>

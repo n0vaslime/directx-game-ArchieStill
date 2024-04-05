@@ -147,6 +147,7 @@ private:
     Player* pPlayer;
     Coin* pFloatingSword;
 
+    Terrain* pIntroExit;
     Terrain* pDeathTrigger;
     Terrain* pIntroGroundCheck;
     Terrain* pF1GroundCheck;
@@ -168,20 +169,18 @@ private:
 
     int score;
     TextGO2D* scoreText;
-    int health = 5;
+    int lives = 5;
+    TextGO2D* livesText;
 
     ImageGO2D* title_screen;
+        
+    void LoseLife();
 
     void DisplayMenu();
     void DisplayIntro();
     void DisplayGame();
     void DisplayWin();
     void DisplayLoss();
-
-    void InitMenuAssets();
-    void InitGameAssets();
-    void InitWinAssets();
-    void InitLossAssets();
 
     void CreateGround();
     void CreateIntroGround();

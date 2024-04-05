@@ -91,7 +91,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     score = 0;
 
     //create a base light
-    m_light = new Light(Vector3(0.0f, 100.0f, 160.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(0.4f, 0.1f, 0.1f, 1.0f));
+    m_light = new Light(Vector3(0.0f, 100.0f, 160.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(110.4f, 110.1f, 0.1f, 1.0f));
     m_GameObjects.push_back(m_light);
 
     //find how big my window is to correctly calculate my aspect ratio
@@ -132,19 +132,18 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_Coins.push_back(pCoin3);
 
     //add Enemies
-        pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 1.0f, 30.0f),0,0,0);
-        pEnemy1->SetRendered(true);
+        pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 5.0f, 30.0f),0,0,0);
     m_GameObjects.push_back(pEnemy1);
     m_Enemies.push_back(pEnemy1);
+    //m_PhysicsObjects.push_back(pEnemy1);
     m_GameObjects.push_back(pEnemy1->EnemySensor);
     m_EnemySensors.push_back(pEnemy1->EnemySensor);
-        pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 1.0f, -50.0f), 0, 0, 0);
-        pEnemy2->SetRendered(true);
+        pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 5.0f, -50.0f), 0, 0, 0);
     m_GameObjects.push_back(pEnemy2);
     m_Enemies.push_back(pEnemy2);
+    //m_PhysicsObjects.push_back(pEnemy2);
     m_GameObjects.push_back(pEnemy2->EnemySensor);
     m_EnemySensors.push_back(pEnemy2->EnemySensor);
-
 
     //add Sign - sign objects & text
         pSign1 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -35));
@@ -961,7 +960,7 @@ void Game::CreateIntroGround()
     m_IntroGOs.push_back(pIntroFrontWall);
     m_ColliderObjects.push_back(pIntroFrontWall);
 
-    Terrain* pIntroBreakable = new Terrain("CrackedWall", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2.5f, -134), 0.0f, 0.0f, 0.0f, Vector3(4, 5, 3));
+    Terrain* pIntroBreakable = new Terrain("CrackedWall", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2.5f, -134), 0.0f, 0.0f, 0.0f, Vector3(4, 5.5f, 3));
     m_IntroGOs.push_back(pIntroBreakable);
     m_ColliderObjects.push_back(pIntroBreakable);
     m_Destructibles.push_back(pIntroBreakable);

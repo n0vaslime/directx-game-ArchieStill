@@ -9,7 +9,7 @@ Player::Player(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF)
 	//any special set up for Player goes here
 	m_fudge = Matrix::CreateRotationY(XM_PI);
 	m_pos.y = 1.0f;
-	SetDrag(0.7);
+	SetDrag(1.5f);
 	SetPhysicsOn(true);
 	SetScale(Vector3(1,2,1));
 
@@ -113,7 +113,7 @@ void Player::PlayerMovement(GameData* _GD)
 	if (_GD->m_KBS.Space && is_grounded && !is_attacking)
 	{
 		//m_acc.y += 200.0f;
-		m_vel.y = 30;
+		m_vel.y = 50;
 		is_grounded = false;
 	}
 

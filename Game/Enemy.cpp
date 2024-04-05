@@ -10,6 +10,7 @@ Enemy::Enemy(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, V
 	m_yaw = _yaw;
 	m_roll = _roll;
 
+    SetPhysicsOn(true);
 	SetScale(Vector3(1, 1, 1));
 
 	speed = 0.75f;

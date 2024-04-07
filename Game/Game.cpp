@@ -194,21 +194,10 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_DD->m_light = m_light;
 
     //example basic 2D stuff
-    ImageGO2D* bug_test = new ImageGO2D("pain", m_d3dDevice.Get());
-    bug_test->SetPos(150.0f * Vector2::One);
-    bug_test->SetScale(0.1f);
-    m_GameObjects2D.push_back(bug_test);
-
-        scoreText = new TextGO2D("Coins: " + std::to_string(score));
-    scoreText->SetPos(Vector2(100, 10));
-    scoreText->SetColour(Color((float*)&Colors::Yellow));
-    scoreText->SetScale(1);
-    m_GameObjects2D.push_back(scoreText);
-        livesText = new TextGO2D("Lives: " + std::to_string(lives));
-    livesText->SetPos(Vector2(100, 30));
-    livesText->SetColour(Color((float*)&Colors::Red));
-    livesText->SetScale(1);
-    m_GameObjects2D.push_back(livesText);
+    // ImageGO2D* bug_test = new ImageGO2D("pain", m_d3dDevice.Get());
+    // bug_test->SetPos(150.0f * Vector2::One);
+    // bug_test->SetScale(0.1f);
+    // m_GameObjects2D.push_back(bug_test);
 
     title_screen = new ImageGO2D("TitleScreen", m_d3dDevice.Get());
     title_screen->SetPos(Vector2(400,300));
@@ -341,8 +330,9 @@ void Game::Render()
                 && (*it) != pPlayer->pSwordTrigger
                 && (*it) != pSign3->pSignTrigger
                 && (*it) != pSign4->pSignTrigger
-                && (*it) != pF1Floor->GroundCheck
-                && (*it) != pF2Floor->GroundCheck)
+                && (*it) != pGround1->GroundCheck
+                && (*it) != pGround2->GroundCheck
+                && (*it) != pGround3->GroundCheck)
             {
                 (*it)->Draw(m_DD);
             }
@@ -363,7 +353,7 @@ void Game::Render()
                 && (*it) != pPlayer->pSwordTrigger
                 && (*it) != pSign1->pSignTrigger
                 && (*it) != pSign2->pSignTrigger
-                && (*it) != pIntroFloor->GroundCheck)
+                && (*it) != pGroundIntro->GroundCheck)
             {
                 (*it)->Draw(m_DD);
             }
@@ -695,8 +685,8 @@ void Game::CheckTriggers()
         {
             if (m_TriggerObjects[j]->isRendered())
             {
-                if (m_TriggerObjects[j] == pIntroFloor->GroundCheck ||
-                    pF1Floor->GroundCheck || pF2Floor->GroundCheck)
+                if (m_TriggerObjects[j] == pGroundIntro->GroundCheck ||
+                    pGround1->GroundCheck || pGround2->GroundCheck)
                 {
                     pPlayer->is_grounded = true;
                 }
@@ -708,6 +698,7 @@ void Game::CheckTriggers()
                 if (m_TriggerObjects[j] == pIntroExit)
                 {
                     m_GD->m_GS = GS_GAME;
+                    CreateUI();
                     DisplayGame();
                 }
                 if (m_TriggerObjects[j] == pDeathTrigger)
@@ -728,9 +719,9 @@ void Game::CoinCollision()
             scoreText->SetRendered(false);
             m_Coins[i]->SetRendered(false);
             score++;
-            scoreText = new TextGO2D("Coins: " + std::to_string(score));
-            scoreText->SetPos(Vector2(100, 10));
-            scoreText->SetColour(Color((float*)&Colors::Yellow));
+            scoreText = new TextGO2D(std::to_string(score));
+            scoreText->SetPos(Vector2(705, 15));
+            scoreText->SetColour(Color((float*)&Colors::Black));
             scoreText->SetScale(1);
             m_GameObjects2D.push_back(scoreText);
         }
@@ -817,13 +808,44 @@ void Game::SignReading()
     }
 }
 
+void Game::CreateUI()
+{
+    ImageGO2D* UIBG = new ImageGO2D("UIBackground", m_d3dDevice.Get());
+    UIBG->SetPos(Vector2(700, 50));
+    UIBG->SetScale(Vector2(0.15f,0.2f));
+    UIBG->SetRendered(true);
+    m_GameObjects2D.push_back(UIBG);
+
+        ImageGO2D* pLivesCount = new ImageGO2D("Heart", m_d3dDevice.Get());
+    pLivesCount->SetPos(Vector2(615, 50));
+    pLivesCount->SetScale(0.075f);
+    pLivesCount->SetRendered(true);
+    m_GameObjects2D.push_back(pLivesCount);
+        livesText = new TextGO2D(std::to_string(lives));
+    livesText->SetPos(Vector2(595, 15));
+    livesText->SetColour(Color((float*)&Colors::Black));
+    livesText->SetScale(1);
+    m_GameObjects2D.push_back(livesText);
+
+        ImageGO2D* pScoreCount = new ImageGO2D("Coin", m_d3dDevice.Get());
+    pScoreCount->SetPos(Vector2(725, 50));
+    pScoreCount->SetScale(Vector2(0.09f, 0.075f));
+    pScoreCount->SetRendered(true);
+    m_GameObjects2D.push_back(pScoreCount);
+        scoreText = new TextGO2D(std::to_string(score));
+    scoreText->SetPos(Vector2(705, 15));
+    scoreText->SetColour(Color((float*)&Colors::Black));
+    scoreText->SetScale(1);
+    m_GameObjects2D.push_back(scoreText);
+}
+
 void Game::LoseLife()
 {
     livesText->SetRendered(false);
     lives--;
-    livesText = new TextGO2D("Lives: " + std::to_string(lives));
-    livesText->SetPos(Vector2(100, 30));
-    livesText->SetColour(Color((float*)&Colors::Red));
+    livesText = new TextGO2D(std::to_string(lives));
+    livesText->SetPos(Vector2(595, 15));
+    livesText->SetColour(Color((float*)&Colors::Black));
     livesText->SetScale(1);
     m_GameObjects2D.push_back(livesText);
     pPlayer->is_respawning = true;
@@ -836,7 +858,6 @@ void Game::DisplayMenu()
     title_screen->SetRendered(true);
 
     //set others inactive
-    scoreText->SetRendered(false);
     for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
         (*it)->SetRendered(false);
 }
@@ -844,7 +865,6 @@ void Game::DisplayIntro()
 {
     //set intro active
     m_GD->m_GS = GS_INTRO;
-    scoreText->SetRendered(true);
     for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
     {
         (*it)->SetRendered(true);
@@ -866,7 +886,6 @@ void Game::DisplayGame()
     //set game active
     m_GD->m_GS = GS_GAME;
     pPlayer->is_respawning = true;
-    scoreText->SetRendered(true);
     for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
     {
         (*it)->SetRendered(true);
@@ -874,7 +893,6 @@ void Game::DisplayGame()
     pPlayer->pSwordTrigger->SetRendered(false);
 
     //set others inactive
-    title_screen->SetRendered(false);
     for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
     {
         if ((*it) == pPlayer)
@@ -906,53 +924,54 @@ void Game::CreateGround()
     m_GameObjects.push_back(pCave);
     m_ColliderObjects.push_back(pCave);
 
-    //Floor 1 ground
-    pF1Floor = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-10,0), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 25));
-    m_GameObjects.push_back(pF1Floor);
-    m_ColliderObjects.push_back(pF1Floor);
-    m_GameObjects.push_back(pF1Floor->GroundCheck);
-    m_TriggerObjects.push_back(pF1Floor->GroundCheck);
-
-    //Floor2 ground
-    pF2Floor = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -250), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
-    m_GameObjects.push_back(pF2Floor);
-    m_ColliderObjects.push_back(pF2Floor);
-    m_GameObjects.push_back(pF2Floor->GroundCheck);
-    m_TriggerObjects.push_back(pF2Floor->GroundCheck);
+        pGround1 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-10,0), 0.0f, 0.0f, 0.0f, Vector3(10, 1, 25));
+    m_GameObjects.push_back(pGround1);
+    m_ColliderObjects.push_back(pGround1);
+    m_GameObjects.push_back(pGround1->GroundCheck);
+    m_TriggerObjects.push_back(pGround1->GroundCheck);
+        pGround2 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -200), 0.0f, 0.0f, 0.0f, Vector3(20, 1, 20));
+    m_GameObjects.push_back(pGround2);
+    m_ColliderObjects.push_back(pGround2);
+    m_GameObjects.push_back(pGround2->GroundCheck);
+    m_TriggerObjects.push_back(pGround2->GroundCheck);
+        pGround3 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 10, -425), 0.0f, 0.0f, 0.0f, Vector3(20, 2, 20));
+    m_GameObjects.push_back(pGround3);
+    m_ColliderObjects.push_back(pGround3);
+    m_GameObjects.push_back(pGround3->GroundCheck);
+    m_TriggerObjects.push_back(pGround3->GroundCheck);
 }
 void Game::CreateIntroGround()
 {
-    pIntroFloor = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -10, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 35));
-    m_IntroGOs.push_back(pIntroFloor);
-    m_ColliderObjects.push_back(pIntroFloor);
-    m_IntroGOs.push_back(pIntroFloor->GroundCheck);
-    m_TriggerObjects.push_back(pIntroFloor->GroundCheck);
-
-    Terrain* pIntroLWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 10, 35));
+        pGroundIntro = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -10, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 35));
+    m_IntroGOs.push_back(pGroundIntro);
+    m_ColliderObjects.push_back(pGroundIntro);
+    m_IntroGOs.push_back(pGroundIntro->GroundCheck);
+    m_TriggerObjects.push_back(pGroundIntro->GroundCheck);
+        Terrain* pIntroLWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 10, 35));
     m_IntroGOs.push_back(pIntroLWall);
     m_ColliderObjects.push_back(pIntroLWall);
-    Terrain* pIntroRWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 10, 35));
+        Terrain* pIntroRWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 10, 35));
     m_IntroGOs.push_back(pIntroRWall);
     m_ColliderObjects.push_back(pIntroRWall);
-    Terrain* pIntroCeiling = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 25, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 35));
+        Terrain* pIntroCeiling = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 25, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 35));
     m_IntroGOs.push_back(pIntroCeiling);
     m_ColliderObjects.push_back(pIntroCeiling);
-    Terrain* pIntroBackWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 5), 0.0f, 0.0f, 0.0f, Vector3(15, 10, 1));
+        Terrain* pIntroBackWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 5), 0.0f, 0.0f, 0.0f, Vector3(15, 10, 1));
     m_IntroGOs.push_back(pIntroBackWall);
     m_ColliderObjects.push_back(pIntroBackWall);
-    Terrain* pIntroFrontWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -135), 0.0f, 0.0f, 0.0f, Vector3(15, 10, 1));
+        Terrain* pIntroFrontWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -135), 0.0f, 0.0f, 0.0f, Vector3(15, 10, 1));
     m_IntroGOs.push_back(pIntroFrontWall);
     m_ColliderObjects.push_back(pIntroFrontWall);
 
-    Terrain* pIntroBreakable = new Terrain("CrackedWall", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2.5f, -134), 0.0f, 0.0f, 0.0f, Vector3(4, 5.5f, 3));
+        Terrain* pIntroBreakable = new Terrain("CrackedWall", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2.5f, -134), 0.0f, 0.0f, 0.0f, Vector3(4, 5.5f, 3));
     m_IntroGOs.push_back(pIntroBreakable);
     m_ColliderObjects.push_back(pIntroBreakable);
     m_Destructibles.push_back(pIntroBreakable);
-    pIntroExit = new Terrain("IntroExit", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2.5f, -135.25f), 0.0f, 0.0f, 0.0f, Vector3(3, 5, 3));
+        pIntroExit = new Terrain("WhiteCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2.5f, -135.25f), 0.0f, 0.0f, 0.0f, Vector3(3, 5, 3));
     m_IntroGOs.push_back(pIntroExit);
     m_TriggerObjects.push_back(pIntroExit);
 
-    pFloatingSword = new Coin("Sword", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -75));
+        pFloatingSword = new Coin("Sword", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -75));
     pFloatingSword->SetYaw(90);
     pFloatingSword->SetScale(Vector3(0.25f, 0.3f, 0.25f));
     m_IntroGOs.push_back(pFloatingSword);

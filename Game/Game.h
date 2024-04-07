@@ -150,9 +150,10 @@ private:
 
     Terrain* pIntroExit;
     Terrain* pDeathTrigger;
-    Terrain* pIntroFloor;
-    Terrain* pF1Floor;
-    Terrain* pF2Floor;
+    Terrain* pGroundIntro;
+    Terrain* pGround1;
+    Terrain* pGround2;
+    Terrain* pGround3;
 
     Coin* pCoin1;
     Coin* pCoin2;
@@ -175,6 +176,7 @@ private:
 
     ImageGO2D* title_screen;
         
+    void CreateUI();
     void LoseLife();
 
     void DisplayMenu();

@@ -123,7 +123,7 @@ private:
     std::vector<CMOGO*> m_PhysicsObjects;
     std::vector<CMOGO*> m_TriggerObjects;
 
-    // std::vector<Player*> m_Player;
+    std::vector<Player*> m_Player;
     std::vector<CMOGO*> m_Coins;
     std::vector<CMOGO*> m_SwordTrigger;
     std::vector<Enemy*> m_Enemies;

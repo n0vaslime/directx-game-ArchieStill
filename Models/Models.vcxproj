@@ -153,6 +153,7 @@
     <MeshContentTask Include="..\RawAssets\Models\CaveCube.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Coin.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Enemy.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\GrassCube.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\GreenCube.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\IntroExit.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Player.fbx" />

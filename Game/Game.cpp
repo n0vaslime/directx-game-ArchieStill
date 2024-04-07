@@ -110,6 +110,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(pPlayer);
     m_IntroGOs.push_back(pPlayer);
     m_PhysicsObjects.push_back(pPlayer);
+    m_Player.push_back(pPlayer);
     m_GameObjects.push_back(pPlayer->pSwordTrigger);
     m_GameObjects.push_back(pPlayer->pSwordObject);
     m_IntroGOs.push_back(pPlayer->pSwordTrigger);
@@ -132,16 +133,14 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_Coins.push_back(pCoin3);
 
     //add Enemies
-        pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 5.0f, 30.0f),0,0,0);
+        pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 0.0f, 30.0f),0,0,0);
     m_GameObjects.push_back(pEnemy1);
     m_Enemies.push_back(pEnemy1);
-    //m_PhysicsObjects.push_back(pEnemy1);
     m_GameObjects.push_back(pEnemy1->EnemySensor);
     m_EnemySensors.push_back(pEnemy1->EnemySensor);
-        pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 5.0f, -50.0f), 0, 0, 0);
+        pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 0.0f, -50.0f), 0, 0, 0);
     m_GameObjects.push_back(pEnemy2);
     m_Enemies.push_back(pEnemy2);
-    //m_PhysicsObjects.push_back(pEnemy2);
     m_GameObjects.push_back(pEnemy2->EnemySensor);
     m_EnemySensors.push_back(pEnemy2->EnemySensor);
 
@@ -690,33 +689,30 @@ void Game::CheckCollision()
 }
 void Game::CheckTriggers()
 {
-    for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_TriggerObjects.size(); j++)
+    for (int i = 0; i < m_Player.size(); i++) for (int j = 0; j < m_TriggerObjects.size(); j++)
     {
-        if (m_PhysicsObjects[i]->Intersects(*m_TriggerObjects[j])) //std::cout << "Trigger Detected!" << std::endl;
+        if (m_Player[i]->Intersects(*m_TriggerObjects[j]))
         {
             if (m_TriggerObjects[j]->isRendered())
             {
-                if (m_PhysicsObjects[i] == pPlayer)
+                if (m_TriggerObjects[j] == pIntroFloor->GroundCheck ||
+                    pF1Floor->GroundCheck || pF2Floor->GroundCheck)
                 {
-                    if (m_TriggerObjects[j] == pIntroFloor->GroundCheck || 
-                        pF1Floor->GroundCheck || pF2Floor->GroundCheck)
-                    {
-                        pPlayer->is_grounded = true;
-                    }
-                    if (m_TriggerObjects[j] == pFloatingSword)
-                    {
-                        pFloatingSword->SetRendered(false);
-                        pPlayer->has_sword = true;
-                    }
-                    if (m_TriggerObjects[j] == pIntroExit)
-                    {
-                        m_GD->m_GS = GS_GAME;
-                        DisplayGame();
-                    }
-                    if (m_TriggerObjects[j] == pDeathTrigger)
-                    {
-                        LoseLife();
-                    }
+                    pPlayer->is_grounded = true;
+                }
+                if (m_TriggerObjects[j] == pFloatingSword)
+                {
+                    pFloatingSword->SetRendered(false);
+                    pPlayer->has_sword = true;
+                }
+                if (m_TriggerObjects[j] == pIntroExit)
+                {
+                    m_GD->m_GS = GS_GAME;
+                    DisplayGame();
+                }
+                if (m_TriggerObjects[j] == pDeathTrigger)
+                {
+                    LoseLife();
                 }
             }
         }
@@ -725,47 +721,38 @@ void Game::CheckTriggers()
 
 void Game::CoinCollision()
 {
-    for (int i = 0; i < m_Coins.size(); i++) for (int j = 0; j < m_PhysicsObjects.size(); j++)
+    for (int i = 0; i < m_Coins.size(); i++) for (int j = 0; j < m_Player.size(); j++)
     {
-        if (m_Coins[i]->isRendered() && m_Coins[i]->Intersects(*m_PhysicsObjects[j]))
+        if (m_Coins[i]->isRendered() && m_Coins[i]->Intersects(*m_Player[j]))
         {
-            if (m_PhysicsObjects[j] == pPlayer)
-            {
-                scoreText->SetRendered(false);
-                m_Coins[i]->SetRendered(false);
-                score++;
-                scoreText = new TextGO2D("Coins: " + std::to_string(score));
-                scoreText->SetPos(Vector2(100, 10));
-                scoreText->SetColour(Color((float*)&Colors::Yellow));
-                scoreText->SetScale(1);
-                m_GameObjects2D.push_back(scoreText);
-            }
+            scoreText->SetRendered(false);
+            m_Coins[i]->SetRendered(false);
+            score++;
+            scoreText = new TextGO2D("Coins: " + std::to_string(score));
+            scoreText->SetPos(Vector2(100, 10));
+            scoreText->SetColour(Color((float*)&Colors::Yellow));
+            scoreText->SetScale(1);
+            m_GameObjects2D.push_back(scoreText);
         }
     }
 }
 void Game::EnemyCollision()
 {
-    for (int i = 0; i < m_Enemies.size(); i++) for (int j = 0; j < m_PhysicsObjects.size(); j++)
+    for (int i = 0; i < m_Enemies.size(); i++) for (int j = 0; j < m_Player.size(); j++)
     {
-        if (m_Enemies[i]->isRendered() && m_Enemies[i]->Intersects(*m_PhysicsObjects[j]))
+        if (m_Enemies[i]->isRendered() && m_Enemies[i]->Intersects(*m_Player[j]))
         {
-            if (m_PhysicsObjects[j] == pPlayer)
-            {
-                LoseLife();
-            }
+            LoseLife();
         }
     }
 }
 void Game::SensorCollision()
 {
-    for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_EnemySensors.size(); j++)
+    for (int i = 0; i < m_Player.size(); i++) for (int j = 0; j < m_EnemySensors.size(); j++)
     {
-        if (m_PhysicsObjects[i]->Intersects(*m_EnemySensors[j]))
+        if (m_Player[i]->Intersects(*m_EnemySensors[j]))
         {
-            if (m_PhysicsObjects[i] == pPlayer)
-            {
-                m_Enemies[j]->player_spotted = true;
-            }
+            m_Enemies[j]->player_spotted = true;
         }
         else
         {
@@ -797,17 +784,14 @@ void Game::SwordCollision()
 }
 void Game::SignReading()
 {
-    for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_Signs.size(); j++)
+    for (int i = 0; i < m_Player.size(); i++) for (int j = 0; j < m_Signs.size(); j++)
     {
-        if (m_Signs[j]->pSignTrigger->isRendered() && m_PhysicsObjects[i]->Intersects(*m_Signs[j]->pSignTrigger))
+        if (m_Signs[j]->pSignTrigger->isRendered() && m_Player[i]->Intersects(*m_Signs[j]->pSignTrigger))
         {
-            if (m_PhysicsObjects[i] == pPlayer)
+            m_Signs[j]->pReadText->SetRendered(true);
+            if (m_GD->m_KBS.E && !pPlayer->is_reading)
             {
-                m_Signs[j]->pReadText->SetRendered(true);
-                if (m_GD->m_KBS.E && !pPlayer->is_reading)
-                {
-                    m_Signs[j]->is_reading = true;
-                }
+                m_Signs[j]->is_reading = true;
             }
         }
         else
@@ -913,7 +897,7 @@ void Game::DisplayLoss()
 void Game::CreateGround()
 {
     //Death trigger
-    pDeathTrigger = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -50, 0), 0.0f, 0.0f, 0.0f, Vector3(1000, 1, 1000));
+    pDeathTrigger = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -50, 0), 0.0f, 0.0f, 0.0f, Vector3(1000, 1, 1000));
     m_GameObjects.push_back(pDeathTrigger);
     m_TriggerObjects.push_back(pDeathTrigger);
 
@@ -923,14 +907,14 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pCave);
 
     //Floor 1 ground
-    pF1Floor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-10,0), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 25));
+    pF1Floor = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-10,0), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 25));
     m_GameObjects.push_back(pF1Floor);
     m_ColliderObjects.push_back(pF1Floor);
     m_GameObjects.push_back(pF1Floor->GroundCheck);
     m_TriggerObjects.push_back(pF1Floor->GroundCheck);
 
     //Floor2 ground
-    pF2Floor = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -250), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
+    pF2Floor = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -250), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
     m_GameObjects.push_back(pF2Floor);
     m_ColliderObjects.push_back(pF2Floor);
     m_GameObjects.push_back(pF2Floor->GroundCheck);

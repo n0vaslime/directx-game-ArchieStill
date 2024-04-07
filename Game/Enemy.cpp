@@ -10,7 +10,6 @@ Enemy::Enemy(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, V
 	m_yaw = _yaw;
 	m_roll = _roll;
 
-    SetPhysicsOn(true);
 	SetScale(Vector3(1, 1, 1));
 
 	speed = 0.75f;
@@ -18,7 +17,7 @@ Enemy::Enemy(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, V
     player_facing = 0.0f;
 
     EnemySensor = new CMOGO("Enemy", _pd3dDevice, _EF);
-    EnemySensor->SetScale(7.5f, 1, 7.5f);
+    EnemySensor->SetScale(10, 1, 10);
     EnemySensor->SetPos(this->GetPos());
 }
 
@@ -30,6 +29,7 @@ void Enemy::Tick(GameData* _GD)
 {
     //idle??
     m_yaw -= _GD->m_dt / 4;
+
     EnemyAI(_GD);
 
 	CMOGO::Tick(_GD);

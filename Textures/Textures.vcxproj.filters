@@ -10,7 +10,10 @@
     <ImageContentTask Include="..\RawAssets\Images\IntroLoreSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\IntroHTPSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\UIBackground.png" />
-    <ImageContentTask Include="..\..\..\..\..\..\OneDrive - UWE Bristol\Second Year\More Games in C++\Images\Heart.png" />
-    <ImageContentTask Include="..\..\..\..\..\..\OneDrive - UWE Bristol\Second Year\More Games in C++\Images\Coin.png" />
+    <ImageContentTask Include="..\RawAssets\Images\TreeInfoSign.png" />
+    <ImageContentTask Include="..\RawAssets\Images\Coin.png" />
+    <ImageContentTask Include="..\RawAssets\Images\Heart.png" />
+    <ImageContentTask Include="..\RawAssets\Images\Spotted.png" />
+    <ImageContentTask Include="..\RawAssets\Images\CubeEnemySign.png" />
   </ItemGroup>
 </Project>

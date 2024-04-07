@@ -121,69 +121,12 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(m_TPScam);
     m_IntroGOs.push_back(m_TPScam);
 
-    //add Coins
-        pCoin1 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(20.0f, 0.0f, 20.0f));
-    m_GameObjects.push_back(pCoin1);
-    m_Coins.push_back(pCoin1);
-        pCoin2 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-20.0f, 0.0f, -20.0f));
-    m_GameObjects.push_back(pCoin2);
-    m_Coins.push_back(pCoin2);
-        pCoin3 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 0.0f, 10.0f));
-    m_GameObjects.push_back(pCoin3);
-    m_Coins.push_back(pCoin3);
-
-    //add Enemies
-        pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 0.0f, 30.0f),0,0,0);
-    m_GameObjects.push_back(pEnemy1);
-    m_Enemies.push_back(pEnemy1);
-    m_GameObjects.push_back(pEnemy1->EnemySensor);
-    m_EnemySensors.push_back(pEnemy1->EnemySensor);
-        pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 0.0f, -50.0f), 0, 0, 0);
-    m_GameObjects.push_back(pEnemy2);
-    m_Enemies.push_back(pEnemy2);
-    m_GameObjects.push_back(pEnemy2->EnemySensor);
-    m_EnemySensors.push_back(pEnemy2->EnemySensor);
-
-    //add Sign - sign objects & text
-        pSign1 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -35));
-    m_IntroGOs.push_back(pSign1);
-    m_Signs.push_back(pSign1);
-    m_ColliderObjects.push_back(pSign1);
-    m_IntroGOs.push_back(pSign1->pSignTrigger);
-        pSign2 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -85));
-    m_IntroGOs.push_back(pSign2);
-    m_Signs.push_back(pSign2);
-    m_ColliderObjects.push_back(pSign2);
-    m_IntroGOs.push_back(pSign2->pSignTrigger);
-        pSign3 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2, -30));
-    m_GameObjects.push_back(pSign3);
-    m_Signs.push_back(pSign3);
-    m_ColliderObjects.push_back(pSign3);
-    m_GameObjects.push_back(pSign3->pSignTrigger);
-        pSign4 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(25, -2, -60));
-    m_GameObjects.push_back(pSign4);
-    m_Signs.push_back(pSign4);
-    m_ColliderObjects.push_back(pSign4);
-    m_GameObjects.push_back(pSign4->pSignTrigger);
-
-        sign1Image = new ImageGO2D("IntroLoreSign", m_d3dDevice.Get());
-    sign1Image->SetPos(Vector2(400, 300));
-    sign1Image->SetScale(Vector2(0.75f, 0.75f));
-    m_GameObjects2D.push_back(sign1Image);
-        sign2Image = new ImageGO2D("IntroHTPSign", m_d3dDevice.Get());
-    sign2Image->SetPos(Vector2(400, 300));
-    sign2Image->SetScale(Vector2(0.75f, 0.75f));
-    m_GameObjects2D.push_back(sign2Image);
-
-    m_GameObjects2D.push_back(pSign1->pReadText);
-    m_GameObjects2D.push_back(pSign2->pReadText);
-    m_GameObjects2D.push_back(pSign3->pReadText);
-    m_GameObjects2D.push_back(pSign4->pReadText);
-
-
+    CreateCoins();
+    CreateEnemies();
+    CreateSigns();
 
     //L-system like tree
-    Tree* tree = new Tree(1, 4, .6f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
+    Tree* tree = new Tree(4, 4, 1.0f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(tree);
 
     //create DrawData struct and populate its pointers
@@ -194,11 +137,6 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_DD->m_light = m_light;
 
     //example basic 2D stuff
-    // ImageGO2D* bug_test = new ImageGO2D("pain", m_d3dDevice.Get());
-    // bug_test->SetPos(150.0f * Vector2::One);
-    // bug_test->SetScale(0.1f);
-    // m_GameObjects2D.push_back(bug_test);
-
     title_screen = new ImageGO2D("TitleScreen", m_d3dDevice.Get());
     title_screen->SetPos(Vector2(400,300));
     title_screen->SetScale(1.25f);
@@ -218,7 +156,10 @@ void Game::Initialize(HWND _window, int _width, int _height)
     // TestSound* TS = new TestSound(m_audioEngine.get(), "Explo1");
     // m_Sounds.push_back(TS);
 
-    DisplayMenu();
+    //DisplayMenu();
+    DisplayGame();
+    CreateUI();
+    pPlayer->has_sword = true;
 }
 
 // Executes the basic game loop.
@@ -698,7 +639,7 @@ void Game::CheckTriggers()
                 if (m_TriggerObjects[j] == pIntroExit)
                 {
                     m_GD->m_GS = GS_GAME;
-                    CreateUI();
+                    //CreateUI();
                     DisplayGame();
                 }
                 if (m_TriggerObjects[j] == pDeathTrigger)
@@ -722,7 +663,7 @@ void Game::CoinCollision()
             scoreText = new TextGO2D(std::to_string(score));
             scoreText->SetPos(Vector2(705, 15));
             scoreText->SetColour(Color((float*)&Colors::Black));
-            scoreText->SetScale(1);
+            scoreText->SetScale(Vector2(1.1f, 1));
             m_GameObjects2D.push_back(scoreText);
         }
     }
@@ -791,6 +732,8 @@ void Game::SignReading()
             m_Signs[j]->is_reading = false;
             sign1Image->SetRendered(false);
             sign2Image->SetRendered(false);
+            sign3Image->SetRendered(false);
+            sign4Image->SetRendered(false);
         }
 
         //choosing image to render depending on the sign
@@ -799,44 +742,13 @@ void Game::SignReading()
         if (pSign2->is_reading)
             sign2Image->SetRendered(true);
         if (pSign3->is_reading)
-            sign2Image->SetRendered(true);
+            sign3Image->SetRendered(true);
         if (pSign4->is_reading)
-            sign1Image->SetRendered(true);
+            sign4Image->SetRendered(true);
         //removing read prompt while player is reading
         if (m_Signs[j]->is_reading)
             m_Signs[j]->pReadText->SetRendered(false);
     }
-}
-
-void Game::CreateUI()
-{
-    ImageGO2D* UIBG = new ImageGO2D("UIBackground", m_d3dDevice.Get());
-    UIBG->SetPos(Vector2(700, 50));
-    UIBG->SetScale(Vector2(0.15f,0.2f));
-    UIBG->SetRendered(true);
-    m_GameObjects2D.push_back(UIBG);
-
-        ImageGO2D* pLivesCount = new ImageGO2D("Heart", m_d3dDevice.Get());
-    pLivesCount->SetPos(Vector2(615, 50));
-    pLivesCount->SetScale(0.075f);
-    pLivesCount->SetRendered(true);
-    m_GameObjects2D.push_back(pLivesCount);
-        livesText = new TextGO2D(std::to_string(lives));
-    livesText->SetPos(Vector2(595, 15));
-    livesText->SetColour(Color((float*)&Colors::Black));
-    livesText->SetScale(1);
-    m_GameObjects2D.push_back(livesText);
-
-        ImageGO2D* pScoreCount = new ImageGO2D("Coin", m_d3dDevice.Get());
-    pScoreCount->SetPos(Vector2(725, 50));
-    pScoreCount->SetScale(Vector2(0.09f, 0.075f));
-    pScoreCount->SetRendered(true);
-    m_GameObjects2D.push_back(pScoreCount);
-        scoreText = new TextGO2D(std::to_string(score));
-    scoreText->SetPos(Vector2(705, 15));
-    scoreText->SetColour(Color((float*)&Colors::Black));
-    scoreText->SetScale(1);
-    m_GameObjects2D.push_back(scoreText);
 }
 
 void Game::LoseLife()
@@ -846,7 +758,7 @@ void Game::LoseLife()
     livesText = new TextGO2D(std::to_string(lives));
     livesText->SetPos(Vector2(595, 15));
     livesText->SetColour(Color((float*)&Colors::Black));
-    livesText->SetScale(1);
+    livesText->SetScale(Vector2(1.1f, 1));
     m_GameObjects2D.push_back(livesText);
     pPlayer->is_respawning = true;
 }
@@ -976,4 +888,109 @@ void Game::CreateIntroGround()
     pFloatingSword->SetScale(Vector3(0.25f, 0.3f, 0.25f));
     m_IntroGOs.push_back(pFloatingSword);
     m_TriggerObjects.push_back(pFloatingSword);
+}
+
+void Game::CreateUI()
+{
+        ImageGO2D* UIBG = new ImageGO2D("UIBackground", m_d3dDevice.Get());
+    UIBG->SetPos(Vector2(700, 50));
+    UIBG->SetScale(Vector2(0.15f, 0.2f));
+    UIBG->SetRendered(true);
+    m_GameObjects2D.push_back(UIBG);
+
+        ImageGO2D* pLivesCount = new ImageGO2D("Heart", m_d3dDevice.Get());
+    pLivesCount->SetPos(Vector2(615, 50));
+    pLivesCount->SetScale(0.075f);
+    pLivesCount->SetRendered(true);
+        m_GameObjects2D.push_back(pLivesCount);
+    livesText = new TextGO2D(std::to_string(lives));
+    livesText->SetPos(Vector2(595, 15));
+    livesText->SetColour(Color((float*)&Colors::Black));
+    livesText->SetScale(Vector2(1.1f, 1));
+    m_GameObjects2D.push_back(livesText);
+
+        ImageGO2D* pScoreCount = new ImageGO2D("Coin", m_d3dDevice.Get());
+    pScoreCount->SetPos(Vector2(725, 50));
+    pScoreCount->SetScale(Vector2(0.09f, 0.075f));
+    pScoreCount->SetRendered(true);
+        m_GameObjects2D.push_back(pScoreCount);
+    scoreText = new TextGO2D(std::to_string(score));
+    scoreText->SetPos(Vector2(705, 15));
+    scoreText->SetColour(Color((float*)&Colors::Black));
+    scoreText->SetScale(Vector2(1.1f, 1));
+    m_GameObjects2D.push_back(scoreText);
+}
+
+void Game::CreateCoins()
+{
+        Coin* pCoin1 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 0.0f, 50.0f));
+    m_GameObjects.push_back(pCoin1);
+    m_Coins.push_back(pCoin1);
+        Coin* pCoin2 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 0.0f, 35.0f));
+    m_GameObjects.push_back(pCoin2);
+    m_Coins.push_back(pCoin2);
+        Coin* pCoin3 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 0.0f, 10.0f));
+    m_GameObjects.push_back(pCoin3);
+    m_Coins.push_back(pCoin3);
+        Coin* pCoin4 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(30.0f, 0.0f, 10.0f));
+    m_GameObjects.push_back(pCoin4);
+    m_Coins.push_back(pCoin4);
+}
+void Game::CreateEnemies()
+{
+        pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 0.0f, -50.0f), 0, 0, 0);
+    m_GameObjects.push_back(pEnemy1);
+    m_Enemies.push_back(pEnemy1);
+    m_GameObjects.push_back(pEnemy1->EnemySensor);
+    m_EnemySensors.push_back(pEnemy1->EnemySensor);
+        pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 10.0f, -150.0f), 0, 0, 0);
+    m_GameObjects.push_back(pEnemy2);
+    m_Enemies.push_back(pEnemy2);
+    m_GameObjects.push_back(pEnemy2->EnemySensor);
+    m_EnemySensors.push_back(pEnemy2->EnemySensor);
+}
+void Game::CreateSigns()
+{
+        pSign1 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -35));
+    m_IntroGOs.push_back(pSign1);
+    m_Signs.push_back(pSign1);
+    m_ColliderObjects.push_back(pSign1);
+    m_IntroGOs.push_back(pSign1->pSignTrigger);
+        pSign2 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -85));
+    m_IntroGOs.push_back(pSign2);
+    m_Signs.push_back(pSign2);
+    m_ColliderObjects.push_back(pSign2);
+    m_IntroGOs.push_back(pSign2->pSignTrigger);
+        pSign3 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2, 15));
+    m_GameObjects.push_back(pSign3);
+    m_Signs.push_back(pSign3);
+    m_ColliderObjects.push_back(pSign3);
+    m_GameObjects.push_back(pSign3->pSignTrigger);
+        pSign4 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(25, -2, -60));
+    m_GameObjects.push_back(pSign4);
+    m_Signs.push_back(pSign4);
+    m_ColliderObjects.push_back(pSign4);
+    m_GameObjects.push_back(pSign4->pSignTrigger);
+
+        sign1Image = new ImageGO2D("IntroLoreSign", m_d3dDevice.Get());
+    sign1Image->SetPos(Vector2(400, 300));
+    sign1Image->SetScale(Vector2(0.75f, 0.75f));
+    m_GameObjects2D.push_back(sign1Image);
+        sign2Image = new ImageGO2D("IntroHTPSign", m_d3dDevice.Get());
+    sign2Image->SetPos(Vector2(400, 300));
+    sign2Image->SetScale(Vector2(0.75f, 0.75f));
+    m_GameObjects2D.push_back(sign2Image);
+        sign3Image = new ImageGO2D("TreeInfoSign", m_d3dDevice.Get());
+    sign3Image->SetPos(Vector2(400, 300));
+    sign3Image->SetScale(Vector2(0.75f, 0.75f));
+    m_GameObjects2D.push_back(sign3Image);
+        sign4Image = new ImageGO2D("CubeEnemySign", m_d3dDevice.Get());
+    sign4Image->SetPos(Vector2(400, 300));
+    sign4Image->SetScale(Vector2(0.75f, 0.75f));
+    m_GameObjects2D.push_back(sign4Image);
+
+    m_GameObjects2D.push_back(pSign1->pReadText);
+    m_GameObjects2D.push_back(pSign2->pReadText);
+    m_GameObjects2D.push_back(pSign3->pReadText);
+    m_GameObjects2D.push_back(pSign4->pReadText);
 }

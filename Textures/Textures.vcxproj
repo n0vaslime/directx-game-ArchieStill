@@ -167,10 +167,17 @@
     <ImageContentTask Include="..\RawAssets\Images\UIBackground.png" />
   </ItemGroup>
   <ItemGroup>
-    <ImageContentTask Include="..\..\..\..\..\..\OneDrive - UWE Bristol\Second Year\More Games in C++\Images\Heart.png" />
+    <ImageContentTask Include="..\RawAssets\Images\TreeInfoSign.png" />
   </ItemGroup>
   <ItemGroup>
-    <ImageContentTask Include="..\..\..\..\..\..\OneDrive - UWE Bristol\Second Year\More Games in C++\Images\Coin.png" />
+    <ImageContentTask Include="..\RawAssets\Images\Coin.png" />
+    <ImageContentTask Include="..\RawAssets\Images\Heart.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="..\RawAssets\Images\Spotted.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="..\RawAssets\Images\CubeEnemySign.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

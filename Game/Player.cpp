@@ -50,7 +50,7 @@ void Player::Tick(GameData* _GD)
 		//if the player dies, they respawn at start
 		if (is_respawning)
 		{
-			this->SetPos(Vector3(0, 5, 0));
+			this->SetPos(Vector3(0, 5, 75));
 			this->SetPitch(0);
 			this->SetYaw(0);
 			m_vel.x = 0;

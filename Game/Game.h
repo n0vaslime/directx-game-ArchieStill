@@ -155,10 +155,6 @@ private:
     Terrain* pGround2;
     Terrain* pGround3;
 
-    Coin* pCoin1;
-    Coin* pCoin2;
-    Coin* pCoin3;
-
     Enemy* pEnemy1;
     Enemy* pEnemy2;
 
@@ -168,15 +164,17 @@ private:
     Sign* pSign4;
     ImageGO2D* sign1Image;
     ImageGO2D* sign2Image;
+    ImageGO2D* sign3Image;
+    ImageGO2D* sign4Image;
 
     int score;
     TextGO2D* scoreText;
     int lives = 5;
     TextGO2D* livesText;
+    ImageGO2D* spottedImage;
 
     ImageGO2D* title_screen;
         
-    void CreateUI();
     void LoseLife();
 
     void DisplayMenu();
@@ -187,4 +185,8 @@ private:
 
     void CreateGround();
     void CreateIntroGround();
+    void CreateUI();
+    void CreateCoins();
+    void CreateEnemies();
+    void CreateSigns();
 };

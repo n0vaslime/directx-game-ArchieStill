@@ -154,9 +154,7 @@ private:
     Terrain* pGround1;
     Terrain* pGround2;
     Terrain* pGround3;
-
-    Enemy* pEnemy1;
-    Enemy* pEnemy2;
+    Terrain* pGround4;
 
     Sign* pSign1;
     Sign* pSign2;

@@ -23,6 +23,7 @@ public:
 	bool has_sword = false;
 	bool is_attacking = false;
 	bool is_respawning = false;
+	Vector3 respawn_pos;
 	bool is_reading = false;
 
 	float lifetime = 0.0f;

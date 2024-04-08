@@ -159,6 +159,8 @@ private:
     MovingPlatform* pMovePlat2;
     Terrain* pGround4;
 
+    CMOGO* pCheckpointTest;
+    CMOGO* pCheckpoint1;
 
     Sign* pSign1;
     Sign* pSign2;

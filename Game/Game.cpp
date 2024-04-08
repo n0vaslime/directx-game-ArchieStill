@@ -647,6 +647,11 @@ void Game::CheckTriggers()
                 {
                     LoseLife();
                 }
+                if (m_TriggerObjects[j] == pCheckpointTest)
+                {
+                    std::cout << "CHECKPOINT!" << std::endl;
+                    pPlayer->respawn_pos = m_TriggerObjects[j]->GetPos();
+                }
             }
         }
     }
@@ -854,6 +859,13 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround1);
     m_GameObjects.push_back(pGround1->GroundCheck);
     m_TriggerObjects.push_back(pGround1->GroundCheck);
+
+    pCheckpointTest = new CMOGO("WhiteCube", m_d3dDevice.Get(), m_fxFactory);
+    pCheckpointTest->SetPos(Vector3(-20, 0, 0));
+    pCheckpointTest->SetScale(Vector3(2, 2, 2));
+    m_GameObjects.push_back(pCheckpointTest);
+    m_TriggerObjects.push_back(pCheckpointTest);
+
         pGround2 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -200), 0.0f, 0.0f, 0.0f, Vector3(20, 1, 20));
     m_GameObjects.push_back(pGround2);
     m_ColliderObjects.push_back(pGround2);
@@ -881,6 +893,11 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround4);
     m_GameObjects.push_back(pGround4->GroundCheck);
     m_TriggerObjects.push_back(pGround4->GroundCheck);
+        pCheckpoint1 = new CMOGO("WhiteCube", m_d3dDevice.Get(), m_fxFactory);
+    pCheckpoint1->SetPos(Vector3(-400, 15.5f, -200));
+    pCheckpoint1->SetScale(Vector3(2, 1, 2));
+    m_GameObjects.push_back(pCheckpoint1);
+    m_TriggerObjects.push_back(pCheckpoint1);
 }
 void Game::CreateIntroGround()
 {
@@ -992,36 +1009,52 @@ void Game::CreateCoins()
 }
 void Game::CreateEnemies()
 {
-        Enemy* pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 0.0f, -50.0f), 0, 0, 0);
+        Enemy* pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -50), 0, 0, 0);
     m_GameObjects.push_back(pEnemy1);
     m_Enemies.push_back(pEnemy1);
     m_GameObjects.push_back(pEnemy1->EnemySensor);
     m_EnemySensors.push_back(pEnemy1->EnemySensor);
-        Enemy* pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(30.0f, 10.0f, -180.0f), 0, 0, 0);
+        Enemy* pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(30, 10, -180), 0, 0, 0);
     m_GameObjects.push_back(pEnemy2);
     m_Enemies.push_back(pEnemy2);
     m_GameObjects.push_back(pEnemy2->EnemySensor);
     m_EnemySensors.push_back(pEnemy2->EnemySensor);
-        Enemy* pEnemy3 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 10.0f, -180.0f), 0, 0, 0);
+        Enemy* pEnemy3 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30, 10.0f, -180), 0, 0, 0);
     m_GameObjects.push_back(pEnemy3);
     m_Enemies.push_back(pEnemy3);
     m_GameObjects.push_back(pEnemy3->EnemySensor);
     m_EnemySensors.push_back(pEnemy3->EnemySensor);
-        Enemy* pEnemy4 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 23, -375.0f), 0, 0, 0);
+        Enemy* pEnemy4 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 24, -375), 0, 0, 0);
     m_GameObjects.push_back(pEnemy4);
     m_Enemies.push_back(pEnemy4);
     m_GameObjects.push_back(pEnemy4->EnemySensor);
     m_EnemySensors.push_back(pEnemy4->EnemySensor);
-        Enemy* pEnemy5 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(15.0f, 23, -425.0f), 0, 0, 0);
+        Enemy* pEnemy5 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(15, 24, -425), 0, 0, 0);
     m_GameObjects.push_back(pEnemy5);
     m_Enemies.push_back(pEnemy5);
     m_GameObjects.push_back(pEnemy5->EnemySensor);
     m_EnemySensors.push_back(pEnemy5->EnemySensor);
-        Enemy* pEnemy6 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-15.0f, 23, -425.0f), 0, 0, 0);
+        Enemy* pEnemy6 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-15, 24, -425), 0, 0, 0);
     m_GameObjects.push_back(pEnemy6);
     m_Enemies.push_back(pEnemy6);
     m_GameObjects.push_back(pEnemy6->EnemySensor);
     m_EnemySensors.push_back(pEnemy6->EnemySensor);
+        Enemy* pEnemy7 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-375, 30, -250), 0, 0, 0);
+    m_GameObjects.push_back(pEnemy7);
+    m_Enemies.push_back(pEnemy7);
+    m_GameObjects.push_back(pEnemy7->EnemySensor);
+    m_EnemySensors.push_back(pEnemy7->EnemySensor);
+        Enemy* pEnemy8 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-425, 30, -250), 0, 0, 0);
+    m_GameObjects.push_back(pEnemy8);
+    m_Enemies.push_back(pEnemy8);
+    m_GameObjects.push_back(pEnemy8->EnemySensor);
+    m_EnemySensors.push_back(pEnemy8->EnemySensor);
+        Enemy* pStrongE1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 30, -210), 0, 0, 0);
+        pStrongE1->speed = pStrongE1->speed * 2;
+    m_GameObjects.push_back(pStrongE1);
+    m_Enemies.push_back(pStrongE1);
+    m_GameObjects.push_back(pStrongE1->EnemySensor);
+    m_EnemySensors.push_back(pStrongE1->EnemySensor);
 }
 void Game::CreateSigns()
 {

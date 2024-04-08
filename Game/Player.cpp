@@ -12,6 +12,7 @@ Player::Player(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF)
 	SetDrag(1.5f);
 	SetPhysicsOn(true);
 	SetScale(Vector3(1,2,1));
+	respawn_pos = Vector3(0, 5, 75);
 
 	pSwordTrigger = new CMOGO("table", _pd3dDevice, _EF);
 	pSwordTrigger->SetScale(Vector3(0.075f, -0.075f, 0.075f));
@@ -50,7 +51,7 @@ void Player::Tick(GameData* _GD)
 		//if the player dies, they respawn at start
 		if (is_respawning)
 		{
-			this->SetPos(Vector3(0, 5, 75));
+			this->SetPos(respawn_pos);
 			this->SetPitch(0);
 			this->SetYaw(0);
 			m_vel.x = 0;

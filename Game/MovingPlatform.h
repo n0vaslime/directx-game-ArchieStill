@@ -9,8 +9,11 @@ public:
 	~MovingPlatform();
 
 	void Tick(GameData* _GD);
-	int state;
 	MoveState Moving;
 
 	CMOGO* GroundCheck;
+
+	float direction_lifetime = 0.0f;
+	float back_lifetime = 5.0f;
+	bool going = true;
 };

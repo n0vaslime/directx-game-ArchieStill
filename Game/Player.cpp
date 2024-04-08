@@ -119,7 +119,7 @@ void Player::PlayerMovement(GameData* _GD)
 
 	//limit motion of the player
 	float length = m_pos.Length();
-	float maxLength = 500.0f;
+	float maxLength = 1000.0f;
 	if (length > maxLength)
 	{
 		m_pos.Normalize();

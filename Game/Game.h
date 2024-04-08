@@ -155,11 +155,10 @@ private:
     Terrain* pGround1;
     Terrain* pGround2;
     Terrain* pGround3;
-    Terrain* pGround4;
     MovingPlatform* pMovePlat1;
     MovingPlatform* pMovePlat2;
+    Terrain* pGround4;
 
-    float distance;
 
     Sign* pSign1;
     Sign* pSign2;
@@ -170,7 +169,7 @@ private:
     ImageGO2D* sign3Image;
     ImageGO2D* sign4Image;
 
-    int score;
+    int score = 0;
     TextGO2D* scoreText;
     int lives = 5;
     TextGO2D* livesText;
@@ -178,6 +177,7 @@ private:
 
     ImageGO2D* title_screen;
         
+    void CollectCoin();
     void LoseLife();
 
     void DisplayMenu();

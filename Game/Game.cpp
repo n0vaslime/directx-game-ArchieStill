@@ -87,9 +87,6 @@ void Game::Initialize(HWND _window, int _width, int _height)
 #endif
     m_audioEngine = std::make_unique<AudioEngine>(eflags);
 
-    //create a set of dummy things to show off the engine
-    score = 0;
-
     //create a base light
     m_light = new Light(Vector3(0.0f, 100.0f, 160.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(110.4f, 110.1f, 0.1f, 1.0f));
     m_GameObjects.push_back(m_light);
@@ -274,9 +271,9 @@ void Game::Render()
                 && (*it) != pGround1->GroundCheck
                 && (*it) != pGround2->GroundCheck
                 && (*it) != pGround3->GroundCheck
-                //&& (*it) != pGround4->GroundCheck
                 && (*it) != pMovePlat1->GroundCheck
-                && (*it) != pMovePlat2->GroundCheck)
+                && (*it) != pMovePlat2->GroundCheck
+                && (*it) != pGround4->GroundCheck)
 
             {
                 (*it)->Draw(m_DD);
@@ -661,14 +658,8 @@ void Game::CoinCollision()
     {
         if (m_Coins[i]->isRendered() && m_Coins[i]->Intersects(*m_Player[j]))
         {
-            scoreText->SetRendered(false);
             m_Coins[i]->SetRendered(false);
-            score++;
-            scoreText = new TextGO2D(std::to_string(score));
-            scoreText->SetPos(Vector2(705, 15));
-            scoreText->SetColour(Color((float*)&Colors::Black));
-            scoreText->SetScale(Vector2(1.1f, 1));
-            m_GameObjects2D.push_back(scoreText);
+            CollectCoin();
         }
     }
 }
@@ -755,6 +746,19 @@ void Game::SignReading()
     }
 }
 
+void Game::CollectCoin()
+{
+    scoreText->SetRendered(false);
+    score++;
+    scoreText = new TextGO2D(std::to_string(score));
+    if (score < 10)
+        scoreText->SetPos(Vector2(705, 15));
+    else
+        scoreText->SetPos(Vector2(690, 15));
+    scoreText->SetColour(Color((float*)&Colors::Black));
+    scoreText->SetScale(Vector2(1.1f, 1));
+    m_GameObjects2D.push_back(scoreText);
+}
 void Game::LoseLife()
 {
     livesText->SetRendered(false);
@@ -860,11 +864,6 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround3);
     m_GameObjects.push_back(pGround3->GroundCheck);
     m_TriggerObjects.push_back(pGround3->GroundCheck);
-    //     pGround4 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-200, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
-    // m_GameObjects.push_back(pGround4);
-    // m_ColliderObjects.push_back(pGround4);
-    // m_GameObjects.push_back(pGround4->GroundCheck);
-    // m_TriggerObjects.push_back(pGround4->GroundCheck);
         pMovePlat1 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-200, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
         pMovePlat1->Moving = ROTATELEFT;
     m_GameObjects.push_back(pMovePlat1);
@@ -877,6 +876,11 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pMovePlat2);
     m_GameObjects.push_back(pMovePlat2->GroundCheck);
     m_TriggerObjects.push_back(pMovePlat2->GroundCheck);
+        pGround4 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 15, -225), 0.0f, 0.0f, 0.0f, Vector3(20, 2, 20));
+    m_GameObjects.push_back(pGround4);
+    m_ColliderObjects.push_back(pGround4);
+    m_GameObjects.push_back(pGround4->GroundCheck);
+    m_TriggerObjects.push_back(pGround4->GroundCheck);
 }
 void Game::CreateIntroGround()
 {
@@ -949,27 +953,42 @@ void Game::CreateUI()
 
 void Game::CreateCoins()
 {
-        Coin* pCoin1 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 0.0f, 50.0f));
+        Coin* pCoin1 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 50));
     m_GameObjects.push_back(pCoin1);
     m_Coins.push_back(pCoin1);
-        Coin* pCoin2 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 0.0f, 35.0f));
+        Coin* pCoin2 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 35));
     m_GameObjects.push_back(pCoin2);
     m_Coins.push_back(pCoin2);
-        Coin* pCoin3 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-30.0f, 0.0f, 10.0f));
+        Coin* pCoin3 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-30, 0, 10));
     m_GameObjects.push_back(pCoin3);
     m_Coins.push_back(pCoin3);
-        Coin* pCoin4 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(30.0f, 0.0f, 10.0f));
+        Coin* pCoin4 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(30, 0, 10));
     m_GameObjects.push_back(pCoin4);
     m_Coins.push_back(pCoin4);
-        Coin* pCoin5 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 10.0f, -125.0f));
+        Coin* pCoin5 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 10, -125));
     m_GameObjects.push_back(pCoin5);
     m_Coins.push_back(pCoin5);
-        Coin* pCoin6 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-50.0f, 10.0f, -175.0f));
+        Coin* pCoin6 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-50, 10, -175));
     m_GameObjects.push_back(pCoin6);
     m_Coins.push_back(pCoin6);
-        Coin* pCoin7 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(50.0f, 10.0f, -225.0f));
+        Coin* pCoin7 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 10, -225));
     m_GameObjects.push_back(pCoin7);
     m_Coins.push_back(pCoin7);
+        Coin* pCoin8 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 25, -425));
+    m_GameObjects.push_back(pCoin8);
+    m_Coins.push_back(pCoin8);
+        Coin* pCoin9 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(25, 25, -450));
+    m_GameObjects.push_back(pCoin9);
+    m_Coins.push_back(pCoin9);
+        Coin* pCoin10 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-25, 25, -450));
+    m_GameObjects.push_back(pCoin10);
+    m_Coins.push_back(pCoin10);
+        Coin* pCoin11 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-200, 25, -415));
+    m_GameObjects.push_back(pCoin11);
+    m_Coins.push_back(pCoin11);
+        Coin* pCoin12 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-350, 25, -415));
+    m_GameObjects.push_back(pCoin12);
+    m_Coins.push_back(pCoin12);
 }
 void Game::CreateEnemies()
 {
@@ -993,6 +1012,16 @@ void Game::CreateEnemies()
     m_Enemies.push_back(pEnemy4);
     m_GameObjects.push_back(pEnemy4->EnemySensor);
     m_EnemySensors.push_back(pEnemy4->EnemySensor);
+        Enemy* pEnemy5 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(15.0f, 23, -425.0f), 0, 0, 0);
+    m_GameObjects.push_back(pEnemy5);
+    m_Enemies.push_back(pEnemy5);
+    m_GameObjects.push_back(pEnemy5->EnemySensor);
+    m_EnemySensors.push_back(pEnemy5->EnemySensor);
+        Enemy* pEnemy6 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-15.0f, 23, -425.0f), 0, 0, 0);
+    m_GameObjects.push_back(pEnemy6);
+    m_Enemies.push_back(pEnemy6);
+    m_GameObjects.push_back(pEnemy6->EnemySensor);
+    m_EnemySensors.push_back(pEnemy6->EnemySensor);
 }
 void Game::CreateSigns()
 {

@@ -11,6 +11,8 @@ GameObject::GameObject()
 	m_roll = 0.0f;
 	m_scale = Vector3::One;
 
+	render = false;
+
 	m_worldMat = Matrix::Identity;
 	m_fudge = Matrix::Identity;
 }

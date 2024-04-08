@@ -19,6 +19,7 @@
 #include "Coin.h"
 #include "Enemy.h"
 #include "Sign.h"
+#include "MovingPlatform.h"
 
 using std::list;
 
@@ -155,6 +156,10 @@ private:
     Terrain* pGround2;
     Terrain* pGround3;
     Terrain* pGround4;
+    MovingPlatform* pMovePlat1;
+    MovingPlatform* pMovePlat2;
+
+    float distance;
 
     Sign* pSign1;
     Sign* pSign2;

@@ -183,6 +183,8 @@
     <ClInclude Include="Light.h" />
     <ClInclude Include="Loop.h" />
     <ClInclude Include="MarchCubes.h" />
+    <ClInclude Include="MoveState.h" />
+    <ClInclude Include="MovingPlatform.h" />
     <ClInclude Include="ObjectList.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
@@ -216,6 +218,7 @@
     <ClCompile Include="light.cpp" />
     <ClCompile Include="Loop.cpp" />
     <ClCompile Include="MarchCubes.cpp" />
+    <ClCompile Include="MovingPlatform.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

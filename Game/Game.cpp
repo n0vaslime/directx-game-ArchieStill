@@ -274,7 +274,9 @@ void Game::Render()
                 && (*it) != pGround1->GroundCheck
                 && (*it) != pGround2->GroundCheck
                 && (*it) != pGround3->GroundCheck
-                && (*it) != pGround4->GroundCheck)
+                //&& (*it) != pGround4->GroundCheck
+                && (*it) != pMovePlat1->GroundCheck
+                && (*it) != pMovePlat2->GroundCheck)
 
             {
                 (*it)->Draw(m_DD);
@@ -858,11 +860,23 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround3);
     m_GameObjects.push_back(pGround3->GroundCheck);
     m_TriggerObjects.push_back(pGround3->GroundCheck);
-        pGround4 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-200, 12, -415), 0.0f, 0.0f, 0.0f, Vector3(10, 1, 10));
-    m_GameObjects.push_back(pGround4);
-    m_ColliderObjects.push_back(pGround4);
-    m_GameObjects.push_back(pGround4->GroundCheck);
-    m_TriggerObjects.push_back(pGround4->GroundCheck);
+    //     pGround4 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-200, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
+    // m_GameObjects.push_back(pGround4);
+    // m_ColliderObjects.push_back(pGround4);
+    // m_GameObjects.push_back(pGround4->GroundCheck);
+    // m_TriggerObjects.push_back(pGround4->GroundCheck);
+        pMovePlat1 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-200, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
+        pMovePlat1->Moving = ROTATELEFT;
+    m_GameObjects.push_back(pMovePlat1);
+    m_ColliderObjects.push_back(pMovePlat1);
+    m_GameObjects.push_back(pMovePlat1->GroundCheck);
+    m_TriggerObjects.push_back(pMovePlat1->GroundCheck);
+        pMovePlat2 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-350, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
+        pMovePlat2->Moving = ROTATERIGHT;
+    m_GameObjects.push_back(pMovePlat2);
+    m_ColliderObjects.push_back(pMovePlat2);
+    m_GameObjects.push_back(pMovePlat2->GroundCheck);
+    m_TriggerObjects.push_back(pMovePlat2->GroundCheck);
 }
 void Game::CreateIntroGround()
 {
@@ -974,7 +988,7 @@ void Game::CreateEnemies()
     m_Enemies.push_back(pEnemy3);
     m_GameObjects.push_back(pEnemy3->EnemySensor);
     m_EnemySensors.push_back(pEnemy3->EnemySensor);
-        Enemy* pEnemy4 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 23, -350.0f), 0, 0, 0);
+        Enemy* pEnemy4 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0.0f, 23, -375.0f), 0, 0, 0);
     m_GameObjects.push_back(pEnemy4);
     m_Enemies.push_back(pEnemy4);
     m_GameObjects.push_back(pEnemy4->EnemySensor);

@@ -40,7 +40,6 @@ public:
 	float		GetDrag() { return m_drag; }
 
 	bool		isRendered() { return render; }
-	bool		isActive() { return is_active; }
 
 	//setters
 	void		SetPos(Vector3 _pos) { m_pos = _pos; }
@@ -59,7 +58,6 @@ public:
 	void		SetDrag(float _drag) { m_drag = _drag; }
 
 	void		SetRendered(bool _state) { render = _state; }
-	void		SetActive(bool _active) { is_active = _active; }
 
 
 protected:
@@ -80,7 +78,6 @@ protected:
 
 	//ETC
 	bool render;
-	bool is_active = true;
 };
 
 #endif

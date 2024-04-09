@@ -647,7 +647,7 @@ void Game::CheckTriggers()
                 {
                     LoseLife();
                 }
-                if (m_TriggerObjects[j] == pCheckpointTest)
+                if (m_TriggerObjects[j] == pCheckpoint1)
                 {
                     std::cout << "CHECKPOINT!" << std::endl;
                     pPlayer->respawn_pos = m_TriggerObjects[j]->GetPos();
@@ -859,13 +859,6 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround1);
     m_GameObjects.push_back(pGround1->GroundCheck);
     m_TriggerObjects.push_back(pGround1->GroundCheck);
-
-    pCheckpointTest = new CMOGO("WhiteCube", m_d3dDevice.Get(), m_fxFactory);
-    pCheckpointTest->SetPos(Vector3(-20, 0, 0));
-    pCheckpointTest->SetScale(Vector3(2, 2, 2));
-    m_GameObjects.push_back(pCheckpointTest);
-    m_TriggerObjects.push_back(pCheckpointTest);
-
         pGround2 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -200), 0.0f, 0.0f, 0.0f, Vector3(20, 1, 20));
     m_GameObjects.push_back(pGround2);
     m_ColliderObjects.push_back(pGround2);
@@ -893,9 +886,9 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround4);
     m_GameObjects.push_back(pGround4->GroundCheck);
     m_TriggerObjects.push_back(pGround4->GroundCheck);
-        pCheckpoint1 = new CMOGO("WhiteCube", m_d3dDevice.Get(), m_fxFactory);
-    pCheckpoint1->SetPos(Vector3(-400, 15.5f, -200));
-    pCheckpoint1->SetScale(Vector3(2, 1, 2));
+        pCheckpoint1 = new CMOGO("Checkpoint", m_d3dDevice.Get(), m_fxFactory);
+    pCheckpoint1->SetPos(Vector3(-400, 25, -175));
+    pCheckpoint1->SetScale(Vector3(1, 1, 1));
     m_GameObjects.push_back(pCheckpoint1);
     m_TriggerObjects.push_back(pCheckpoint1);
 }
@@ -1049,7 +1042,7 @@ void Game::CreateEnemies()
     m_Enemies.push_back(pEnemy8);
     m_GameObjects.push_back(pEnemy8->EnemySensor);
     m_EnemySensors.push_back(pEnemy8->EnemySensor);
-        Enemy* pStrongE1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 30, -210), 0, 0, 0);
+        Enemy* pStrongE1 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 30, -210), 0, 0, 0);
         pStrongE1->speed = pStrongE1->speed * 2;
     m_GameObjects.push_back(pStrongE1);
     m_Enemies.push_back(pStrongE1);

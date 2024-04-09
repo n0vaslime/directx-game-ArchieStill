@@ -151,6 +151,7 @@
   <ItemGroup>
     <MeshContentTask Include="..\..\..\..\..\..\OneDrive - UWE Bristol\Second Year\More Games in C++\3D Models\CrackedWall.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\CaveCube.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\Checkpoint.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Coin.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Enemy.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\GrassCube.fbx" />
@@ -160,6 +161,7 @@
     <MeshContentTask Include="..\RawAssets\Models\Player.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Sign.fbx" />
     <MeshContentTask Include="Bird\BirdModelV1.fbx" />
+    <MeshContentTask Include="D:\3D Models\Goldedge 2\StrongEnemy.fbx" />
     <MeshContentTask Include="Table\table.FBX">
       <FileType>Document</FileType>
     </MeshContentTask>

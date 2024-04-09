@@ -51,7 +51,7 @@ void Player::Tick(GameData* _GD)
 		//if the player dies, they respawn at start
 		if (is_respawning)
 		{
-			this->SetPos(respawn_pos);
+			this->SetPos(Vector3(respawn_pos.x, respawn_pos.y + 5, respawn_pos.z));
 			this->SetPitch(0);
 			this->SetYaw(0);
 			m_vel.x = 0;
@@ -115,6 +115,12 @@ void Player::PlayerMovement(GameData* _GD)
 	{
 		//m_acc.y += 200.0f;
 		m_vel.y = 50;
+		is_grounded = false;
+	}
+	if (_GD->m_KBS.Tab && is_grounded && !is_attacking)
+	{
+		//m_acc.y += 200.0f;
+		m_vel.y = 500;
 		is_grounded = false;
 	}
 

@@ -30,5 +30,7 @@
     <MeshContentTask Include="..\RawAssets\Models\GrassCube.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Enemy.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Sword.fbx" />
+    <MeshContentTask Include="D:\3D Models\Goldedge 2\StrongEnemy.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\Checkpoint.fbx" />
   </ItemGroup>
 </Project>

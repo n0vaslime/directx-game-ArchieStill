@@ -6,7 +6,7 @@
 class Sign : public CMOGO
 {
 public:
-	Sign(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, Vector3 _pos);
+	Sign(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, Vector3 _pos, float _yaw);
 	~Sign();
 
 	virtual void Draw(DrawData* _DD) override;

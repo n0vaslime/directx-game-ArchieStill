@@ -166,10 +166,12 @@ private:
     Sign* pSign2;
     Sign* pSign3;
     Sign* pSign4;
+    Sign* pSign5;
     ImageGO2D* sign1Image;
     ImageGO2D* sign2Image;
     ImageGO2D* sign3Image;
     ImageGO2D* sign4Image;
+    ImageGO2D* sign5Image;
 
     int score = 0;
     TextGO2D* scoreText;

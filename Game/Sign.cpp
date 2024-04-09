@@ -4,9 +4,10 @@
 #include "GameData.h"
 #include <iostream>
 
-Sign::Sign(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, Vector3 _pos) : CMOGO(_fileName, _pd3dDevice, _EF)
+Sign::Sign(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, Vector3 _pos, float _yaw) : CMOGO(_fileName, _pd3dDevice, _EF)
 {
 	m_pos = _pos;
+	m_yaw = _yaw;
 	SetScale(Vector3(0.45f, 0.4f, 0.45f));
 
 	pSignTrigger = new CMOGO("Sign", _pd3dDevice, _EF);
@@ -42,6 +43,7 @@ void Sign::SetTriggerPos(GameData* _GD)
 		forwardMove = Vector3::Transform(forwardMove, rotMove);
 		pSignTrigger->SetRendered(true);
 		pSignTrigger->SetPos(this->GetPos() - forwardMove);
+		pSignTrigger->SetYaw(this->GetYaw());
 		pSignTrigger->SetPitch(0);
 	}
 }

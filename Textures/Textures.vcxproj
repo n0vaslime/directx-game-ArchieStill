@@ -160,7 +160,6 @@
     <ImageContentTask Include="..\RawAssets\Images\PlaceholderSign.png" />
   </ItemGroup>
   <ItemGroup>
-    <ImageContentTask Include="..\RawAssets\Images\IntroHTPSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\IntroLoreSign.png" />
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +177,12 @@
   </ItemGroup>
   <ItemGroup>
     <ImageContentTask Include="..\RawAssets\Images\CubeEnemySign.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="..\RawAssets\Images\IntroHTPSign.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="..\RawAssets\Images\CheckpointSign.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -273,7 +273,8 @@ void Game::Render()
                 && (*it) != pGround3->GroundCheck
                 && (*it) != pMovePlat1->GroundCheck
                 && (*it) != pMovePlat2->GroundCheck
-                && (*it) != pGround4->GroundCheck)
+                && (*it) != pGround4->GroundCheck
+                && (*it) != pSign5->pSignTrigger)
 
             {
                 (*it)->Draw(m_DD);
@@ -734,6 +735,7 @@ void Game::SignReading()
             sign2Image->SetRendered(false);
             sign3Image->SetRendered(false);
             sign4Image->SetRendered(false);
+            sign5Image->SetRendered(false);
         }
 
         //choosing image to render depending on the sign
@@ -745,6 +747,8 @@ void Game::SignReading()
             sign3Image->SetRendered(true);
         if (pSign4->is_reading)
             sign4Image->SetRendered(true);
+        if (pSign5->is_reading)
+            sign5Image->SetRendered(true);
         //removing read prompt while player is reading
         if (m_Signs[j]->is_reading)
             m_Signs[j]->pReadText->SetRendered(false);
@@ -1002,47 +1006,47 @@ void Game::CreateCoins()
 }
 void Game::CreateEnemies()
 {
-        Enemy* pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -50), 0, 0, 0);
+        Enemy* pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -50));
     m_GameObjects.push_back(pEnemy1);
     m_Enemies.push_back(pEnemy1);
     m_GameObjects.push_back(pEnemy1->EnemySensor);
     m_EnemySensors.push_back(pEnemy1->EnemySensor);
-        Enemy* pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(30, 10, -180), 0, 0, 0);
+        Enemy* pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(30, 10, -180));
     m_GameObjects.push_back(pEnemy2);
     m_Enemies.push_back(pEnemy2);
     m_GameObjects.push_back(pEnemy2->EnemySensor);
     m_EnemySensors.push_back(pEnemy2->EnemySensor);
-        Enemy* pEnemy3 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30, 10.0f, -180), 0, 0, 0);
+        Enemy* pEnemy3 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30, 10.0f, -180));
     m_GameObjects.push_back(pEnemy3);
     m_Enemies.push_back(pEnemy3);
     m_GameObjects.push_back(pEnemy3->EnemySensor);
     m_EnemySensors.push_back(pEnemy3->EnemySensor);
-        Enemy* pEnemy4 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 24, -375), 0, 0, 0);
+        Enemy* pEnemy4 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 24, -375));
     m_GameObjects.push_back(pEnemy4);
     m_Enemies.push_back(pEnemy4);
     m_GameObjects.push_back(pEnemy4->EnemySensor);
     m_EnemySensors.push_back(pEnemy4->EnemySensor);
-        Enemy* pEnemy5 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(15, 24, -425), 0, 0, 0);
+        Enemy* pEnemy5 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(15, 24, -425));
     m_GameObjects.push_back(pEnemy5);
     m_Enemies.push_back(pEnemy5);
     m_GameObjects.push_back(pEnemy5->EnemySensor);
     m_EnemySensors.push_back(pEnemy5->EnemySensor);
-        Enemy* pEnemy6 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-15, 24, -425), 0, 0, 0);
+        Enemy* pEnemy6 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-15, 24, -425));
     m_GameObjects.push_back(pEnemy6);
     m_Enemies.push_back(pEnemy6);
     m_GameObjects.push_back(pEnemy6->EnemySensor);
     m_EnemySensors.push_back(pEnemy6->EnemySensor);
-        Enemy* pEnemy7 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-375, 30, -250), 0, 0, 0);
+        Enemy* pEnemy7 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-375, 30, -250));
     m_GameObjects.push_back(pEnemy7);
     m_Enemies.push_back(pEnemy7);
     m_GameObjects.push_back(pEnemy7->EnemySensor);
     m_EnemySensors.push_back(pEnemy7->EnemySensor);
-        Enemy* pEnemy8 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-425, 30, -250), 0, 0, 0);
+        Enemy* pEnemy8 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-425, 30, -250));
     m_GameObjects.push_back(pEnemy8);
     m_Enemies.push_back(pEnemy8);
     m_GameObjects.push_back(pEnemy8->EnemySensor);
     m_EnemySensors.push_back(pEnemy8->EnemySensor);
-        Enemy* pStrongE1 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 30, -210), 0, 0, 0);
+        Enemy* pStrongE1 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 30, -210));
         pStrongE1->speed = pStrongE1->speed * 2;
     m_GameObjects.push_back(pStrongE1);
     m_Enemies.push_back(pStrongE1);
@@ -1051,26 +1055,32 @@ void Game::CreateEnemies()
 }
 void Game::CreateSigns()
 {
-        pSign1 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -35));
+        pSign1 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -35), 0);
     m_IntroGOs.push_back(pSign1);
     m_Signs.push_back(pSign1);
     m_ColliderObjects.push_back(pSign1);
     m_IntroGOs.push_back(pSign1->pSignTrigger);
-        pSign2 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -85));
+        pSign2 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -85), 0);
     m_IntroGOs.push_back(pSign2);
     m_Signs.push_back(pSign2);
     m_ColliderObjects.push_back(pSign2);
     m_IntroGOs.push_back(pSign2->pSignTrigger);
-        pSign3 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2, 15));
+        pSign3 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2, 15), 0);
     m_GameObjects.push_back(pSign3);
     m_Signs.push_back(pSign3);
     m_ColliderObjects.push_back(pSign3);
     m_GameObjects.push_back(pSign3->pSignTrigger);
-        pSign4 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(15, 8, -120));
+        pSign4 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(15, 8, -120), 0);
     m_GameObjects.push_back(pSign4);
     m_Signs.push_back(pSign4);
     m_ColliderObjects.push_back(pSign4);
     m_GameObjects.push_back(pSign4->pSignTrigger);
+        pSign5 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-375, 28, -175), 0);
+        pSign5->SetYaw(180);
+    m_GameObjects.push_back(pSign5);
+    m_Signs.push_back(pSign5);
+    m_ColliderObjects.push_back(pSign5);
+    m_GameObjects.push_back(pSign5->pSignTrigger);
 
         sign1Image = new ImageGO2D("IntroLoreSign", m_d3dDevice.Get());
     sign1Image->SetPos(Vector2(400, 300));
@@ -1088,9 +1098,14 @@ void Game::CreateSigns()
     sign4Image->SetPos(Vector2(400, 300));
     sign4Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign4Image);
+        sign5Image = new ImageGO2D("CheckpointSign", m_d3dDevice.Get());
+    sign5Image->SetPos(Vector2(400, 300));
+    sign5Image->SetScale(Vector2(0.75f, 0.75f));
+    m_GameObjects2D.push_back(sign5Image);
 
     m_GameObjects2D.push_back(pSign1->pReadText);
     m_GameObjects2D.push_back(pSign2->pReadText);
     m_GameObjects2D.push_back(pSign3->pReadText);
     m_GameObjects2D.push_back(pSign4->pReadText);
+    m_GameObjects2D.push_back(pSign5->pReadText);
 }

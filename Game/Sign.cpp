@@ -10,9 +10,9 @@ Sign::Sign(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, Vec
 	m_yaw = _yaw;
 	SetScale(Vector3(0.45f, 0.4f, 0.45f));
 
-	pSignTrigger = new CMOGO("Sign", _pd3dDevice, _EF);
-	pSignTrigger->SetPos(this->GetPos());
-	pSignTrigger->SetScale(Vector3(0.65f, 0.4f, 2.5f));
+	SignTrigger = new CMOGO("Sign", _pd3dDevice, _EF);
+	SignTrigger->SetPos(this->GetPos());
+	SignTrigger->SetScale(Vector3(0.65f, 0.4f, 2.5f));
 
 	CreateText();
 }
@@ -41,10 +41,10 @@ void Sign::SetTriggerPos(GameData* _GD)
 		Vector3 forwardMove = 2.5f * Vector3::Forward;
 		Matrix rotMove = Matrix::CreateRotationY(m_yaw);
 		forwardMove = Vector3::Transform(forwardMove, rotMove);
-		pSignTrigger->SetRendered(true);
-		pSignTrigger->SetPos(this->GetPos() - forwardMove);
-		pSignTrigger->SetYaw(this->GetYaw());
-		pSignTrigger->SetPitch(0);
+		SignTrigger->SetRendered(true);
+		SignTrigger->SetPos(this->GetPos() - forwardMove);
+		SignTrigger->SetYaw(this->GetYaw());
+		SignTrigger->SetPitch(0);
 	}
 }
 

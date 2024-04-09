@@ -22,6 +22,8 @@ MovingPlatform::~MovingPlatform()
 
 void MovingPlatform::Tick(GameData* _GD)
 {
+	GroundCheck->SetPos(Vector3(this->GetPos().x, this->GetPos().y + 0.25f, this->GetPos().z));
+
 	//it takes 5 seconds for the platform to move there and back
 	//when moving the platform, increase the others' lifetime
 	//once that lifetime reaches 5, swap movement!

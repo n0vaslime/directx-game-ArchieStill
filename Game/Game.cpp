@@ -153,7 +153,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     // TestSound* TS = new TestSound(m_audioEngine.get(), "Explo1");
     // m_Sounds.push_back(TS);
 
-    //DisplayMenu();
+    // DisplayMenu();
     DisplayGame();
     CreateUI();
     pPlayer->has_sword = true;
@@ -266,16 +266,18 @@ void Game::Render()
         {
             if ((*it)->isRendered()
                 && (*it) != pPlayer->pSwordTrigger
-                && (*it) != pSign3->pSignTrigger
-                && (*it) != pSign4->pSignTrigger
+                && (*it) != pSign3->SignTrigger
+                && (*it) != pSign4->SignTrigger
                 && (*it) != pGround1->GroundCheck
                 && (*it) != pGround2->GroundCheck
                 && (*it) != pGround3->GroundCheck
                 && (*it) != pMovePlat1->GroundCheck
                 && (*it) != pMovePlat2->GroundCheck
                 && (*it) != pGround4->GroundCheck
-                && (*it) != pSign5->pSignTrigger)
-
+                && (*it) != pSign5->SignTrigger
+                && (*it) != pMovePlat3->GroundCheck
+                && (*it) != pGround5->GroundCheck)
+            
             {
                 (*it)->Draw(m_DD);
             }
@@ -294,8 +296,8 @@ void Game::Render()
         {
             if ((*it)->isRendered()
                 && (*it) != pPlayer->pSwordTrigger
-                && (*it) != pSign1->pSignTrigger
-                && (*it) != pSign2->pSignTrigger
+                && (*it) != pSign1->SignTrigger
+                && (*it) != pSign2->SignTrigger
                 && (*it) != pGroundIntro->GroundCheck)
             {
                 (*it)->Draw(m_DD);
@@ -603,6 +605,13 @@ void Game::ReadInput()
                 DisplayIntro();
             }
         }
+        case(GS_GAME):
+        {
+            if (m_GD->m_KBS.Home)
+            {
+                ReturnToDefault();
+            }
+        }
     default:
         break;
     }
@@ -641,7 +650,7 @@ void Game::CheckTriggers()
                 if (m_TriggerObjects[j] == pIntroExit)
                 {
                     m_GD->m_GS = GS_GAME;
-                    //CreateUI();
+                    CreateUI();
                     DisplayGame();
                 }
                 if (m_TriggerObjects[j] == pDeathTrigger)
@@ -650,12 +659,27 @@ void Game::CheckTriggers()
                 }
                 if (m_TriggerObjects[j] == pCheckpoint1)
                 {
-                    std::cout << "CHECKPOINT!" << std::endl;
                     pPlayer->respawn_pos = m_TriggerObjects[j]->GetPos();
+                    // checkpoint_notif = new TextGO2D("Checkpoint!");
+                    // checkpoint_notif->SetPos(Vector2(250, 10));
+                    // checkpoint_notif->SetColour(Color((float*)&Colors::Blue));
+                    // checkpoint_notif->SetRendered(true);
+                    // m_GameObjects2D.push_back(checkpoint_notif);
+                    // notif_rendered = true;
                 }
             }
         }
     }
+    //if (notif_rendered)
+    //{
+    //    notif_life += m_GD->m_dt;
+    //    if (notif_life > 1)
+    //    {
+    //        checkpoint_notif->SetRendered(false);
+    //        notif_life = 0;
+    //        notif_rendered = false;
+    //    }
+    //}
 }
 
 void Game::CoinCollision()
@@ -719,7 +743,7 @@ void Game::SignReading()
 {
     for (int i = 0; i < m_Player.size(); i++) for (int j = 0; j < m_Signs.size(); j++)
     {
-        if (m_Signs[j]->pSignTrigger->isRendered() && m_Player[i]->Intersects(*m_Signs[j]->pSignTrigger))
+        if (m_Signs[j]->SignTrigger->isRendered() && m_Player[i]->Intersects(*m_Signs[j]->SignTrigger))
         {
             m_Signs[j]->pReadText->SetRendered(true);
             if (m_GD->m_KBS.E && !pPlayer->is_reading)
@@ -778,6 +802,25 @@ void Game::LoseLife()
     livesText->SetScale(Vector2(1.1f, 1));
     m_GameObjects2D.push_back(livesText);
     pPlayer->is_respawning = true;
+}
+
+void Game::ReturnToDefault()
+{
+    reset = true;
+    if (reset)
+    {
+        reset = false;
+        score = 0;
+        lives = 5;
+        m_GD->m_GS == GS_MENU;
+        DisplayMenu();
+        pPlayer->SetPos(Vector3(0, 1, 0));
+        pPlayer->has_sword = false;
+        m_GameObjects2D.clear();
+        m_GameObjects2D.push_back(title_screen);
+        m_IntroGOs.push_back(pFloatingSword);
+        m_TriggerObjects.push_back(pFloatingSword);
+    }
 }
 
 void Game::DisplayMenu()
@@ -895,6 +938,17 @@ void Game::CreateGround()
     pCheckpoint1->SetScale(Vector3(1, 1, 1));
     m_GameObjects.push_back(pCheckpoint1);
     m_TriggerObjects.push_back(pCheckpoint1);
+        pMovePlat3 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 10, -60), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 1.5f, 7.5f));
+        pMovePlat3->Moving = MOVEUP;
+    m_GameObjects.push_back(pMovePlat3);
+    m_ColliderObjects.push_back(pMovePlat3);
+    m_GameObjects.push_back(pMovePlat3->GroundCheck);
+    m_TriggerObjects.push_back(pMovePlat3->GroundCheck);
+        pGround5 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-200, 90, 50), 0.0f, 0.0f, 0.0f, Vector3(75, 2, 10));
+    m_GameObjects.push_back(pGround5);
+    m_ColliderObjects.push_back(pGround5);
+    m_GameObjects.push_back(pGround5->GroundCheck);
+    m_TriggerObjects.push_back(pGround5->GroundCheck);
 }
 void Game::CreateIntroGround()
 {
@@ -1059,28 +1113,28 @@ void Game::CreateSigns()
     m_IntroGOs.push_back(pSign1);
     m_Signs.push_back(pSign1);
     m_ColliderObjects.push_back(pSign1);
-    m_IntroGOs.push_back(pSign1->pSignTrigger);
+    m_IntroGOs.push_back(pSign1->SignTrigger);
         pSign2 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -85), 0);
     m_IntroGOs.push_back(pSign2);
     m_Signs.push_back(pSign2);
     m_ColliderObjects.push_back(pSign2);
-    m_IntroGOs.push_back(pSign2->pSignTrigger);
+    m_IntroGOs.push_back(pSign2->SignTrigger);
         pSign3 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2, 15), 0);
     m_GameObjects.push_back(pSign3);
     m_Signs.push_back(pSign3);
     m_ColliderObjects.push_back(pSign3);
-    m_GameObjects.push_back(pSign3->pSignTrigger);
+    m_GameObjects.push_back(pSign3->SignTrigger);
         pSign4 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(15, 8, -120), 0);
     m_GameObjects.push_back(pSign4);
     m_Signs.push_back(pSign4);
     m_ColliderObjects.push_back(pSign4);
-    m_GameObjects.push_back(pSign4->pSignTrigger);
+    m_GameObjects.push_back(pSign4->SignTrigger);
         pSign5 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-375, 28, -175), 0);
         pSign5->SetYaw(180);
     m_GameObjects.push_back(pSign5);
     m_Signs.push_back(pSign5);
     m_ColliderObjects.push_back(pSign5);
-    m_GameObjects.push_back(pSign5->pSignTrigger);
+    m_GameObjects.push_back(pSign5->SignTrigger);
 
         sign1Image = new ImageGO2D("IntroLoreSign", m_d3dDevice.Get());
     sign1Image->SetPos(Vector2(400, 300));

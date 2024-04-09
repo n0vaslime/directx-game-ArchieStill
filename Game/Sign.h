@@ -14,7 +14,7 @@ public:
 	void SetTriggerPos(GameData* _GD);
 	void CreateText();
 
-	CMOGO* pSignTrigger;
+	CMOGO* SignTrigger;
 
 	bool can_read = false;
 	bool is_reading = false;

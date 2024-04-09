@@ -151,15 +151,20 @@ private:
 
     Terrain* pIntroExit;
     Terrain* pDeathTrigger;
+
     Terrain* pGroundIntro;
     Terrain* pGround1;
     Terrain* pGround2;
     Terrain* pGround3;
+    Terrain* pGround4;
+    Terrain* pGround5;
+
     MovingPlatform* pMovePlat1;
     MovingPlatform* pMovePlat2;
-    Terrain* pGround4;
+    MovingPlatform* pMovePlat3;
 
-    CMOGO* pCheckpointTest;
+    //TextGO2D* checkpoint_notif;
+    //float notif_life = 0;
     CMOGO* pCheckpoint1;
 
     Sign* pSign1;
@@ -180,9 +185,11 @@ private:
     ImageGO2D* spottedImage;
 
     ImageGO2D* title_screen;
+    bool reset = false;
         
     void CollectCoin();
     void LoseLife();
+    void ReturnToDefault();
 
     void DisplayMenu();
     void DisplayIntro();

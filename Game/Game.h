@@ -125,6 +125,8 @@ private:
     std::vector<CMOGO*> m_TriggerObjects;
 
     std::vector<Player*> m_Player;
+    std::vector<Terrain*> m_Grounds;
+    std::vector<MovingPlatform*> m_Platforms;
     std::vector<CMOGO*> m_Coins;
     std::vector<CMOGO*> m_SwordTrigger;
     std::vector<Enemy*> m_Enemies;
@@ -134,6 +136,7 @@ private:
 
     void CheckCollision();
     void CheckTriggers();
+    void GroundCheck();
     void CoinCollision();
     void SwordCollision();
     void EnemyCollision();
@@ -151,20 +154,6 @@ private:
 
     Terrain* pIntroExit;
     Terrain* pDeathTrigger;
-
-    Terrain* pGroundIntro;
-    Terrain* pGround1;
-    Terrain* pGround2;
-    Terrain* pGround3;
-    Terrain* pGround4;
-    Terrain* pGround5;
-
-    MovingPlatform* pMovePlat1;
-    MovingPlatform* pMovePlat2;
-    MovingPlatform* pMovePlat3;
-
-    //TextGO2D* checkpoint_notif;
-    //float notif_life = 0;
     CMOGO* pCheckpoint1;
 
     Sign* pSign1;

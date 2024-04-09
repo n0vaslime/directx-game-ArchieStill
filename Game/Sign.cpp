@@ -36,22 +36,19 @@ void Sign::Tick(GameData* _GD)
 
 void Sign::SetTriggerPos(GameData* _GD)
 {
-	if (_GD->m_GS == GS_GAME || _GD->m_GS == GS_INTRO)
-	{
-		Vector3 forwardMove = 2.5f * Vector3::Forward;
-		Matrix rotMove = Matrix::CreateRotationY(m_yaw);
-		forwardMove = Vector3::Transform(forwardMove, rotMove);
-		SignTrigger->SetRendered(true);
-		SignTrigger->SetPos(this->GetPos() - forwardMove);
-		SignTrigger->SetYaw(this->GetYaw());
-		SignTrigger->SetPitch(0);
-	}
+	Vector3 forwardMove = 2.5f * Vector3::Forward;
+	Matrix rotMove = Matrix::CreateRotationY(m_yaw);
+	forwardMove = Vector3::Transform(forwardMove, rotMove);
+	SignTrigger->SetRendered(true);
+	SignTrigger->SetPos(this->GetPos() - forwardMove);
+	SignTrigger->SetYaw(this->GetYaw());
+	SignTrigger->SetPitch(0);
 }
 
 void Sign::CreateText()
 {
-	pReadText = new TextGO2D("Press 'E' to read!");
-	pReadText->SetPos(Vector2(275, 550));
-	pReadText->SetColour(Color((float*)&Colors::WhiteSmoke));
-	pReadText->SetScale(0.75f);
+	ReadText = new TextGO2D("Press 'E' to read!");
+	ReadText->SetPos(Vector2(275, 550));
+	ReadText->SetColour(Color((float*)&Colors::WhiteSmoke));
+	ReadText->SetScale(0.75f);
 }

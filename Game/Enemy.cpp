@@ -10,7 +10,7 @@ Enemy::Enemy(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, V
 	SetScale(Vector3(1, 1, 1));
 
     base_pos = this->GetPos();
-	speed = 1.5f;
+	speed = 2.5f;
 	player_spotted = false;
     player_facing = 0.0f;
 

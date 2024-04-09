@@ -13,7 +13,6 @@ MovingPlatform::MovingPlatform(string _fileName, ID3D11Device* _pd3dDevice, IEff
 
 	GroundCheck = new CMOGO("GreenCube", _pd3dDevice, _EF);
 	GroundCheck->SetScale(this->GetScale());
-	GroundCheck->SetPos(Vector3(this->GetPos().x, this->GetPos().y + 0.25f, this->GetPos().z));
 }
 
 MovingPlatform::~MovingPlatform()
@@ -22,7 +21,8 @@ MovingPlatform::~MovingPlatform()
 
 void MovingPlatform::Tick(GameData* _GD)
 {
-	GroundCheck->SetPos(Vector3(this->GetPos().x, this->GetPos().y + 0.25f, this->GetPos().z));
+	GroundCheck->SetPos(Vector3(this->GetPos().x, this->GetPos().y + 0.5f, this->GetPos().z));
+	GroundCheck->SetYaw(this->GetYaw());
 
 	//it takes 5 seconds for the platform to move there and back
 	//when moving the platform, increase the others' lifetime
@@ -74,5 +74,6 @@ void MovingPlatform::Tick(GameData* _GD)
 	default:
 		break;
 	}
+
 	CMOGO::Tick(_GD);
 }

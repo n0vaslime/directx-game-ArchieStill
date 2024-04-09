@@ -19,7 +19,7 @@ public:
 	void SwordTriggers(GameData* _GD);
 	void SwordObjects();
 
-	bool is_grounded = true;
+	bool is_grounded = false;
 	bool has_sword = false;
 	bool is_attacking = false;
 	bool is_respawning = false;

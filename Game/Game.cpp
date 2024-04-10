@@ -96,6 +96,13 @@ void Game::Initialize(HWND _window, int _width, int _height)
 
     CreateIntroGround();
     CreateGround();
+    
+    checkpoint_notif = new TextGO2D("Checkpoint!");
+    checkpoint_notif->SetPos(Vector2(30, 10));
+    checkpoint_notif->SetColour(Color((float*)&Colors::Blue));
+    checkpoint_notif->SetScale(1);
+    checkpoint_notif->SetRendered(false);
+    m_GameObjects2D.push_back(checkpoint_notif);
 
     //create a base camera
     // m_cam = new Camera(0.25f * XM_PI, AR, 1.0f, 10000.0f, Vector3::UnitY, Vector3::Zero);
@@ -236,6 +243,7 @@ void Game::Update(DX::StepTimer const& _timer)
     CheckCollision();
     CheckTriggers();
     GroundCheck();
+    CheckpointCheck();
     CoinCollision();
     EnemyCollision();
     SensorCollision();
@@ -624,29 +632,22 @@ void Game::CheckTriggers()
 {
     for (int i = 0; i < m_Player.size(); i++) for (int j = 0; j < m_TriggerObjects.size(); j++)
     {
-        if (m_Player[i]->Intersects(*m_TriggerObjects[j]))
+        if (m_Player[i]->Intersects(*m_TriggerObjects[j]) && m_TriggerObjects[j]->isRendered())
         {
-            if (m_TriggerObjects[j]->isRendered())
+            if (m_TriggerObjects[j] == pFloatingSword)
             {
-                if (m_TriggerObjects[j] == pFloatingSword)
-                {
-                    pFloatingSword->SetRendered(false);
-                    pPlayer->has_sword = true;
-                }
-                if (m_TriggerObjects[j] == pIntroExit)
-                {
-                    m_GD->m_GS = GS_GAME;
-                    CreateUI();
-                    DisplayGame();
-                }
-                if (m_TriggerObjects[j] == pDeathTrigger)
-                {
-                    LoseLife();
-                }
-                if (m_TriggerObjects[j] == pCheckpoint1)
-                {
-                    pPlayer->respawn_pos = m_TriggerObjects[j]->GetPos();
-                }
+                pFloatingSword->SetRendered(false);
+                pPlayer->has_sword = true;
+            }
+            if (m_TriggerObjects[j] == pIntroExit)
+            {
+                m_GD->m_GS = GS_GAME;
+                CreateUI();
+                DisplayGame();
+            }
+            if (m_TriggerObjects[j] == pDeathTrigger)
+            {
+                LoseLife();
             }
         }
     }
@@ -663,6 +664,29 @@ void Game::GroundCheck()
                 pPlayer->is_grounded = true;
             }
         }
+}
+void Game::CheckpointCheck()
+{
+    for (int i = 0; i < m_Player.size(); i++) for (int j = 0; j < m_Checkpoints.size(); j++)
+    {
+        if (m_Player[i]->Intersects(*m_Checkpoints[j]) && m_Checkpoints[j]->isRendered())
+        {
+            pPlayer->respawn_pos = m_Checkpoints[j]->GetPos();
+            checkpoint_notif->SetRendered(true);
+            notif_active = true;
+        }
+        if (notif_active)
+        {
+            //checkpoint notification is active for 2 seconds after leaving checkpoint bounds
+            checkpoint_life += m_GD->m_dt;
+            if (checkpoint_life >= 2)
+            {
+                checkpoint_life = 0;
+                checkpoint_notif->SetRendered(false);
+                notif_active = false;
+            }
+        }
+    }
 }
 
 void Game::CoinCollision()
@@ -917,11 +941,11 @@ void Game::CreateGround()
     m_Grounds.push_back(pGround4);
     m_GameObjects.push_back(pGround4->GroundCheck);
 
-        pCheckpoint1 = new CMOGO("Checkpoint", m_d3dDevice.Get(), m_fxFactory);
+        CMOGO* pCheckpoint1 = new CMOGO("Checkpoint", m_d3dDevice.Get(), m_fxFactory);
     pCheckpoint1->SetPos(Vector3(-400, 25, -175));
     pCheckpoint1->SetScale(Vector3(1, 1, 1));
     m_GameObjects.push_back(pCheckpoint1);
-    m_TriggerObjects.push_back(pCheckpoint1);
+    m_Checkpoints.push_back(pCheckpoint1);
 
         MovingPlatform* pMovePlat3 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 0, -60), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 1.5f, 7.5f));
         pMovePlat3->Moving = MOVEUP;
@@ -930,11 +954,30 @@ void Game::CreateGround()
     m_Platforms.push_back(pMovePlat3);
     m_GameObjects.push_back(pMovePlat3->GroundCheck);
 
-        Terrain* pGround5 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-100, 90, 25), 0.0f, 0.0f, 0.0f, Vector3(65, 2, 5));
+        Terrain* pGround5 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-300, 90, 25), 0.0f, 0.0f, 0.0f, Vector3(30, 2, 3));
     m_GameObjects.push_back(pGround5);
     m_ColliderObjects.push_back(pGround5);
     m_Grounds.push_back(pGround5);
     m_GameObjects.push_back(pGround5->GroundCheck);
+
+        MovingPlatform* pMovePlat4 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 90, 25), 0.0f, 0.0f, 0.0f, Vector3(25, 2, 3));
+    pMovePlat4->Moving = ROTATERIGHT;
+    m_GameObjects.push_back(pMovePlat4);
+    m_ColliderObjects.push_back(pMovePlat4);
+    m_Platforms.push_back(pMovePlat4);
+    m_GameObjects.push_back(pMovePlat4->GroundCheck);
+
+        Terrain* pGround6 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(300, 90, 25), 0.0f, 0.0f, 0.0f, Vector3(30, 2, 3));
+    m_GameObjects.push_back(pGround6);
+    m_ColliderObjects.push_back(pGround6);
+    m_Grounds.push_back(pGround6);
+    m_GameObjects.push_back(pGround6->GroundCheck);
+
+        CMOGO* pCheckpoint2 = new CMOGO("Checkpoint", m_d3dDevice.Get(), m_fxFactory);
+    pCheckpoint2->SetPos(Vector3(425, 100, 25));
+    pCheckpoint2->SetScale(Vector3(1, 1, 1));
+    m_GameObjects.push_back(pCheckpoint2);
+    m_Checkpoints.push_back(pCheckpoint2);
 }
 void Game::CreateIntroGround()
 {
@@ -1055,7 +1098,19 @@ void Game::CreateCoins()
     m_Coins.push_back(pCoin15);
         Coin* pCoin16 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 105, 25));
     m_GameObjects.push_back(pCoin16);
-    m_Coins.push_back(pCoin16); 
+    m_Coins.push_back(pCoin16);
+        Coin* pCoin17 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 105, -90));
+    m_GameObjects.push_back(pCoin17);
+    m_Coins.push_back(pCoin17);
+        Coin* pCoin18 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 105, 140));
+    m_GameObjects.push_back(pCoin18);
+    m_Coins.push_back(pCoin18);
+        Coin* pCoin19 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(225, 105, 25));
+    m_GameObjects.push_back(pCoin19);
+    m_Coins.push_back(pCoin19);
+        Coin* pCoin20 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(175, 105, 25));
+    m_GameObjects.push_back(pCoin20);
+    m_Coins.push_back(pCoin20);
 }
 void Game::CreateEnemies()
 {
@@ -1110,11 +1165,38 @@ void Game::CreateEnemies()
     m_Enemies.push_back(pEnemy9);
     m_GameObjects.push_back(pEnemy9->EnemySensor);
     m_EnemySensors.push_back(pEnemy9->EnemySensor);
-        Enemy* pEnemy10 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-250, 105, 25));
+        Enemy* pEnemy10 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-225, 105, 25));
     m_GameObjects.push_back(pEnemy10);
     m_Enemies.push_back(pEnemy10);
     m_GameObjects.push_back(pEnemy10->EnemySensor);
     m_EnemySensors.push_back(pEnemy10->EnemySensor);
+        Enemy* pEnemy11 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-175, 105, 25));
+    m_GameObjects.push_back(pEnemy11);
+    m_Enemies.push_back(pEnemy11);
+    m_GameObjects.push_back(pEnemy11->EnemySensor);
+    m_EnemySensors.push_back(pEnemy11->EnemySensor);
+        Enemy* pStrongE2 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 105, 25));
+        pStrongE2->speed = pStrongE2->speed * 2;
+    m_GameObjects.push_back(pStrongE2);
+    m_Enemies.push_back(pStrongE2);
+    m_GameObjects.push_back(pStrongE2->EnemySensor);
+    m_EnemySensors.push_back(pStrongE2->EnemySensor);
+        Enemy* pEnemy12 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(275, 105, 25));
+    m_GameObjects.push_back(pEnemy12);
+    m_Enemies.push_back(pEnemy12);
+    m_GameObjects.push_back(pEnemy12->EnemySensor);
+    m_EnemySensors.push_back(pEnemy12->EnemySensor);
+        Enemy* pEnemy13 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(325, 105, 25));
+    m_GameObjects.push_back(pEnemy13);
+    m_Enemies.push_back(pEnemy13);
+    m_GameObjects.push_back(pEnemy13->EnemySensor);
+    m_EnemySensors.push_back(pEnemy13->EnemySensor);
+        Enemy* pStrongE3 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(375, 105, 25));
+        pStrongE3->speed = pStrongE3->speed * 2;
+    m_GameObjects.push_back(pStrongE3);
+    m_Enemies.push_back(pStrongE3);
+    m_GameObjects.push_back(pStrongE3->EnemySensor);
+    m_EnemySensors.push_back(pStrongE3->EnemySensor);
 }
 void Game::CreateSigns()
 {

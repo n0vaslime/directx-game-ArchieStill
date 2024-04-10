@@ -15,7 +15,6 @@ public:
 	void CreateText();
 
 	CMOGO* SignTrigger;
-	int sign_index = 1;
 
 	bool can_read = false;
 	bool is_reading = false;

@@ -69,7 +69,19 @@ void MovingPlatform::Tick(GameData* _GD)
 			back_lifetime += _GD->m_dt;
 		}
 		break;
-	case MOVERIGHTX:
+	case MOVEFORWARDZ:
+		if (going)
+		{
+			back_lifetime = 0;
+			m_pos.z -= _GD->m_dt * 20;
+			direction_lifetime += _GD->m_dt;
+		}
+		else
+		{
+			direction_lifetime = 0;
+			m_pos.z += _GD->m_dt * 20;
+			back_lifetime += _GD->m_dt;
+		}
 		break;
 	default:
 		break;

@@ -7,15 +7,16 @@
     <ImageContentTask Include="..\RawAssets\Images\TitleScreen.png" />
     <ImageContentTask Include="..\RawAssets\Images\pain.jpg" />
     <ImageContentTask Include="..\RawAssets\Images\PlaceholderSign.png" />
-    <ImageContentTask Include="..\RawAssets\Images\IntroLoreSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\UIBackground.png" />
     <ImageContentTask Include="..\RawAssets\Images\TreeInfoSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\Coin.png" />
     <ImageContentTask Include="..\RawAssets\Images\Heart.png" />
     <ImageContentTask Include="..\RawAssets\Images\Spotted.png" />
-    <ImageContentTask Include="..\RawAssets\Images\CubeEnemySign.png" />
-    <ImageContentTask Include="..\RawAssets\Images\IntroHTPSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\CheckpointSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\AlmostThereSign.png" />
+    <ImageContentTask Include="..\RawAssets\Images\CubeMinionSign.png" />
+    <ImageContentTask Include="..\RawAssets\Images\IntroLoreSign.png" />
+    <ImageContentTask Include="..\RawAssets\Images\IntroHTPSign.png" />
+    <ImageContentTask Include="..\RawAssets\Images\FinalSign.png" />
   </ItemGroup>
 </Project>

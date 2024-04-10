@@ -1341,7 +1341,7 @@ void Game::CreateSigns()
     sign3Image->SetPos(Vector2(400, 300));
     sign3Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign3Image);
-        sign4Image = new ImageGO2D("CubeEnemySign", m_d3dDevice.Get());
+        sign4Image = new ImageGO2D("CubeMinionSign", m_d3dDevice.Get());
     sign4Image->SetPos(Vector2(400, 300));
     sign4Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign4Image);
@@ -1353,6 +1353,10 @@ void Game::CreateSigns()
     sign6Image->SetPos(Vector2(400, 300));
     sign6Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign6Image);
+        sign7Image = new ImageGO2D("FinalSign", m_d3dDevice.Get());
+    sign7Image->SetPos(Vector2(400, 300));
+    sign7Image->SetScale(Vector2(0.75f, 0.75f));
+    m_GameObjects2D.push_back(sign7Image);
 
     m_GameObjects2D.push_back(pSign1->ReadText);
     m_GameObjects2D.push_back(pSign2->ReadText);

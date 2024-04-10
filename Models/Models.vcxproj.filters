@@ -25,12 +25,15 @@
     <MeshContentTask Include="..\RawAssets\Models\Coin.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Sign.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\CaveCube.fbx" />
-    <MeshContentTask Include="..\..\..\..\..\..\OneDrive - UWE Bristol\Second Year\More Games in C++\3D Models\CrackedWall.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\WhiteCube.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\GrassCube.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Enemy.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Sword.fbx" />
-    <MeshContentTask Include="D:\3D Models\Goldedge 2\StrongEnemy.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Checkpoint.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\CrackedWall.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\StrongEnemy.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\BossCore.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\Launchpad.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\LordKazcranak.fbx" />
   </ItemGroup>
 </Project>

@@ -160,9 +160,6 @@
     <ImageContentTask Include="..\RawAssets\Images\PlaceholderSign.png" />
   </ItemGroup>
   <ItemGroup>
-    <ImageContentTask Include="..\RawAssets\Images\IntroLoreSign.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ImageContentTask Include="..\RawAssets\Images\UIBackground.png" />
   </ItemGroup>
   <ItemGroup>
@@ -176,16 +173,22 @@
     <ImageContentTask Include="..\RawAssets\Images\Spotted.png" />
   </ItemGroup>
   <ItemGroup>
-    <ImageContentTask Include="..\RawAssets\Images\CubeEnemySign.png" />
+    <ImageContentTask Include="..\RawAssets\Images\CheckpointSign.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="..\RawAssets\Images\AlmostThereSign.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="..\RawAssets\Images\CubeMinionSign.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="..\RawAssets\Images\IntroLoreSign.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageContentTask Include="..\RawAssets\Images\IntroHTPSign.png" />
   </ItemGroup>
   <ItemGroup>
-    <ImageContentTask Include="..\RawAssets\Images\CheckpointSign.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ImageContentTask Include="..\RawAssets\Images\AlmostThereSign.png" />
+    <ImageContentTask Include="..\RawAssets\Images\FinalSign.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

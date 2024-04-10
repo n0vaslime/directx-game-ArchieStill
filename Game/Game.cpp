@@ -767,6 +767,7 @@ void Game::SignReading()
             sign3Image->SetRendered(false);
             sign4Image->SetRendered(false);
             sign5Image->SetRendered(false);
+            sign6Image->SetRendered(false);
         }
 
         //choosing image to render depending on the sign
@@ -780,6 +781,8 @@ void Game::SignReading()
             sign4Image->SetRendered(true);
         if (pSign5->is_reading)
             sign5Image->SetRendered(true);
+        if (pSign6->is_reading)
+            sign6Image->SetRendered(true);
 
         //removing read prompt while player is reading
         if (m_Signs[j]->is_reading)
@@ -1346,10 +1349,15 @@ void Game::CreateSigns()
     sign5Image->SetPos(Vector2(400, 300));
     sign5Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign5Image);
+        sign6Image = new ImageGO2D("AlmostThereSign", m_d3dDevice.Get());
+    sign6Image->SetPos(Vector2(400, 300));
+    sign6Image->SetScale(Vector2(0.75f, 0.75f));
+    m_GameObjects2D.push_back(sign6Image);
 
     m_GameObjects2D.push_back(pSign1->ReadText);
     m_GameObjects2D.push_back(pSign2->ReadText);
     m_GameObjects2D.push_back(pSign3->ReadText);
     m_GameObjects2D.push_back(pSign4->ReadText);
     m_GameObjects2D.push_back(pSign5->ReadText);
+    m_GameObjects2D.push_back(pSign6->ReadText);
 }

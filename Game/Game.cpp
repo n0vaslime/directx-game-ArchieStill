@@ -112,17 +112,22 @@ void Game::Initialize(HWND _window, int _width, int _height)
 
     //add Player - player object and adding swords to player class
     pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
+    m_Player.push_back(pPlayer);
     m_GameObjects.push_back(pPlayer);
     m_IntroGOs.push_back(pPlayer);
     m_BossGOs.push_back(pPlayer);
-    m_PhysicsObjects.push_back(pPlayer);
-    m_Player.push_back(pPlayer);
     m_GameObjects.push_back(pPlayer->pSwordTrigger);
     m_GameObjects.push_back(pPlayer->pSwordObject);
     m_IntroGOs.push_back(pPlayer->pSwordTrigger);
     m_IntroGOs.push_back(pPlayer->pSwordObject);
     m_BossGOs.push_back(pPlayer->pSwordTrigger);
     m_BossGOs.push_back(pPlayer->pSwordObject);
+
+    //add Lord Kazcranak - only used in boss fight though
+    pKazcranak = new Boss("LordKazcranak", m_d3dDevice.Get(), m_fxFactory);
+    m_BossGOs.push_back(pKazcranak);
+    m_ColliderObjects.push_back(pKazcranak);
+    m_Destructibles.push_back(pKazcranak);
 
     //add a PRIMARY camera
     m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f)); // Vector3(0,0,0.1f)
@@ -237,6 +242,9 @@ void Game::Update(DX::StepTimer const& _timer)
             if ((*it)->isRendered())
                 (*it)->Tick(m_GD);
         }
+
+        pKazcranak->player_yaw = pPlayer->GetYaw();
+        pKazcranak->player_pitch = pPlayer->GetPitch();
     }
 
     for (std::vector<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
@@ -281,10 +289,6 @@ void Game::Render()
 
     //set which camera to be used
     m_DD->m_cam = m_TPScam;
-    if (m_GD->m_GS == GS_GAME)
-    {
-        m_DD->m_cam = m_TPScam;
-    }
 
     //update the constant buffer for the rendering of VBGOs
     VBGO::UpdateConstantBuffer(m_DD);
@@ -635,13 +639,13 @@ void Game::ReadInput()
 
 void Game::CheckCollision()
 {
-    for (int i = 0; i < m_PhysicsObjects.size(); i++) for (int j = 0; j < m_ColliderObjects.size(); j++)
+    for (int i = 0; i < m_Player.size(); i++) for (int j = 0; j < m_ColliderObjects.size(); j++)
     {
-        if (m_ColliderObjects[j]->isRendered() && m_PhysicsObjects[i]->Intersects(*m_ColliderObjects[j]))
+        if (m_ColliderObjects[j]->isRendered() && m_Player[i]->Intersects(*m_ColliderObjects[j]))
         {
-            XMFLOAT3 eject_vect = Collision::ejectionCMOGO(*m_PhysicsObjects[i], *m_ColliderObjects[j]);
-            auto pos = m_PhysicsObjects[i]->GetPos();
-            m_PhysicsObjects[i]->SetPos(pos - eject_vect);
+            XMFLOAT3 eject_vect = Collision::ejectionCMOGO(*m_Player[i], *m_ColliderObjects[j]);
+            auto pos = m_Player[i]->GetPos();
+            m_Player[i]->SetPos(pos - eject_vect);
         }
     }
 }
@@ -911,13 +915,13 @@ void Game::DisplayBoss()
     m_GD->m_GS = GS_BOSS;
     pPlayer->respawn_pos = pPlayer->base_respawn;
     pPlayer->is_respawning = true;
-    for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
-    {
-        (*it)->SetRendered(true);
-    }
     for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
     {
         (*it)->SetRendered(false);
+    }
+    for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
+    {
+        (*it)->SetRendered(true);
     }
     pPlayer->pSwordTrigger->SetRendered(false);
 }
@@ -1204,12 +1208,6 @@ void Game::CreateBossGround()
     m_ColliderObjects.push_back(pGroundBoss);
     m_Grounds.push_back(pGroundBoss);
     m_BossGOs.push_back(pGroundBoss->GroundCheck);
-
-    CMOGO* LordKazcranak = new CMOGO("LordKazcranak", m_d3dDevice.Get(), m_fxFactory);
-    LordKazcranak->SetPos(Vector3(0, 25, -25));
-    LordKazcranak->SetScale(1.5f);
-    m_BossGOs.push_back(LordKazcranak);
-    m_ColliderObjects.push_back(LordKazcranak);
 }
 
 void Game::CreateUI()

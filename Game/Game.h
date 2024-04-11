@@ -20,6 +20,7 @@
 #include "Enemy.h"
 #include "Sign.h"
 #include "MovingPlatform.h"
+#include "Boss.h"
 
 using std::list;
 
@@ -154,6 +155,7 @@ private:
 
     Player* pPlayer;
     Coin* pFloatingSword;
+    Boss* pKazcranak;
 
     Terrain* pIntroExit;
     Terrain* pDeathTrigger;
@@ -187,7 +189,7 @@ private:
 
     ImageGO2D* title_screen;
     bool reset = false;
-        
+
     void CollectCoin();
     void LoseLife();
     void ReturnToDefault();

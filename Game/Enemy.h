@@ -1,6 +1,5 @@
 #pragma once
 #include "CMOGO.h"
-#include "Player.h"
 
 class Enemy : public CMOGO
 {

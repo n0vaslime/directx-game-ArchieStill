@@ -96,6 +96,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
 
     CreateIntroGround();
     CreateGround();
+    CreateBossGround();
     
     checkpoint_notif = new TextGO2D("Checkpoint!");
     checkpoint_notif->SetPos(Vector2(30, 10));
@@ -113,17 +114,21 @@ void Game::Initialize(HWND _window, int _width, int _height)
     pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(pPlayer);
     m_IntroGOs.push_back(pPlayer);
+    m_BossGOs.push_back(pPlayer);
     m_PhysicsObjects.push_back(pPlayer);
     m_Player.push_back(pPlayer);
     m_GameObjects.push_back(pPlayer->pSwordTrigger);
     m_GameObjects.push_back(pPlayer->pSwordObject);
     m_IntroGOs.push_back(pPlayer->pSwordTrigger);
     m_IntroGOs.push_back(pPlayer->pSwordObject);
+    m_BossGOs.push_back(pPlayer->pSwordTrigger);
+    m_BossGOs.push_back(pPlayer->pSwordObject);
 
     //add a PRIMARY camera
     m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f)); // Vector3(0,0,0.1f)
     m_GameObjects.push_back(m_TPScam);
     m_IntroGOs.push_back(m_TPScam);
+    m_BossGOs.push_back(m_TPScam);
 
     CreateCoins();
     CreateEnemies();
@@ -160,10 +165,10 @@ void Game::Initialize(HWND _window, int _width, int _height)
     // TestSound* TS = new TestSound(m_audioEngine.get(), "Explo1");
     // m_Sounds.push_back(TS);
 
-    //DisplayMenu();
-    DisplayGame();
-    CreateUI();
-    pPlayer->has_sword = true;
+    DisplayMenu();
+    // DisplayGame();
+    // CreateUI();
+    // pPlayer->has_sword = true;
 }
 
 // Executes the basic game loop.
@@ -207,7 +212,8 @@ void Game::Update(DX::StepTimer const& _timer)
     {
         for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
         {
-            (*it)->Tick(m_GD);
+            if ((*it)->isRendered())
+                (*it)->Tick(m_GD);
         }
 
         for (int i = 0; i < m_Enemies.size(); i++)
@@ -216,10 +222,17 @@ void Game::Update(DX::StepTimer const& _timer)
             m_Enemies[i]->EnemySensor->SetRendered(false);
         }
     }
-
-    if (m_GD->m_GS == GS_INTRO)
+    else if (m_GD->m_GS == GS_INTRO)
     {
         for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
+        {
+            if ((*it)->isRendered())
+                (*it)->Tick(m_GD);
+        }
+    }
+    else if (m_GD->m_GS == GS_BOSS)
+    {
+        for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
         {
             if ((*it)->isRendered())
                 (*it)->Tick(m_GD);
@@ -282,7 +295,9 @@ void Game::Render()
         for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
         {
             if ((*it)->isRendered()
-                && (*it) != pPlayer->pSwordTrigger)
+                && (*it) != pPlayer->pSwordTrigger
+                && (*it) != pLaunchpadTrigger
+                && (*it) != pBossTrigger)
             {
                 (*it)->Draw(m_DD);
             }
@@ -295,6 +310,17 @@ void Game::Render()
     else if (m_GD->m_GS == GS_INTRO)
     {
         for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
+        {
+            if ((*it)->isRendered()
+                && (*it) != pPlayer->pSwordTrigger)
+            {
+                (*it)->Draw(m_DD);
+            }
+        }
+    }
+    else if (m_GD->m_GS == GS_BOSS)
+    {
+        for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
         {
             if ((*it)->isRendered()
                 && (*it) != pPlayer->pSwordTrigger)
@@ -632,13 +658,21 @@ void Game::CheckTriggers()
             }
             if (m_TriggerObjects[j] == pIntroExit)
             {
-                m_GD->m_GS = GS_GAME;
                 CreateUI();
                 DisplayGame();
             }
             if (m_TriggerObjects[j] == pDeathTrigger)
             {
                 LoseLife();
+            }
+            if (m_TriggerObjects[j] == pLaunchpadTrigger)
+            {
+                if (m_GD->m_KBS.Space)
+                    pPlayer->launching = true;
+            }
+            if (m_TriggerObjects[j] == pBossTrigger)
+            {
+                DisplayBoss();
             }
         }
     }
@@ -846,22 +880,16 @@ void Game::DisplayIntro()
         (*it)->SetRendered(true);
     }
     pPlayer->pSwordTrigger->SetRendered(false);
-
-    //set others inactive
+    pPlayer->pSwordObject->SetRendered(false);
     title_screen->SetRendered(false);
-    for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
-    {
-        if ((*it) == pPlayer)
-            (*it)->SetRendered(true);
-        else
-            (*it)->SetRendered(false);
-    }
 }
 void Game::DisplayGame()
 {
     //set game active
     m_GD->m_GS = GS_GAME;
+    pPlayer->respawn_pos = pPlayer->base_respawn;
     pPlayer->is_respawning = true;
+    pPlayer->SetPos(Vector3(pPlayer->GetPos().x, pPlayer->GetPos().y + 25, pPlayer->GetPos().z));
     for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
     {
         (*it)->SetRendered(true);
@@ -876,6 +904,22 @@ void Game::DisplayGame()
         else
             (*it)->SetRendered(false);
     }
+}
+void Game::DisplayBoss()
+{
+    //set boss active
+    m_GD->m_GS = GS_BOSS;
+    pPlayer->respawn_pos = pPlayer->base_respawn;
+    pPlayer->is_respawning = true;
+    for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
+    {
+        (*it)->SetRendered(true);
+    }
+    for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+    {
+        (*it)->SetRendered(false);
+    }
+    pPlayer->pSwordTrigger->SetRendered(false);
 }
 void Game::DisplayWin()
 {
@@ -893,7 +937,12 @@ void Game::CreateGround()
     //Death trigger
     pDeathTrigger = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -50, 0), 0.0f, 0.0f, 0.0f, Vector3(1000, 1, 1000));
     m_GameObjects.push_back(pDeathTrigger);
+    m_BossGOs.push_back(pDeathTrigger);
     m_TriggerObjects.push_back(pDeathTrigger);
+    //Boss fight trigger
+    pBossTrigger = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 800, 0), 0.0f, 0.0f, 0.0f, Vector3(1000, 1, 1000));
+    m_GameObjects.push_back(pBossTrigger);
+    m_TriggerObjects.push_back(pBossTrigger);
 
     //Cave exterior
     Terrain* pCave = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 200), 0.0f, 0.0f, 0.0f, Vector3(15, 15, 50));
@@ -1042,7 +1091,6 @@ void Game::CreateGround()
     m_GameObjects.push_back(pCheckpoint3);
     m_Checkpoints.push_back(pCheckpoint3);
 
-
     // LAYER 4 - END
         Terrain* pGround18 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 150, -400), 0.0f, 0.0f, 0.0f, Vector3(5, 1, 1));
     m_GameObjects.push_back(pGround18);
@@ -1100,10 +1148,17 @@ void Game::CreateGround()
     m_GameObjects.push_back(pCheckpoint4);
     m_Checkpoints.push_back(pCheckpoint4);
 
-    /// KAZCRANAK AT THE VERY TOP OF THE WORLD
-    /// CMOGO ADD TO TRIGGER OBJECTS
-    /// if(m_GD->m_KBS.Space)
-    /// pPlayer.m_vel.y = 1000 etc etc to get to Kazcranak
+    // BOSS APPROACH
+        Terrain* pLaunchpad = new Terrain("Launchpad", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -125), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
+    m_GameObjects.push_back(pLaunchpad);
+    m_ColliderObjects.push_back(pLaunchpad);
+    m_Grounds.push_back(pLaunchpad);
+    m_GameObjects.push_back(pLaunchpad->GroundCheck);
+        pLaunchpadTrigger = new CMOGO("Launchpad", m_d3dDevice.Get(), m_fxFactory);
+    pLaunchpadTrigger->SetPos(Vector3(-275, 410, -125));
+    pLaunchpadTrigger->SetScale(Vector3(4, 1, 4));
+    m_GameObjects.push_back(pLaunchpadTrigger);
+    m_TriggerObjects.push_back(pLaunchpadTrigger);
 }
 void Game::CreateIntroGround()
 {
@@ -1112,7 +1167,6 @@ void Game::CreateIntroGround()
     m_ColliderObjects.push_back(pGroundIntro);
     m_Grounds.push_back(pGroundIntro);
     m_IntroGOs.push_back(pGroundIntro->GroundCheck);
-    m_TriggerObjects.push_back(pGroundIntro->GroundCheck);
         Terrain* pIntroLWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 10, 35));
     m_IntroGOs.push_back(pIntroLWall);
     m_ColliderObjects.push_back(pIntroLWall);
@@ -1142,6 +1196,20 @@ void Game::CreateIntroGround()
     pFloatingSword->SetScale(Vector3(0.25f, 0.3f, 0.25f));
     m_IntroGOs.push_back(pFloatingSword);
     m_TriggerObjects.push_back(pFloatingSword);
+}
+void Game::CreateBossGround()
+{
+    Terrain* pGroundBoss = new Terrain("WhiteCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 0), 0.0f, 45.0f, 0.0f, Vector3(50, 1, 50));
+    m_BossGOs.push_back(pGroundBoss);
+    m_ColliderObjects.push_back(pGroundBoss);
+    m_Grounds.push_back(pGroundBoss);
+    m_BossGOs.push_back(pGroundBoss->GroundCheck);
+
+    CMOGO* LordKazcranak = new CMOGO("LordKazcranak", m_d3dDevice.Get(), m_fxFactory);
+    LordKazcranak->SetPos(Vector3(0, 25, -25));
+    LordKazcranak->SetScale(1.5f);
+    m_BossGOs.push_back(LordKazcranak);
+    m_ColliderObjects.push_back(LordKazcranak);
 }
 
 void Game::CreateUI()

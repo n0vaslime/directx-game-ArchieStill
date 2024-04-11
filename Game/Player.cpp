@@ -13,6 +13,7 @@ Player::Player(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF)
 	SetPhysicsOn(true);
 	SetScale(Vector3(1,2,1));
 	respawn_pos = Vector3(0, 5, 75);
+	base_respawn = Vector3(0, 5, 75);
 
 	pSwordTrigger = new CMOGO("table", _pd3dDevice, _EF);
 	pSwordTrigger->SetScale(Vector3(0.075f, -0.075f, 0.075f));
@@ -28,7 +29,7 @@ Player::~Player()
 
 void Player::Tick(GameData* _GD)
 {
-	if (_GD->m_GS == GS_GAME || _GD->m_GS == GS_INTRO)
+	if (_GD->m_GS == GS_GAME || _GD->m_GS == GS_INTRO || _GD->m_GS == GS_BOSS)
 	{
 		PlayerMovement(_GD);
 		if (has_sword)
@@ -55,6 +56,7 @@ void Player::Tick(GameData* _GD)
 			this->SetPitch(0);
 			this->SetYaw(0);
 			m_vel.x = 0;
+			m_vel.y = 0;
 			m_vel.z = 0;
 			is_respawning = false;
 		}
@@ -116,15 +118,30 @@ void Player::PlayerMovement(GameData* _GD)
 		m_vel.y = 50;
 		is_grounded = false;
 	}
+
+	//TESTING
 	if (_GD->m_KBS.Tab && is_grounded && !is_attacking)
 	{
-		m_vel.y = 1000;
+		m_vel.y = 1250;
 		is_grounded = false;
+	}
+	if (_GD->m_KBS.NumPad5 && is_grounded && !is_attacking)
+	{
+		m_vel.y = 2000;
+		is_grounded = false;
+	}
+
+
+
+	if (launching)
+	{
+		m_vel.y = 1000;
+		launching = false;
 	}
 
 	//limit motion of the player
 	float length = m_pos.Length();
-	float maxLength = 1000.0f;
+	float maxLength = 1001.0f;
 	if (length > maxLength)
 	{
 		m_pos.Normalize();

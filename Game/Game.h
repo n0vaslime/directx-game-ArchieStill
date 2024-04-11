@@ -116,6 +116,7 @@ private:
     std::vector<GameObject*> m_GameObjects; //data structure to hold pointers to the 3D Game Objects
     std::vector<GameObject2D*> m_GameObjects2D; //data structure to hold pointers to the 2D Game Objects
     std::vector<GameObject*> m_IntroGOs;
+    std::vector<GameObject*> m_BossGOs;
 
     //list<CMOGO*> m_CMOGameObjects; //data structure to hold pointers to all 3D CMO Game Objects
     //list<CMOGO*> m_PhysicsObjects
@@ -156,6 +157,9 @@ private:
 
     Terrain* pIntroExit;
     Terrain* pDeathTrigger;
+    CMOGO* pLaunchpadTrigger;
+    Terrain* pBossTrigger;
+
     TextGO2D* checkpoint_notif;
     float checkpoint_life = 0.0f;
     bool notif_active = false;
@@ -191,11 +195,14 @@ private:
     void DisplayMenu();
     void DisplayIntro();
     void DisplayGame();
+    void DisplayBoss();
     void DisplayWin();
     void DisplayLoss();
 
     void CreateGround();
     void CreateIntroGround();
+    void CreateBossGround();
+
     void CreateUI();
     void CreateCoins();
     void CreateEnemies();

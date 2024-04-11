@@ -24,7 +24,9 @@ public:
 	bool is_attacking = false;
 	bool is_respawning = false;
 	Vector3 respawn_pos;
+	Vector3 base_respawn;
 	bool is_reading = false;
+	bool launching = false;
 
 	float lifetime = 0.0f;
 

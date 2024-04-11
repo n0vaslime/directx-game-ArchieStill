@@ -35,10 +35,10 @@ void MovingPlatform::Tick(GameData* _GD)
 
 	switch (this->Moving)
 	{
-	case ROTATELEFT:
+	case ROTATEANTICLOCKWISE:
 		m_yaw -= _GD->m_dt / 4;
 		break;
-	case ROTATERIGHT:
+	case ROTATECLOCKWISE:
 		m_yaw += _GD->m_dt / 4;
 		break;
 	case MOVEUP:
@@ -52,6 +52,20 @@ void MovingPlatform::Tick(GameData* _GD)
 		{
 			direction_lifetime = 0;
 			m_pos.y -= _GD->m_dt * 20;
+			back_lifetime += _GD->m_dt;
+		}
+		break;
+	case MOVEDOWN:
+		if (going)
+		{
+			back_lifetime = 0;
+			m_pos.y -= _GD->m_dt * 20;
+			direction_lifetime += _GD->m_dt;
+		}
+		else
+		{
+			direction_lifetime = 0;
+			m_pos.y += _GD->m_dt * 20;
 			back_lifetime += _GD->m_dt;
 		}
 		break;

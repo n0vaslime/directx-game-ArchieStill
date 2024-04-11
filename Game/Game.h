@@ -166,6 +166,7 @@ private:
     Sign* pSign4;
     Sign* pSign5;
     Sign* pSign6;
+    Sign* pSign7;
     ImageGO2D* sign1Image;
     ImageGO2D* sign2Image;
     ImageGO2D* sign3Image;

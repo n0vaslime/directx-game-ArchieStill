@@ -334,7 +334,6 @@ void Game::Clear()
     CD3D11_VIEWPORT viewport(0.0f, 0.0f, static_cast<float>(m_outputWidth), static_cast<float>(m_outputHeight));
     m_d3dContext->RSSetViewports(1, &viewport);
 }
-
 // Presents the back buffer contents to the screen.
 void Game::Present()
 {
@@ -360,19 +359,16 @@ void Game::OnActivated()
     // Game is becoming active window.
     ShowCursor(false);
 }
-
 void Game::OnDeactivated()
 {
     // Game is becoming background window.
     ShowCursor(true);
 }
-
 void Game::OnSuspending()
 {
     // Game is being power-suspended (or minimized).
     ShowCursor(true);
 }
-
 void Game::OnResuming()
 {
     m_timer.ResetElapsedTime();
@@ -380,7 +376,6 @@ void Game::OnResuming()
     // Game is being power-resumed (or returning from minimize).
     ShowCursor(false);
 }
-
 void Game::OnWindowSizeChanged(int _width, int _height)
 {
     m_outputWidth = std::max(_width, 1);
@@ -388,14 +383,12 @@ void Game::OnWindowSizeChanged(int _width, int _height)
 
     CreateResources();
 }
-
 void Game::GetDefaultSize(int& _width, int& _height) const noexcept
 {
     // TODO: Change to desired default window size (note minimum size is 320x200).
     _width = 800;
     _height = 600;
 }
-
 // These are the resources that depend on the device.
 void Game::CreateDevice()
 {
@@ -464,7 +457,6 @@ void Game::CreateDevice()
 
     // TODO: Initialize device dependent objects here (independent of window size).
 }
-
 // Allocate all memory resources that change on a window SizeChanged event.
 void Game::CreateResources()
 {
@@ -560,7 +552,6 @@ void Game::CreateResources()
 
     // TODO: Initialize windows-size dependent objects here.
 }
-
 void Game::OnDeviceLost()
 {
     // TODO: Add Direct3D resource cleanup here.
@@ -768,6 +759,7 @@ void Game::SignReading()
             sign4Image->SetRendered(false);
             sign5Image->SetRendered(false);
             sign6Image->SetRendered(false);
+            sign7Image->SetRendered(false);
         }
 
         //choosing image to render depending on the sign
@@ -783,6 +775,8 @@ void Game::SignReading()
             sign5Image->SetRendered(true);
         if (pSign6->is_reading)
             sign6Image->SetRendered(true);
+        if (pSign7->is_reading)
+            sign7Image->SetRendered(true);
 
         //removing read prompt while player is reading
         if (m_Signs[j]->is_reading)
@@ -923,13 +917,13 @@ void Game::CreateGround()
     m_Grounds.push_back(pGround3);
     m_GameObjects.push_back(pGround3->GroundCheck);
         MovingPlatform* pMovePlat1 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-200, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
-        pMovePlat1->Moving = ROTATELEFT;
+        pMovePlat1->Moving = ROTATEANTICLOCKWISE;
     m_GameObjects.push_back(pMovePlat1);
     m_ColliderObjects.push_back(pMovePlat1);
     m_Platforms.push_back(pMovePlat1);
     m_GameObjects.push_back(pMovePlat1->GroundCheck);
         MovingPlatform* pMovePlat2 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-350, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
-        pMovePlat2->Moving = ROTATERIGHT;
+        pMovePlat2->Moving = ROTATECLOCKWISE;
     m_GameObjects.push_back(pMovePlat2);
     m_ColliderObjects.push_back(pMovePlat2);
     m_Platforms.push_back(pMovePlat2);
@@ -952,18 +946,18 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pMovePlat3);
     m_Platforms.push_back(pMovePlat3);
     m_GameObjects.push_back(pMovePlat3->GroundCheck);
-        Terrain* pGround5 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-300, 90, 25), 0.0f, 0.0f, 0.0f, Vector3(30, 2, 3));
+        Terrain* pGround5 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-300, 90, 25), 0.0f, 0.0f, 0.0f, Vector3(30, 2, 4));
     m_GameObjects.push_back(pGround5);
     m_ColliderObjects.push_back(pGround5);
     m_Grounds.push_back(pGround5);
     m_GameObjects.push_back(pGround5->GroundCheck);
         MovingPlatform* pMovePlat4 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 90, 25), 0.0f, 0.0f, 0.0f, Vector3(25, 2, 3));
-    pMovePlat4->Moving = ROTATERIGHT;
+    pMovePlat4->Moving = ROTATECLOCKWISE;
     m_GameObjects.push_back(pMovePlat4);
     m_ColliderObjects.push_back(pMovePlat4);
     m_Platforms.push_back(pMovePlat4);
     m_GameObjects.push_back(pMovePlat4->GroundCheck);
-        Terrain* pGround6 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(300, 90, 25), 0.0f, 0.0f, 0.0f, Vector3(30, 2, 3));
+        Terrain* pGround6 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(300, 90, 25), 0.0f, 0.0f, 0.0f, Vector3(30, 2, 4));
     m_GameObjects.push_back(pGround6);
     m_ColliderObjects.push_back(pGround6);
     m_Grounds.push_back(pGround6);
@@ -1048,6 +1042,63 @@ void Game::CreateGround()
     m_GameObjects.push_back(pCheckpoint3);
     m_Checkpoints.push_back(pCheckpoint3);
 
+
+    // LAYER 4 - END
+        Terrain* pGround18 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 150, -400), 0.0f, 0.0f, 0.0f, Vector3(5, 1, 1));
+    m_GameObjects.push_back(pGround18);
+    m_ColliderObjects.push_back(pGround18);
+    m_Grounds.push_back(pGround18);
+    m_GameObjects.push_back(pGround18->GroundCheck);
+        Terrain* pGround19 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-90, 150, -400), 0.0f, 0.0f, 0.0f, Vector3(10, 2, 10));
+    m_GameObjects.push_back(pGround19);
+    m_ColliderObjects.push_back(pGround19);
+    m_Grounds.push_back(pGround19);
+    m_GameObjects.push_back(pGround19->GroundCheck);
+        MovingPlatform* pMovePlat7 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-175, 150, -400), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
+        pMovePlat7->Moving = MOVEUP;
+    m_GameObjects.push_back(pMovePlat7);
+    m_ColliderObjects.push_back(pMovePlat7);
+    m_Platforms.push_back(pMovePlat7);
+    m_GameObjects.push_back(pMovePlat7->GroundCheck);
+        MovingPlatform* pMovePlat8 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-225, 325, -400), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
+        pMovePlat8->Moving = MOVEDOWN;
+    m_GameObjects.push_back(pMovePlat8);
+    m_ColliderObjects.push_back(pMovePlat8);
+    m_Platforms.push_back(pMovePlat8);
+    m_GameObjects.push_back(pMovePlat8->GroundCheck);
+        MovingPlatform* pMovePlat9 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 300, -400), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
+        pMovePlat9->Moving = MOVEUP;
+    m_GameObjects.push_back(pMovePlat9);
+    m_ColliderObjects.push_back(pMovePlat9);
+    m_Platforms.push_back(pMovePlat9);
+    m_GameObjects.push_back(pMovePlat9->GroundCheck);
+        Terrain* pGround20 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -325), 0.0f, 0.0f, 0.0f, Vector3(10, 2, 10));
+    m_GameObjects.push_back(pGround20);
+    m_ColliderObjects.push_back(pGround20);
+    m_Grounds.push_back(pGround20);
+    m_GameObjects.push_back(pGround20->GroundCheck);
+        MovingPlatform* pMovePlat10 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -255), 0.0f, 0.0f, 0.0f, Vector3(2, 1, 2));
+        pMovePlat10->Moving = ROTATECLOCKWISE;
+    m_GameObjects.push_back(pMovePlat10);
+    m_ColliderObjects.push_back(pMovePlat10);
+    m_Platforms.push_back(pMovePlat10);
+    m_GameObjects.push_back(pMovePlat10->GroundCheck);
+        MovingPlatform* pMovePlat11 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -220), 0.0f, 0.0f, 0.0f, Vector3(2, 1, 2));
+        pMovePlat11->Moving = ROTATEANTICLOCKWISE;
+    m_GameObjects.push_back(pMovePlat11);
+    m_ColliderObjects.push_back(pMovePlat11);
+    m_Platforms.push_back(pMovePlat11);
+    m_GameObjects.push_back(pMovePlat11->GroundCheck);
+        Terrain* pGround21 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -175), 0.0f, 0.0f, 0.0f, Vector3(5, 2, 5));
+    m_GameObjects.push_back(pGround21);
+    m_ColliderObjects.push_back(pGround21);
+    m_Grounds.push_back(pGround21);
+    m_GameObjects.push_back(pGround21->GroundCheck);
+        CMOGO* pCheckpoint4 = new CMOGO("Checkpoint", m_d3dDevice.Get(), m_fxFactory);
+    pCheckpoint4->SetPos(Vector3(-275, 410, -175));
+    pCheckpoint4->SetScale(Vector3(1, 1, 1));
+    m_GameObjects.push_back(pCheckpoint4);
+    m_Checkpoints.push_back(pCheckpoint4);
 
     /// KAZCRANAK AT THE VERY TOP OF THE WORLD
     /// CMOGO ADD TO TRIGGER OBJECTS
@@ -1200,6 +1251,25 @@ void Game::CreateCoins()
         Coin* pCoin24 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 162.5f, -275));
     m_GameObjects.push_back(pCoin24);
     m_Coins.push_back(pCoin24);
+        Coin* pCoin25 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 162.5f, -165));
+    m_GameObjects.push_back(pCoin25);
+    m_Coins.push_back(pCoin25);
+
+        Coin* pCoin26 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-90, 165, -400));
+    m_GameObjects.push_back(pCoin26);
+    m_Coins.push_back(pCoin26);
+    Coin* pCoin27 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-175, 200, -400));
+    m_GameObjects.push_back(pCoin27);
+    m_Coins.push_back(pCoin27);
+    Coin* pCoin28 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-225, 275, -400));
+    m_GameObjects.push_back(pCoin28);
+    m_Coins.push_back(pCoin28);
+    Coin* pCoin29 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 350, -400));
+    m_GameObjects.push_back(pCoin29);
+    m_Coins.push_back(pCoin29);
+    Coin* pCoin30 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 415, -325));
+    m_GameObjects.push_back(pCoin30);
+    m_Coins.push_back(pCoin30);
 }
 void Game::CreateEnemies()
 {
@@ -1289,11 +1359,47 @@ void Game::CreateEnemies()
     m_GameObjects.push_back(pStrongE3->EnemySensor);
     m_EnemySensors.push_back(pStrongE3->EnemySensor);
 
-        Enemy* pEnemy14 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 162.5f, -165));
+        Enemy* pEnemy14 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(32.5f, 162.5f, -155));
     m_GameObjects.push_back(pEnemy14);
     m_Enemies.push_back(pEnemy14);
     m_GameObjects.push_back(pEnemy14->EnemySensor);
     m_EnemySensors.push_back(pEnemy14->EnemySensor);
+        Enemy* pEnemy15 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(32.5f, 162.5f, -175));
+    m_GameObjects.push_back(pEnemy15);
+    m_Enemies.push_back(pEnemy15);
+    m_GameObjects.push_back(pEnemy15->EnemySensor);
+    m_EnemySensors.push_back(pEnemy15->EnemySensor);
+
+        Enemy* pStrongE4 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-90, 165, -365));
+        pStrongE4->speed = pStrongE4->speed * 2;
+    m_GameObjects.push_back(pStrongE4);
+    m_Enemies.push_back(pStrongE4);
+    m_GameObjects.push_back(pStrongE4->EnemySensor);
+    m_EnemySensors.push_back(pStrongE4->EnemySensor);
+        Enemy* pStrongE5 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-90, 165, -435));
+        pStrongE5->speed = pStrongE5->speed * 2;
+    m_GameObjects.push_back(pStrongE5);
+    m_Enemies.push_back(pStrongE5);
+    m_GameObjects.push_back(pStrongE5->EnemySensor);
+    m_EnemySensors.push_back(pStrongE5->EnemySensor);
+        Enemy* pStrongE6 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 415, -325));
+        pStrongE6->speed = pStrongE6->speed * 2;
+    m_GameObjects.push_back(pStrongE6);
+    m_Enemies.push_back(pStrongE6);
+    m_GameObjects.push_back(pStrongE6->EnemySensor);
+    m_EnemySensors.push_back(pStrongE6->EnemySensor);
+        Enemy* pStrongE7 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-250, 415, -300));
+        pStrongE7->speed = pStrongE7->speed * 2;
+    m_GameObjects.push_back(pStrongE7);
+    m_Enemies.push_back(pStrongE7);
+    m_GameObjects.push_back(pStrongE7->EnemySensor);
+    m_EnemySensors.push_back(pStrongE7->EnemySensor);
+        Enemy* pStrongE8 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-300, 415, -300));
+        pStrongE8->speed = pStrongE8->speed * 2;
+    m_GameObjects.push_back(pStrongE8);
+    m_Enemies.push_back(pStrongE8);
+    m_GameObjects.push_back(pStrongE8->EnemySensor);
+    m_EnemySensors.push_back(pStrongE8->EnemySensor);
 }
 void Game::CreateSigns()
 {
@@ -1317,8 +1423,7 @@ void Game::CreateSigns()
     m_Signs.push_back(pSign4);
     m_ColliderObjects.push_back(pSign4);
     m_GameObjects.push_back(pSign4->SignTrigger);
-        pSign5 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-375, 28, -175), 0);
-        pSign5->SetYaw(180);
+        pSign5 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-375, 28, -175), 179);
     m_GameObjects.push_back(pSign5);
     m_Signs.push_back(pSign5);
     m_ColliderObjects.push_back(pSign5);
@@ -1328,6 +1433,11 @@ void Game::CreateSigns()
     m_Signs.push_back(pSign6);
     m_ColliderObjects.push_back(pSign6);
     m_GameObjects.push_back(pSign6->SignTrigger);
+        pSign7 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 412.5f, -160), 179);
+    m_GameObjects.push_back(pSign7);
+    m_Signs.push_back(pSign7);
+    m_ColliderObjects.push_back(pSign7);
+    m_GameObjects.push_back(pSign7->SignTrigger);
 
         sign1Image = new ImageGO2D("IntroLoreSign", m_d3dDevice.Get());
     sign1Image->SetPos(Vector2(400, 300));
@@ -1364,4 +1474,5 @@ void Game::CreateSigns()
     m_GameObjects2D.push_back(pSign4->ReadText);
     m_GameObjects2D.push_back(pSign5->ReadText);
     m_GameObjects2D.push_back(pSign6->ReadText);
+    m_GameObjects2D.push_back(pSign7->ReadText);
 }

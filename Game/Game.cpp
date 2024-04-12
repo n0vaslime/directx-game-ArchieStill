@@ -949,6 +949,7 @@ void Game::DisplayBoss()
     game_music->m_playing = false;
     game_music->~Loop();
     boss_intro->m_playing = true;
+    KZK_intro->Play();
 
     pPlayer->respawn_pos = pPlayer->base_respawn;
     pPlayer->is_respawning = true;
@@ -986,7 +987,7 @@ void Game::CreateGround()
     m_TriggerObjects.push_back(pBossTrigger);
 
     //Cave exterior
-    Terrain* pCave = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 200), 0.0f, 0.0f, 0.0f, Vector3(15, 15, 50));
+    Terrain* pCave = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 200), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 7.5f, 25));
     m_GameObjects.push_back(pCave);
     m_ColliderObjects.push_back(pCave);
 
@@ -1208,23 +1209,23 @@ void Game::CreateIntroGround()
     m_ColliderObjects.push_back(pGroundIntro);
     m_Grounds.push_back(pGroundIntro);
     m_IntroGOs.push_back(pGroundIntro->GroundCheck);
-        Terrain* pIntroLWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 10, 35));
-    m_IntroGOs.push_back(pIntroLWall);
-    m_ColliderObjects.push_back(pIntroLWall);
-        Terrain* pIntroRWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 10, 35));
-    m_IntroGOs.push_back(pIntroRWall);
-    m_ColliderObjects.push_back(pIntroRWall);
-        Terrain* pIntroCeiling = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 25, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 35));
-    m_IntroGOs.push_back(pIntroCeiling);
-    m_ColliderObjects.push_back(pIntroCeiling);
-        Terrain* pIntroBackWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 5), 0.0f, 0.0f, 0.0f, Vector3(15, 10, 1));
-    m_IntroGOs.push_back(pIntroBackWall);
-    m_ColliderObjects.push_back(pIntroBackWall);
-        Terrain* pIntroFrontWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -135), 0.0f, 0.0f, 0.0f, Vector3(15, 10, 1));
-    m_IntroGOs.push_back(pIntroFrontWall);
-    m_ColliderObjects.push_back(pIntroFrontWall);
+    //    Terrain* pIntroLWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 10, 35));
+    //m_IntroGOs.push_back(pIntroLWall);
+    //m_ColliderObjects.push_back(pIntroLWall);
+    //    Terrain* pIntroRWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 10, 35));
+    //m_IntroGOs.push_back(pIntroRWall);
+    //m_ColliderObjects.push_back(pIntroRWall);
+    //    Terrain* pIntroCeiling = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 25, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 35));
+    //m_IntroGOs.push_back(pIntroCeiling);
+    //m_ColliderObjects.push_back(pIntroCeiling);
+    //    Terrain* pIntroBackWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 5), 0.0f, 0.0f, 0.0f, Vector3(15, 10, 1));
+    //m_IntroGOs.push_back(pIntroBackWall);
+    //m_ColliderObjects.push_back(pIntroBackWall);
+    //    Terrain* pIntroFrontWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -135), 0.0f, 0.0f, 0.0f, Vector3(15, 10, 1));
+    //m_IntroGOs.push_back(pIntroFrontWall);
+    //m_ColliderObjects.push_back(pIntroFrontWall);
 
-        Terrain* pIntroBreakable = new Terrain("CrackedWall", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2.5f, -134), 0.0f, 0.0f, 0.0f, Vector3(4, 5.5f, 3));
+        Terrain* pIntroBreakable = new Terrain("CrackedWall", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2.5, -134), 0.0f, 0.0f, 0.0f, Vector3(4, 5.5f, 3));
     m_IntroGOs.push_back(pIntroBreakable);
     m_ColliderObjects.push_back(pIntroBreakable);
     m_Destructibles.push_back(pIntroBreakable);
@@ -1281,6 +1282,10 @@ void Game::CreateAudio()
         sword_sfx = new Sound(m_audioEngine.get(), "Attack");
     sword_sfx->SetVolume(0.75f);
     m_Sounds.push_back(sword_sfx);
+
+    KZK_intro = new Sound(m_audioEngine.get(), "KazcranakIntro");
+    KZK_intro->SetVolume(0.8f);
+    m_Sounds.push_back(KZK_intro);
 }
 void Game::CreateUI()
 {

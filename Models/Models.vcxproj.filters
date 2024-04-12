@@ -24,7 +24,6 @@
     <MeshContentTask Include="..\RawAssets\Models\GreenCube.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Coin.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Sign.fbx" />
-    <MeshContentTask Include="..\RawAssets\Models\CaveCube.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\WhiteCube.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\GrassCube.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Enemy.fbx" />
@@ -35,5 +34,8 @@
     <MeshContentTask Include="..\RawAssets\Models\BossCore.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Launchpad.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\LordKazcranak.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\BossStage.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\CaveCube.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\Projectile.fbx" />
   </ItemGroup>
 </Project>

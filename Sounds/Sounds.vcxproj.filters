@@ -12,5 +12,16 @@
     <Media Include="Jump.wav" />
     <Media Include="LoseLife.wav" />
     <Media Include="SmallTwoOfPieces.wav" />
+    <Media Include="Combat5.wav" />
+    <Media Include="Combat6.wav" />
+    <Media Include="Hurt1.wav" />
+    <Media Include="Hurt2.wav" />
+    <Media Include="Hurt3.wav" />
+    <Media Include="KazcranakFinal.wav" />
+    <Media Include="KazcranakIntro.wav" />
+    <Media Include="Combat1.wav" />
+    <Media Include="Combat2.wav" />
+    <Media Include="Combat3.wav" />
+    <Media Include="Combat4.wav" />
   </ItemGroup>
 </Project>

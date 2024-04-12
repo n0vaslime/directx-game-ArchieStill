@@ -123,11 +123,12 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_BossGOs.push_back(pPlayer->pSwordTrigger);
     m_BossGOs.push_back(pPlayer->pSwordObject);
 
-    //add Lord Kazcranak - only used in boss fight though
+    //add Lord Kazcranak - boss fight enemy
     pKazcranak = new Boss("LordKazcranak", m_d3dDevice.Get(), m_fxFactory);
     m_BossGOs.push_back(pKazcranak);
     m_ColliderObjects.push_back(pKazcranak);
     m_Destructibles.push_back(pKazcranak);
+
 
     //add a PRIMARY camera
     m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f)); // Vector3(0,0,0.1f)
@@ -156,11 +157,9 @@ void Game::Initialize(HWND _window, int _width, int _height)
     title_screen->SetScale(1.25f);
     m_GameObjects2D.push_back(title_screen);
 
-    //Test Sounds
-    Loop* loop = new Loop(m_audioEngine.get(), "NightAmbienceSimple_02");
-    loop->SetVolume(0.1f);
-    loop->Play();
-    m_Sounds.push_back(loop);
+    //add sounds
+    CreateAudio();
+    ambience->m_playing = true;
 
     // TestSound* TS = new TestSound(m_audioEngine.get(), "Explo1");
     // m_Sounds.push_back(TS);
@@ -181,7 +180,6 @@ void Game::Tick()
 
     Render();
 }
-
 // Updates the world.
 void Game::Update(DX::StepTimer const& _timer)
 {
@@ -202,6 +200,11 @@ void Game::Update(DX::StepTimer const& _timer)
         for (std::vector<Sound*>::iterator it = m_Sounds.begin(); it != m_Sounds.end(); it++)
         {
             (*it)->Tick(m_GD);
+        }
+        for (std::vector<Loop*>::iterator it = m_Music.begin(); it != m_Music.end(); it++)
+        {
+            if ((*it)->GetPlaying())
+                (*it)->Tick(m_GD);
         }
     }
 
@@ -255,6 +258,13 @@ void Game::Update(DX::StepTimer const& _timer)
         m_Platforms[i]->GroundCheck->SetRendered(false);
     for (int i = 0; i < m_Signs.size(); i++)
         m_Signs[i]->SignTrigger->SetRendered(false);
+
+    if (!pKazcranak->is_talking)
+    {
+        boss_intro->m_playing = false;
+        boss_intro->~Loop();
+        boss_music->m_playing = true;
+    }
 
     CheckCollision();
     CheckTriggers();
@@ -609,6 +619,17 @@ void Game::ReadInput()
         ExitGame();
     }
 
+    if (pPlayer->play_jump_sfx)
+    {
+        jump_sfx->Play();
+        pPlayer->play_jump_sfx = false;
+    }
+    if (pPlayer->play_sword_sfx)
+    {
+        sword_sfx->Play();
+        pPlayer->play_sword_sfx = false;
+    }
+
     switch (m_GD->m_GS)
     {
         case(GS_MENU):
@@ -624,6 +645,14 @@ void Game::ReadInput()
             if (m_GD->m_KBS.Home)
             {
                 ReturnToDefault();
+            }
+        }
+        case(GS_BOSS):
+        {
+            if (m_GD->m_KBS.Enter && pKazcranak->is_talking && m_GD->m_GS == GS_BOSS)
+            {
+                pKazcranak->SetPos(Vector3(pKazcranak->GetPos().x, 70, pKazcranak->GetPos().z));
+                pKazcranak->is_talking = false;
             }
         }
     default:
@@ -819,6 +848,7 @@ void Game::SignReading()
 void Game::CollectCoin()
 {
     scoreText->SetRendered(false);
+    coin_sfx->Play();
     score++;
     scoreText = new TextGO2D(std::to_string(score));
     if (score < 10)
@@ -832,6 +862,7 @@ void Game::CollectCoin()
 void Game::LoseLife()
 {
     livesText->SetRendered(false);
+    death_sfx->Play();
     lives--;
     livesText = new TextGO2D(std::to_string(lives));
     livesText->SetPos(Vector2(595, 15));
@@ -873,6 +904,10 @@ void Game::DisplayIntro()
 {
     //set intro active
     m_GD->m_GS = GS_INTRO;
+    ambience->m_playing = false;
+    ambience->~Loop();
+    intro_music->m_playing = true;
+
     for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
     {
         (*it)->SetRendered(true);
@@ -885,6 +920,10 @@ void Game::DisplayGame()
 {
     //set game active
     m_GD->m_GS = GS_GAME;
+    intro_music->m_playing = false;
+    intro_music->~Loop();
+    game_music->m_playing = true;
+
     pPlayer->respawn_pos = pPlayer->base_respawn;
     pPlayer->is_respawning = true;
     pPlayer->SetPos(Vector3(pPlayer->GetPos().x, pPlayer->GetPos().y + 25, pPlayer->GetPos().z));
@@ -907,6 +946,10 @@ void Game::DisplayBoss()
 {
     //set boss active
     m_GD->m_GS = GS_BOSS;
+    game_music->m_playing = false;
+    game_music->~Loop();
+    boss_intro->m_playing = true;
+
     pPlayer->respawn_pos = pPlayer->base_respawn;
     pPlayer->is_respawning = true;
     for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
@@ -1204,6 +1247,41 @@ void Game::CreateBossGround()
     m_BossGOs.push_back(pGroundBoss->GroundCheck);
 }
 
+void Game::CreateAudio()
+{
+        ambience = new Loop(m_audioEngine.get(), "NightAmbienceSimple_02");
+    ambience->SetVolume(0.1f);
+    m_Music.push_back(ambience);
+        intro_music = new Loop(m_audioEngine.get(), "BondsOfSeaAndFire");
+    intro_music->SetVolume(0.3f);
+    m_Music.push_back(intro_music);
+        game_music = new Loop(m_audioEngine.get(), "GaurPlains");
+    game_music->SetVolume(0.3f);
+    m_Music.push_back(game_music);
+        boss_intro = new Loop(m_audioEngine.get(), "Courtesy");
+    boss_intro->SetVolume(0.3f);
+    m_Music.push_back(boss_intro);
+        boss_music = new Loop(m_audioEngine.get(), "Awakening");
+    boss_music->SetVolume(0.3f);
+    m_Music.push_back(boss_music);
+        ending_music = new Loop(m_audioEngine.get(), "SmallTwoOfPieces");
+    ending_music->SetVolume(0.3f);
+    m_Music.push_back(ending_music);
+
+        coin_sfx = new Sound(m_audioEngine.get(), "Coin");
+    coin_sfx->SetVolume(1);
+    coin_sfx->SetPitch(0.9f);
+    m_Sounds.push_back(coin_sfx);
+        death_sfx = new Sound(m_audioEngine.get(), "LoseLife");
+    death_sfx->SetVolume(1);
+    m_Sounds.push_back(death_sfx);
+        jump_sfx = new Sound(m_audioEngine.get(), "Jump");
+    jump_sfx->SetVolume(1.5f);
+    m_Sounds.push_back(jump_sfx);
+        sword_sfx = new Sound(m_audioEngine.get(), "Attack");
+    sword_sfx->SetVolume(0.75f);
+    m_Sounds.push_back(sword_sfx);
+}
 void Game::CreateUI()
 {
         ImageGO2D* UIBG = new ImageGO2D("UIBackground", m_d3dDevice.Get());

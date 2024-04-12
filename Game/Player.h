@@ -1,6 +1,7 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 #include "CMOGO.h"
+#include "Audio.h"
 
 //=================================================================
 //Base Player Class (i.e. a GO the player controls)
@@ -27,6 +28,9 @@ public:
 	Vector3 base_respawn;
 	bool is_reading = false;
 	bool launching = false;
+
+	bool play_jump_sfx = false;
+	bool play_sword_sfx = false;
 
 	float lifetime = 0.0f;
 

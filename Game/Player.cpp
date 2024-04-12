@@ -117,6 +117,13 @@ void Player::PlayerMovement(GameData* _GD)
 	{
 		m_vel.y = 50;
 		is_grounded = false;
+		play_jump_sfx = true;
+	}
+	if (launching)
+	{
+		m_vel.y = 1000;
+		launching = false;
+		play_jump_sfx = true;
 	}
 
 	//TESTING
@@ -129,14 +136,6 @@ void Player::PlayerMovement(GameData* _GD)
 	{
 		m_vel.y = 2000;
 		is_grounded = false;
-	}
-
-
-
-	if (launching)
-	{
-		m_vel.y = 1000;
-		launching = false;
 	}
 
 	//limit motion of the player
@@ -163,6 +162,7 @@ void Player::SwordTriggers(GameData* _GD)
 	{
 		if (!pSwordTrigger->isRendered() && is_grounded)
 		{
+			play_sword_sfx = true;
 			Vector3 spawn = Vector3(0.15f, -15.0f, 0.15f);
 			Vector3 forwardMove = 40.0f * Vector3::Forward;
 			Matrix rotMove = Matrix::CreateRotationY(m_yaw);

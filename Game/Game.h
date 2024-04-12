@@ -21,6 +21,7 @@
 #include "Sign.h"
 #include "MovingPlatform.h"
 #include "Boss.h"
+#include "Loop.h"
 
 using std::list;
 
@@ -152,6 +153,7 @@ private:
 	//See here: https://github.com/Microsoft/DirectXTK/wiki/Creating-and-playing-sounds Using wave banks Section
     std::unique_ptr<DirectX::AudioEngine> m_audioEngine;
     std::vector<Sound*>m_Sounds;
+    std::vector<Loop*>m_Music;
 
     Player* pPlayer;
     Coin* pFloatingSword;
@@ -190,6 +192,17 @@ private:
     ImageGO2D* title_screen;
     bool reset = false;
 
+    Loop* ambience;
+    Loop* intro_music;
+    Loop* game_music;
+    Loop* boss_intro;
+    Loop* boss_music;
+    Loop* ending_music;
+    Sound* coin_sfx;
+    Sound* death_sfx;
+    Sound* jump_sfx;
+    Sound* sword_sfx;
+
     void CollectCoin();
     void LoseLife();
     void ReturnToDefault();
@@ -205,6 +218,7 @@ private:
     void CreateIntroGround();
     void CreateBossGround();
 
+    void CreateAudio();
     void CreateUI();
     void CreateCoins();
     void CreateEnemies();

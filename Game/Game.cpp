@@ -162,11 +162,6 @@ void Game::Initialize(HWND _window, int _width, int _height)
     loop->Play();
     m_Sounds.push_back(loop);
 
-    // Loop* introMusic = new Loop(m_audioEngine.get(), "BondsOfSeaAndFlame");
-    // introMusic->SetVolume(0.25f);
-    // introMusic->Play();
-    // m_Sounds.push_back(introMusic);
-
     // TestSound* TS = new TestSound(m_audioEngine.get(), "Explo1");
     // m_Sounds.push_back(TS);
 
@@ -621,7 +616,6 @@ void Game::ReadInput()
             if (m_GD->m_KBS.Enter)
             {
                 m_GD->m_GS = GS_INTRO;
-                //introMusic->Play();
                 DisplayIntro();
             }
         }

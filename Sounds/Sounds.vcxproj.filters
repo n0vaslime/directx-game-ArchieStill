@@ -3,6 +3,14 @@
   <ItemGroup>
     <Media Include="Explo1.wav" />
     <Media Include="NightAmbienceSimple_02.wav" />
-    <Media Include="..\RawAssets\Audio\BondsOfSeaAndFlame.wav" />
+    <Media Include="BondsOfSeaAndFire.wav" />
+    <Media Include="Attack.wav" />
+    <Media Include="Awakening.wav" />
+    <Media Include="Coin.wav" />
+    <Media Include="Courtesy.wav" />
+    <Media Include="GaurPlains.wav" />
+    <Media Include="Jump.wav" />
+    <Media Include="LoseLife.wav" />
+    <Media Include="SmallTwoOfPieces.wav" />
   </ItemGroup>
 </Project>

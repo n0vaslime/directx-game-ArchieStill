@@ -151,6 +151,7 @@
   <ItemGroup>
     <MeshContentTask Include="..\RawAssets\Models\BossCore.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\BossStage.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\BossStageBase.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\CaveCube.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Checkpoint.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Coin.fbx" />

@@ -16,13 +16,15 @@ public:
 
 	CMOGO* pBossProjectile;
 
-	float player_yaw;
+	float player_adjacent;
+	float player_opposite;
 	float player_pitch;
-	Vector3 player_pos;
 
 	int boss_health = 3;
 
-	bool is_talking;
+	bool is_talking = true;
+	bool play_combat_sfx = false;
+
 	float intro_talk = 0;
 	float projectile_timer = 0;
 	float projectile_lifetime = 0;

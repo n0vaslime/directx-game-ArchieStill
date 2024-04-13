@@ -6,9 +6,9 @@
 
 Boss::Boss(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF) : CMOGO(_filename, _pd3dDevice, _EF)
 {
+    m_fudge = Matrix::CreateRotationY(XM_PI);
     SetPos(Vector3(0, 350, -25));
     SetScale(1.25f);
-    player_yaw = 0.0f;
     player_pitch = 0.0f;
     is_talking = true;
     is_dying = false;
@@ -27,7 +27,7 @@ void Boss::Tick(GameData* _GD)
 {
     if (_GD->m_GS == GS_BOSS)
     {
-        std::cout << projectile_timer << std::endl;
+        //std::cout << projectile_timer << std::endl;
 
         BossFacing();
         if (is_talking)
@@ -36,7 +36,7 @@ void Boss::Tick(GameData* _GD)
         {
             BossHealth();
             projectile_timer += _GD->m_dt;
-            if (projectile_timer >= 5)
+            if (projectile_timer >= 3)
             {
                 BossAttacking();
                 projectile_timer = 0;
@@ -45,14 +45,12 @@ void Boss::Tick(GameData* _GD)
             if (pBossProjectile->isRendered())
             {
                 projectile_lifetime += _GD->m_dt;
-                if (projectile_lifetime >= 3)
+                if (projectile_lifetime >= 2)
                 {
                     pBossProjectile->SetRendered(false);
                     projectile_lifetime = 0;
                 }
             }
-
-
         }
     }
 
@@ -67,8 +65,9 @@ void Boss::Draw(DrawData* _DD)
 
 void Boss::BossFacing()
 {
-    this->SetYaw(player_yaw);
-    this->SetPitch(player_pitch);
+    float angleLookAt = atan2(player_adjacent, player_opposite);
+    this->SetYaw((angleLookAt + 3.1415f) / 1.1f);
+    this->SetPitch(-player_pitch / 1.1f);
 }
 
 void Boss::BossIntroduction(GameData* _GD)
@@ -97,7 +96,7 @@ void Boss::BossHealth()
 
 void Boss::BossAttacking()
 {
-    std::cout << "SHOOT" << std::endl;
+    play_combat_sfx = true;
     Vector3 forwardMove = 40.0f * Vector3::Forward;
     Matrix rotMove = Matrix::CreateRotationY(m_yaw);
     Matrix pitchMove = Matrix::CreateRotationX(m_pitch);
@@ -105,7 +104,6 @@ void Boss::BossAttacking()
     forwardMove = Vector3::Transform(forwardMove, rotMove);
     pBossProjectile->SetPos(this->GetPos() + forwardMove);
     pBossProjectile->SetPhysicsOn(true);
-    pBossProjectile->SetDrag(0.7f);
     pBossProjectile->SetRendered(true);
-    pBossProjectile->SetAcceleration(forwardMove * -1000);
+    pBossProjectile->SetAcceleration(forwardMove * 1000);
 }

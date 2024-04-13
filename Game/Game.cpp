@@ -130,6 +130,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_Destructibles.push_back(pKazcranak);
     m_BossGOs.push_back(pKazcranak->pBossProjectile);
     m_TriggerObjects.push_back(pKazcranak->pBossProjectile);
+    pKazcranak->pBossProjectile->SetRendered(false);
 
     //add a PRIMARY camera
     m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f)); // Vector3(0,0,0.1f)
@@ -242,7 +243,8 @@ void Game::Update(DX::StepTimer const& _timer)
                 (*it)->Tick(m_GD);
         }
 
-        pKazcranak->player_yaw = pPlayer->GetYaw();
+        pKazcranak->player_adjacent = pPlayer->GetPos().x / 2;
+        pKazcranak->player_opposite = pPlayer->GetPos().z / 2;
         pKazcranak->player_pitch = pPlayer->GetPitch();
     }
 
@@ -262,12 +264,42 @@ void Game::Update(DX::StepTimer const& _timer)
 
     if (!pKazcranak->is_talking)
     {
+        pPlayer->is_attacking = false;
         boss_intro->m_playing = false;
         boss_intro->~Loop();
         KZK_intro->m_playing = false;
         KZK_intro->~Loop();
         boss_music->m_playing = true;
-        pKazcranak->SetPos(pPlayer->boss_pos_set);
+        //pKazcranak->SetPos(pPlayer->boss_pos_set);
+
+        if (pKazcranak->play_combat_sfx)
+        {
+            int combat_sfx = (rand() % 6) + 1;
+            switch (combat_sfx)
+            {
+            case(1):
+                combat1->Play();
+                break;
+            case(2):
+                combat2->Play();
+                break;
+            case(3):
+                combat3->Play();
+                break;
+            case(4):
+                combat4->Play();
+                break;
+            case(5):
+                combat5->Play();
+                break;
+            case(6):
+                combat6->Play();
+                break;
+            default:
+                break;
+            }
+            pKazcranak->play_combat_sfx = false;
+        }
     }
 
     CheckCollision();
@@ -957,6 +989,8 @@ void Game::DisplayBoss()
 
     pPlayer->respawn_pos = pPlayer->base_respawn;
     pPlayer->is_respawning = true;
+    pPlayer->is_attacking = true;
+    
     for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
     {
         (*it)->SetRendered(false);
@@ -1267,7 +1301,7 @@ void Game::CreateAudio()
     boss_intro->SetVolume(0.3f);
     m_Music.push_back(boss_intro);
         boss_music = new Loop(m_audioEngine.get(), "Awakening");
-    boss_music->SetVolume(0.3f);
+    boss_music->SetVolume(0.5f);
     m_Music.push_back(boss_music);
         ending_music = new Loop(m_audioEngine.get(), "SmallTwoOfPieces");
     ending_music->SetVolume(0.3f);
@@ -1290,6 +1324,24 @@ void Game::CreateAudio()
         KZK_intro = new Loop(m_audioEngine.get(), "KazcranakIntro");
     KZK_intro->SetVolume(0.8f);
     m_Music.push_back(KZK_intro);
+        combat1 = new Sound(m_audioEngine.get(), "Combat1");
+    combat1->SetVolume(0.75f);
+    m_Sounds.push_back(combat1);
+        combat2 = new Sound(m_audioEngine.get(), "Combat2");
+    combat2->SetVolume(0.75f);
+    m_Sounds.push_back(combat2);
+        combat3 = new Sound(m_audioEngine.get(), "Combat3");
+    combat3->SetVolume(0.75f);
+    m_Sounds.push_back(combat3);
+        combat4 = new Sound(m_audioEngine.get(), "Combat4");
+    combat4->SetVolume(0.75f);
+    m_Sounds.push_back(combat4);
+        combat5 = new Sound(m_audioEngine.get(), "Combat5");
+    combat5->SetVolume(0.75f);
+    m_Sounds.push_back(combat5);
+        combat6 = new Sound(m_audioEngine.get(), "Combat6");
+    combat6->SetVolume(0.75f);
+    m_Sounds.push_back(combat6);
 }
 void Game::CreateUI()
 {

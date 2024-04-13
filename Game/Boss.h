@@ -9,12 +9,23 @@ public:
 
 	virtual void Tick(GameData* _GD) override;
 	virtual void Draw(DrawData* _DD) override;
-	void BossAI(GameData* _GD);
+	void BossFacing();
 	void BossIntroduction(GameData* _GD);
+	void BossHealth();
+	void BossAttacking();
+
+	CMOGO* pBossProjectile;
 
 	float player_yaw;
 	float player_pitch;
+	Vector3 player_pos;
+
+	int boss_health = 3;
 
 	bool is_talking;
+	float intro_talk = 0;
+	float projectile_timer = 0;
+	float projectile_lifetime = 0;
+
 	bool is_dying;
 };

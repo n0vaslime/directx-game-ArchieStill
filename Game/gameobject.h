@@ -56,6 +56,7 @@ public:
 	void		SetPhysicsOn(bool _physics) { m_physicsOn = _physics; }
 	void		TogglePhysics() { m_physicsOn = !m_physicsOn; }
 	void		SetDrag(float _drag) { m_drag = _drag; }
+	void		SetAcceleration(Vector3 _acceleration) { m_acc = _acceleration; m_vel = Vector3::Zero; }
 
 	void		SetRendered(bool _state) { render = _state; }
 

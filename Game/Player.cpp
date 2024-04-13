@@ -79,6 +79,7 @@ void Player::PlayerMovement(GameData* _GD)
 	Matrix rotMove = Matrix::CreateRotationY(m_yaw);
 	forwardMove = Vector3::Transform(forwardMove, rotMove);
 	leftMove = Vector3::Transform(leftMove, rotMove);
+
 	if (!is_attacking)
 	{
 		if (_GD->m_KBS.W)
@@ -137,6 +138,10 @@ void Player::PlayerMovement(GameData* _GD)
 		m_vel.y = 2000;
 		is_grounded = false;
 	}
+
+	//set boss' position to match player
+	Vector3 bossConstant = Vector3(10, 100, 10);
+	boss_pos_set = (forwardMove + bossConstant);
 
 	//limit motion of the player
 	float length = m_pos.Length();

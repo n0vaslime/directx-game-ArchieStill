@@ -128,7 +128,8 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_BossGOs.push_back(pKazcranak);
     m_ColliderObjects.push_back(pKazcranak);
     m_Destructibles.push_back(pKazcranak);
-
+    m_BossGOs.push_back(pKazcranak->pBossProjectile);
+    m_TriggerObjects.push_back(pKazcranak->pBossProjectile);
 
     //add a PRIMARY camera
     m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f)); // Vector3(0,0,0.1f)
@@ -263,7 +264,10 @@ void Game::Update(DX::StepTimer const& _timer)
     {
         boss_intro->m_playing = false;
         boss_intro->~Loop();
+        KZK_intro->m_playing = false;
+        KZK_intro->~Loop();
         boss_music->m_playing = true;
+        pKazcranak->SetPos(pPlayer->boss_pos_set);
     }
 
     CheckCollision();
@@ -949,7 +953,7 @@ void Game::DisplayBoss()
     game_music->m_playing = false;
     game_music->~Loop();
     boss_intro->m_playing = true;
-    KZK_intro->Play();
+    KZK_intro->m_playing = true;
 
     pPlayer->respawn_pos = pPlayer->base_respawn;
     pPlayer->is_respawning = true;
@@ -1241,7 +1245,7 @@ void Game::CreateIntroGround()
 }
 void Game::CreateBossGround()
 {
-    Terrain* pGroundBoss = new Terrain("WhiteCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 0), 0.0f, 45.0f, 0.0f, Vector3(50, 1, 50));
+    Terrain* pGroundBoss = new Terrain("BossStage", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 0), 0.0f, 45.0f, 0.0f, Vector3(25, 1, 25));
     m_BossGOs.push_back(pGroundBoss);
     m_ColliderObjects.push_back(pGroundBoss);
     m_Grounds.push_back(pGroundBoss);
@@ -1283,9 +1287,9 @@ void Game::CreateAudio()
     sword_sfx->SetVolume(0.75f);
     m_Sounds.push_back(sword_sfx);
 
-    KZK_intro = new Sound(m_audioEngine.get(), "KazcranakIntro");
+        KZK_intro = new Loop(m_audioEngine.get(), "KazcranakIntro");
     KZK_intro->SetVolume(0.8f);
-    m_Sounds.push_back(KZK_intro);
+    m_Music.push_back(KZK_intro);
 }
 void Game::CreateUI()
 {

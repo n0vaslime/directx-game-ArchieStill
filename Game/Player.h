@@ -28,6 +28,7 @@ public:
 	Vector3 base_respawn;
 	bool is_reading = false;
 	bool launching = false;
+	Vector3 boss_pos_set;
 
 	bool play_jump_sfx = false;
 	bool play_sword_sfx = false;

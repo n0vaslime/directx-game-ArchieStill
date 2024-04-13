@@ -202,7 +202,7 @@ private:
     Sound* death_sfx;
     Sound* jump_sfx;
     Sound* sword_sfx;
-    Sound* KZK_intro;
+    Loop* KZK_intro;
 
     void CollectCoin();
     void LoseLife();

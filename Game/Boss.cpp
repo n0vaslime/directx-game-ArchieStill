@@ -25,43 +25,50 @@ Boss::~Boss()
 void Boss::Tick(GameData* _GD)
 {
     if (_GD->m_GS == GS_BOSS)
-    {;
+    {
+        std::cout << dying_time << std::endl;
 
         BossFacing();
         if (is_talking)
             BossIntroduction(_GD);
         else
         {
-            BossHealth();
-
-            //prevents overlapping voicelines
-            if (play_hurt_sfx)
+            if (!is_dying)
             {
-                hurt_lifetime += _GD->m_dt;
-                if (hurt_lifetime >= 5)
+                BossHealth();
+
+                //prevents overlapping voicelines
+                if (play_hurt_sfx)
                 {
-                    play_hurt_sfx = false;
-                    hurt_lifetime = 0;
+                    hurt_lifetime += _GD->m_dt;
+                    if (hurt_lifetime >= 5)
+                    {
+                        play_hurt_sfx = false;
+                        hurt_lifetime = 0;
+                    }
+                }
+
+                //attacks every 3 seconds
+                projectile_timer += _GD->m_dt;
+                if (projectile_timer >= 3)
+                {
+                    BossAttacking();
+                    projectile_timer = 0;
+                }
+
+                //projectiles disappear after 2 seconds
+                if (pBossProjectile->isRendered())
+                {
+                    projectile_lifetime += _GD->m_dt;
+                    if (projectile_lifetime >= 2)
+                    {
+                        pBossProjectile->SetRendered(false);
+                        projectile_lifetime = 0;
+                    }
                 }
             }
-
-
-            projectile_timer += _GD->m_dt;
-            if (projectile_timer >= 3)
-            {
-                BossAttacking();
-                projectile_timer = 0;
-            }
-
-            if (pBossProjectile->isRendered())
-            {
-                projectile_lifetime += _GD->m_dt;
-                if (projectile_lifetime >= 2)
-                {
-                    pBossProjectile->SetRendered(false);
-                    projectile_lifetime = 0;
-                }
-            }
+            else
+                BossEnding(_GD);
         }
     }
 
@@ -95,6 +102,27 @@ void Boss::BossIntroduction(GameData* _GD)
         is_talking = false;
     }
 }
+void Boss::BossEnding(GameData* _GD)
+{
+    m_pitch = -5;
+    m_pos.y += _GD->m_dt * 2.5f;
+
+    if (m_scale.x > 0)
+        m_scale.x -= _GD->m_dt / 25;
+    else
+        m_scale.x = 0;
+    if (m_scale.y > 0)
+        m_scale.y -= _GD->m_dt / 25;
+    else
+        m_scale.y = 0;
+    if (m_scale.z > 0)
+        m_scale.z -= _GD->m_dt / 25;
+    else
+        m_scale.z = 0;
+
+    dying_time += _GD->m_dt;
+}
+
 void Boss::BossHealth()
 {
     //as more cores are destroyed, he gets closer to the ground
@@ -105,7 +133,6 @@ void Boss::BossHealth()
     if (boss_health == 0)
         m_pos.y = 40;
 }
-
 void Boss::BossAttacking()
 {
     play_combat_sfx = true;

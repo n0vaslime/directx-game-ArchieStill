@@ -214,6 +214,12 @@ void Game::Update(DX::StepTimer const& _timer)
     ReadInput();
 
     //////update all objects
+    if (m_GD->m_GS == GS_MENU)
+    {
+        scroll = scroll -= m_GD->m_dt * 10;
+        std::cout << scroll << std::endl;
+        title_screen->SetPos(Vector2(400, scroll));
+    }
     if (m_GD->m_GS == GS_GAME)
     {
         for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
@@ -301,6 +307,24 @@ void Game::Update(DX::StepTimer const& _timer)
                 break;
             }
             pKazcranak->play_combat_sfx = false;
+        }
+
+        if (pKazcranak->dying_words)
+        {
+            KZK_final->m_playing = true;
+            boss_music->m_playing = false;
+            boss_music->~Loop();
+            ending_music->m_playing = true;
+            pKazcranak->dying_words = false;
+        }
+
+        if(pKazcranak->dying_time >= 42)
+        {
+            std::cout << "WIN!" << std::endl;
+            KZK_final->m_playing = false;
+            KZK_final->~Loop();
+            DisplayWin();
+            pKazcranak->dying_time = 0;
         }
     }
 
@@ -816,8 +840,6 @@ void Game::SensorCollision()
 }
 void Game::SwordCollision()
 {
-    std::cout << pKazcranak->boss_health << std::endl;
-
     if (pPlayer->is_attacking)
         m_SwordTrigger.push_back(pPlayer->pSwordTrigger);
 
@@ -829,24 +851,35 @@ void Game::SwordCollision()
     {
         if (m_Enemies[i]->isRendered() && m_Enemies[i]->Intersects(*m_SwordTrigger[sword]))
         {
+            hit_sfx->Play();
             m_Enemies[i]->SetRendered(false);
             m_Enemies[i]->EnemySensor->SetRendered(false);
         }
         if (m_Destructibles[j]->isRendered() && m_Destructibles[j]->Intersects(*m_SwordTrigger[sword]))
         {
-            m_Destructibles[j]->SetRendered(false);
-            if (m_Destructibles[j] == pCore1 ||
-                m_Destructibles[j] == pCore2 ||
-                m_Destructibles[j] == pCore3)
+            if (m_Destructibles[j] == pKazcranak)
             {
-                pKazcranak->play_hurt_sfx = true;
-                pKazcranak->boss_health--;
-                if (pKazcranak->boss_health == 2)
-                    hurt1->Play();
-                if (pKazcranak->boss_health == 1)
-                    hurt2->Play();
-                if (pKazcranak->boss_health == 0)
-                    hurt3->Play();
+                pKazcranak->is_dying = true;
+                pKazcranak->dying_words = true;
+            }
+            else
+            {
+                m_Destructibles[j]->SetRendered(false);
+                if (m_Destructibles[j] == pCore1 ||
+                    m_Destructibles[j] == pCore2 ||
+                    m_Destructibles[j] == pCore3)
+                {
+                    if (!pKazcranak->play_combat_sfx)
+                        pKazcranak->play_hurt_sfx = true;
+
+                    pKazcranak->boss_health--;
+                    if (pKazcranak->boss_health == 2)
+                        hurt1->Play();
+                    if (pKazcranak->boss_health == 1)
+                        hurt2->Play();
+                    if (pKazcranak->boss_health == 0)
+                        hurt3->Play();
+                }
             }
         }
     }
@@ -1353,6 +1386,10 @@ void Game::CreateAudio()
     ending_music->SetVolume(0.3f);
     m_Music.push_back(ending_music);
 
+        hit_sfx = new Sound(m_audioEngine.get(), "Explo1");
+    hit_sfx->SetVolume(0.75f);
+    hit_sfx->SetPitch(0.9f);
+    m_Sounds.push_back(hit_sfx);
         coin_sfx = new Sound(m_audioEngine.get(), "Coin");
     coin_sfx->SetVolume(1);
     coin_sfx->SetPitch(0.9f);
@@ -1397,9 +1434,9 @@ void Game::CreateAudio()
         hurt3 = new Sound(m_audioEngine.get(), "Hurt3");
     hurt3->SetVolume(0.75f);
     m_Sounds.push_back(hurt3);
-    KZK_final = new Sound(m_audioEngine.get(), "KazcranakFinal");
+    KZK_final = new Loop(m_audioEngine.get(), "KazcranakFinal");
     KZK_final->SetVolume(0.75f);
-    m_Sounds.push_back(KZK_final);
+    m_Music.push_back(KZK_final);
 }
 void Game::CreateUI()
 {

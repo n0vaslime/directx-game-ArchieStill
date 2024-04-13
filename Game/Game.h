@@ -193,6 +193,9 @@ private:
     ImageGO2D* spottedImage;
 
     ImageGO2D* title_screen;
+    ImageGO2D* credits;
+    ImageGO2D* lose_screen;
+    float scroll = 300;
     bool reset = false;
 
     Loop* ambience;
@@ -201,6 +204,7 @@ private:
     Loop* boss_intro;
     Loop* boss_music;
     Loop* ending_music;
+    Sound* hit_sfx;
     Sound* coin_sfx;
     Sound* death_sfx;
     Sound* jump_sfx;
@@ -216,7 +220,7 @@ private:
     Sound* hurt1;
     Sound* hurt2;
     Sound* hurt3;
-    Sound* KZK_final;
+    Loop* KZK_final;
 
     void CollectCoin();
     void LoseLife();

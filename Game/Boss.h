@@ -24,6 +24,8 @@ public:
 
 	bool is_talking = true;
 	bool play_combat_sfx = false;
+	bool play_hurt_sfx = false;
+	float hurt_lifetime = 0;
 
 	float intro_talk = 0;
 	float projectile_timer = 0;

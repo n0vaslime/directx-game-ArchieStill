@@ -158,6 +158,9 @@ private:
     Player* pPlayer;
     Coin* pFloatingSword;
     Boss* pKazcranak;
+    CMOGO* pCore1;
+    CMOGO* pCore2;
+    CMOGO* pCore3;
 
     Terrain* pIntroExit;
     Terrain* pDeathTrigger;
@@ -210,6 +213,10 @@ private:
     Sound* combat4;
     Sound* combat5;
     Sound* combat6;
+    Sound* hurt1;
+    Sound* hurt2;
+    Sound* hurt3;
+    Sound* KZK_final;
 
     void CollectCoin();
     void LoseLife();
@@ -221,6 +228,7 @@ private:
     void DisplayBoss();
     void DisplayWin();
     void DisplayLoss();
+    void BeatGame();
 
     void CreateGround();
     void CreateIntroGround();

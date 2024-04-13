@@ -7,12 +7,11 @@
 Boss::Boss(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF) : CMOGO(_filename, _pd3dDevice, _EF)
 {
     m_fudge = Matrix::CreateRotationY(XM_PI);
-    SetPos(Vector3(0, 350, -25));
+    SetPos(Vector3(0, 375, 0));
     SetScale(1.25f);
     player_pitch = 0.0f;
     is_talking = true;
     is_dying = false;
-
 
     pBossProjectile = new CMOGO("Projectile", _pd3dDevice, _EF);
     pBossProjectile->SetScale(Vector3::One * 2);
@@ -26,8 +25,7 @@ Boss::~Boss()
 void Boss::Tick(GameData* _GD)
 {
     if (_GD->m_GS == GS_BOSS)
-    {
-        //std::cout << projectile_timer << std::endl;
+    {;
 
         BossFacing();
         if (is_talking)
@@ -35,6 +33,19 @@ void Boss::Tick(GameData* _GD)
         else
         {
             BossHealth();
+
+            //prevents overlapping voicelines
+            if (play_hurt_sfx)
+            {
+                hurt_lifetime += _GD->m_dt;
+                if (hurt_lifetime >= 5)
+                {
+                    play_hurt_sfx = false;
+                    hurt_lifetime = 0;
+                }
+            }
+
+
             projectile_timer += _GD->m_dt;
             if (projectile_timer >= 3)
             {
@@ -66,16 +77,16 @@ void Boss::Draw(DrawData* _DD)
 void Boss::BossFacing()
 {
     float angleLookAt = atan2(player_adjacent, player_opposite);
-    this->SetYaw((angleLookAt + 3.1415f) / 1.1f);
+    this->SetYaw((angleLookAt + 3.1415f));
     this->SetPitch(-player_pitch / 1.1f);
 }
 
-void Boss::BossIntroduction(GameData* _GD)
+void Boss::BossIntroduction(GameData* _GD) 
 {
-    if (m_pos.y > 70)
+    if (m_pos.y > 80)
         m_pos.y -= _GD->m_dt * 5;
     else
-        m_pos.y = 70;
+        m_pos.y = 80;
 
     intro_talk += _GD->m_dt;
     if (intro_talk >= 66)
@@ -86,12 +97,13 @@ void Boss::BossIntroduction(GameData* _GD)
 }
 void Boss::BossHealth()
 {
+    //as more cores are destroyed, he gets closer to the ground
     if (boss_health == 2)
-        m_pos.y = 60;
+        m_pos.y = 70;
     if (boss_health == 1)
-        m_pos.y = 50;
+        m_pos.y = 60;
     if (boss_health == 0)
-        SetPos(Vector3(0, 40, -25));
+        m_pos.y = 40;
 }
 
 void Boss::BossAttacking()

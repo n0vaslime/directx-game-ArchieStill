@@ -93,11 +93,10 @@ void Game::Initialize(HWND _window, int _width, int _height)
 
     //find how big my window is to correctly calculate my aspect ratio
     float AR = (float)_width / (float)_height;
-
+    
     CreateIntroGround();
     CreateGround();
-    CreateBossGround();
-    
+
     checkpoint_notif = new TextGO2D("Checkpoint!");
     checkpoint_notif->SetPos(Vector2(30, 10));
     checkpoint_notif->SetColour(Color((float*)&Colors::Blue));
@@ -137,6 +136,8 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects.push_back(m_TPScam);
     m_IntroGOs.push_back(m_TPScam);
     m_BossGOs.push_back(m_TPScam);
+
+    CreateBossGround();
 
     CreateCoins();
     CreateEnemies();
@@ -242,6 +243,8 @@ void Game::Update(DX::StepTimer const& _timer)
             if ((*it)->isRendered())
                 (*it)->Tick(m_GD);
         }
+        if (pKazcranak->is_talking)
+            pPlayer->is_attacking = true;
 
         pKazcranak->player_adjacent = pPlayer->GetPos().x / 2;
         pKazcranak->player_opposite = pPlayer->GetPos().z / 2;
@@ -264,7 +267,6 @@ void Game::Update(DX::StepTimer const& _timer)
 
     if (!pKazcranak->is_talking)
     {
-        pPlayer->is_attacking = false;
         boss_intro->m_playing = false;
         boss_intro->~Loop();
         KZK_intro->m_playing = false;
@@ -272,7 +274,7 @@ void Game::Update(DX::StepTimer const& _timer)
         boss_music->m_playing = true;
         //pKazcranak->SetPos(pPlayer->boss_pos_set);
 
-        if (pKazcranak->play_combat_sfx)
+        if (pKazcranak->play_combat_sfx && !pKazcranak->play_hurt_sfx)
         {
             int combat_sfx = (rand() % 6) + 1;
             switch (combat_sfx)
@@ -814,6 +816,8 @@ void Game::SensorCollision()
 }
 void Game::SwordCollision()
 {
+    std::cout << pKazcranak->boss_health << std::endl;
+
     if (pPlayer->is_attacking)
         m_SwordTrigger.push_back(pPlayer->pSwordTrigger);
 
@@ -831,6 +835,19 @@ void Game::SwordCollision()
         if (m_Destructibles[j]->isRendered() && m_Destructibles[j]->Intersects(*m_SwordTrigger[sword]))
         {
             m_Destructibles[j]->SetRendered(false);
+            if (m_Destructibles[j] == pCore1 ||
+                m_Destructibles[j] == pCore2 ||
+                m_Destructibles[j] == pCore3)
+            {
+                pKazcranak->play_hurt_sfx = true;
+                pKazcranak->boss_health--;
+                if (pKazcranak->boss_health == 2)
+                    hurt1->Play();
+                if (pKazcranak->boss_health == 1)
+                    hurt2->Play();
+                if (pKazcranak->boss_health == 0)
+                    hurt3->Play();
+            }
         }
     }
 }
@@ -987,7 +1004,7 @@ void Game::DisplayBoss()
     boss_intro->m_playing = true;
     KZK_intro->m_playing = true;
 
-    pPlayer->respawn_pos = pPlayer->base_respawn;
+    pPlayer->respawn_pos = Vector3(0, 5, 50);
     pPlayer->is_respawning = true;
     pPlayer->is_attacking = true;
     
@@ -1279,11 +1296,40 @@ void Game::CreateIntroGround()
 }
 void Game::CreateBossGround()
 {
-    Terrain* pGroundBoss = new Terrain("BossStage", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 0), 0.0f, 45.0f, 0.0f, Vector3(25, 1, 25));
-    m_BossGOs.push_back(pGroundBoss);
-    m_ColliderObjects.push_back(pGroundBoss);
-    m_Grounds.push_back(pGroundBoss);
-    m_BossGOs.push_back(pGroundBoss->GroundCheck);
+    Terrain* pBGMain = new Terrain("BossStage", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 0), 0.0f, 45.0f, 0.0f, Vector3(25, 1, 25));
+    m_BossGOs.push_back(pBGMain);
+    m_ColliderObjects.push_back(pBGMain);
+    m_Grounds.push_back(pBGMain);
+    m_BossGOs.push_back(pBGMain->GroundCheck);
+    pCore1 = new CMOGO("CrackedWall", m_d3dDevice.Get(), m_fxFactory);
+    pCore1->SetPos(Vector3(10, 5, 10));
+    pCore1->SetScale(Vector3(4, 5.5f, 3));
+    m_BossGOs.push_back(pCore1);
+    m_ColliderObjects.push_back(pCore1);
+    m_Destructibles.push_back(pCore1);
+    pCore2 = new CMOGO("Coin", m_d3dDevice.Get(), m_fxFactory);
+    pCore2->SetPos(Vector3(-75, 1, -75));
+    pCore2->SetScale(Vector3::One * 0.5f);
+    m_BossGOs.push_back(pCore2);
+    m_ColliderObjects.push_back(pCore2);
+    m_Destructibles.push_back(pCore2);
+    pCore3 = new CMOGO("Coin", m_d3dDevice.Get(), m_fxFactory);
+    pCore3->SetPos(Vector3(-50, 1, -50));
+    pCore3->SetScale(Vector3::One * 0.5f);
+    m_BossGOs.push_back(pCore3);
+    m_ColliderObjects.push_back(pCore3);
+    m_Destructibles.push_back(pCore3);
+
+        Terrain* pBG1 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(120, 0, 120), 0.0f, 45.0f, 0.0f, Vector3(3, 1, 3));
+    m_BossGOs.push_back(pBG1);
+    m_ColliderObjects.push_back(pBG1);
+    m_Grounds.push_back(pBG1);
+    m_BossGOs.push_back(pBG1->GroundCheck);
+        Terrain* pBG2 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(120, 10, 145), 0.0f, 45.0f, 0.0f, Vector3(3, 1, 3));
+    m_BossGOs.push_back(pBG2);
+    m_ColliderObjects.push_back(pBG2);
+    m_Grounds.push_back(pBG2);
+    m_BossGOs.push_back(pBG2->GroundCheck);
 }
 
 void Game::CreateAudio()
@@ -1342,6 +1388,18 @@ void Game::CreateAudio()
         combat6 = new Sound(m_audioEngine.get(), "Combat6");
     combat6->SetVolume(0.75f);
     m_Sounds.push_back(combat6);
+        hurt1 = new Sound(m_audioEngine.get(), "Hurt1");
+    hurt1->SetVolume(0.75f);
+    m_Sounds.push_back(hurt1);
+        hurt2 = new Sound(m_audioEngine.get(), "Hurt2");
+    hurt2->SetVolume(0.75f);
+    m_Sounds.push_back(hurt2);
+        hurt3 = new Sound(m_audioEngine.get(), "Hurt3");
+    hurt3->SetVolume(0.75f);
+    m_Sounds.push_back(hurt3);
+    KZK_final = new Sound(m_audioEngine.get(), "KazcranakFinal");
+    KZK_final->SetVolume(0.75f);
+    m_Sounds.push_back(KZK_final);
 }
 void Game::CreateUI()
 {

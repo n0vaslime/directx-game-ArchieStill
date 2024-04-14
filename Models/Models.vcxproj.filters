@@ -31,12 +31,12 @@
     <MeshContentTask Include="..\RawAssets\Models\Checkpoint.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\CrackedWall.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\StrongEnemy.fbx" />
-    <MeshContentTask Include="..\RawAssets\Models\BossCore.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Launchpad.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\LordKazcranak.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\BossStage.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\CaveCube.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\Projectile.fbx" />
     <MeshContentTask Include="..\RawAssets\Models\BossStageBase.fbx" />
+    <MeshContentTask Include="..\RawAssets\Models\BossCore.fbx" />
   </ItemGroup>
 </Project>

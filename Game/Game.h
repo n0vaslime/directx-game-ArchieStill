@@ -170,6 +170,7 @@ private:
     TextGO2D* checkpoint_notif;
     float checkpoint_life = 0.0f;
     bool notif_active = false;
+    TextGO2D* skip_notif;
 
     Sign* pSign1;
     Sign* pSign2;
@@ -231,6 +232,11 @@ private:
     MovingPlatform* pMovePlat7;
     MovingPlatform* pMovePlat8;
     MovingPlatform* pMovePlat9;
+
+    MovingPlatform* pMovePlatB1;
+    MovingPlatform* pMovePlatB2;
+    MovingPlatform* pMovePlatB3;
+    MovingPlatform* pMovePlatB4;
 
     void CollectCoin();
     void LoseLife();

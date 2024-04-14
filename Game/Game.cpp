@@ -97,12 +97,18 @@ void Game::Initialize(HWND _window, int _width, int _height)
     CreateIntroGround();
     CreateGround();
 
-    checkpoint_notif = new TextGO2D("Checkpoint!");
+        checkpoint_notif = new TextGO2D("Checkpoint!");
     checkpoint_notif->SetPos(Vector2(30, 10));
     checkpoint_notif->SetColour(Color((float*)&Colors::Blue));
     checkpoint_notif->SetScale(1);
     checkpoint_notif->SetRendered(false);
     m_GameObjects2D.push_back(checkpoint_notif);
+        skip_notif = new TextGO2D("PRESS ENTER TO SKIP");
+    skip_notif->SetPos(Vector2(10, 10));
+    skip_notif->SetColour(Color((float*)&Colors::Red));
+    skip_notif->SetScale(0.5f);
+    skip_notif->SetRendered(false);
+    m_GameObjects2D.push_back(skip_notif);
 
     //create a base camera
     // m_cam = new Camera(0.25f * XM_PI, AR, 1.0f, 10000.0f, Vector3::UnitY, Vector3::Zero);
@@ -246,7 +252,11 @@ void Game::Update(DX::StepTimer const& _timer)
     {
         for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
         {
-            if ((*it)->isRendered())
+            if ((*it)->isRendered() ||
+                (*it) == pMovePlatB1->GroundCheck ||
+                (*it) == pMovePlatB2->GroundCheck ||
+                (*it) == pMovePlatB3->GroundCheck ||
+                (*it) == pMovePlatB4->GroundCheck)
                 (*it)->Tick(m_GD);
         }
         if (pKazcranak->is_talking)
@@ -284,14 +294,14 @@ void Game::Update(DX::StepTimer const& _timer)
     for (int i = 0; i < m_Signs.size(); i++)
         m_Signs[i]->SignTrigger->SetRendered(false);
 
-    if (!pKazcranak->is_talking)
+    if (!pKazcranak->is_talking && m_GD->m_GS == GS_BOSS)
     {
+        skip_notif->SetRendered(false);
         boss_intro->m_playing = false;
         boss_intro->~Loop();
         KZK_intro->m_playing = false;
         KZK_intro->~Loop();
         boss_music->m_playing = true;
-        //pKazcranak->SetPos(pPlayer->boss_pos_set);
 
         if (pKazcranak->play_combat_sfx && !pKazcranak->play_hurt_sfx)
         {
@@ -339,9 +349,6 @@ void Game::Update(DX::StepTimer const& _timer)
             pKazcranak->dying_time = 0;
         }
     }
-
-    //std::cout << std::to_string(pMovePlat3->GroundCheck->GetPos().y) << std::endl;
-    std::cout << pPlayer->is_grounded << std::endl;
 
     CheckCollision();
     CheckTriggers();
@@ -785,6 +792,10 @@ void Game::CheckTriggers()
             {
                 DisplayBoss();
             }
+            if (m_TriggerObjects[j] == pKazcranak->pBossProjectile)
+            {
+                LoseLife();
+            }
         }
     }
 }
@@ -990,10 +1001,13 @@ void Game::ReturnToDefault()
         reset = false;
         score = 0;
         lives = 5;
+        scroll = 0;
+        skip_notif->SetRendered(false);
         m_GameObjects2D.clear();
         m_GD->m_GS = GS_MENU;
         DisplayMenu();
         m_GameObjects2D.push_back(checkpoint_notif);
+        m_GameObjects2D.push_back(skip_notif);
         for (int i = 0; i < m_Signs.size(); i++)
             m_GameObjects2D.push_back(m_Signs[i]->ReadText);
         m_GameObjects2D.push_back(sign1Image);
@@ -1082,6 +1096,7 @@ void Game::DisplayBoss()
     pKazcranak->is_dying = false;
     pKazcranak->boss_health = 3;
 
+    skip_notif->SetRendered(true);
     game_music->m_playing = false;
     game_music->~Loop();
     boss_intro->m_playing = true;
@@ -1109,6 +1124,8 @@ void Game::DisplayWin()
     credits->SetPos(Vector2(400, 2700));
     credits->SetRendered(true);
     m_GameObjects2D.push_back(credits);
+    skip_notif->SetRendered(true);
+    m_GameObjects2D.push_back(skip_notif);
 
     //set others inactive
     for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
@@ -1396,40 +1413,94 @@ void Game::CreateIntroGround()
 }
 void Game::CreateBossGround()
 {
-    Terrain* pBGMain = new Terrain("BossStage", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 0), 0.0f, 45.0f, 0.0f, Vector3(25, 1, 25));
+        Terrain* pBGMain = new Terrain("BossStage", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 0), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
     m_BossGOs.push_back(pBGMain);
     m_ColliderObjects.push_back(pBGMain);
     m_Grounds.push_back(pBGMain);
     m_BossGOs.push_back(pBGMain->GroundCheck);
-    pCore1 = new CMOGO("BossCore", m_d3dDevice.Get(), m_fxFactory);
-    pCore1->SetPos(Vector3(10, 5, 10));
-    pCore1->SetScale(Vector3(4, 5.5f, 3));
-    m_BossGOs.push_back(pCore1);
-    m_ColliderObjects.push_back(pCore1);
-    m_Destructibles.push_back(pCore1);
-    pCore2 = new CMOGO("BossCore", m_d3dDevice.Get(), m_fxFactory);
-    pCore2->SetPos(Vector3(-75, 1, -75));
-    pCore2->SetScale(Vector3::One * 0.5f);
-    m_BossGOs.push_back(pCore2);
-    m_ColliderObjects.push_back(pCore2);
-    m_Destructibles.push_back(pCore2);
-    pCore3 = new CMOGO("BossCore", m_d3dDevice.Get(), m_fxFactory);
-    pCore3->SetPos(Vector3(-50, 1, -50));
-    pCore3->SetScale(Vector3::One * 0.5f);
-    m_BossGOs.push_back(pCore3);
-    m_ColliderObjects.push_back(pCore3);
-    m_Destructibles.push_back(pCore3);
 
-        Terrain* pBG1 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(120, 0, 120), 0.0f, 45.0f, 0.0f, Vector3(3, 1, 3));
+    //Core 1
+        Terrain* pBG1 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(150, 0, 0), 0.0f, 0.0f, 0.0f, Vector3(3, 1, 3));
     m_BossGOs.push_back(pBG1);
     m_ColliderObjects.push_back(pBG1);
     m_Grounds.push_back(pBG1);
     m_BossGOs.push_back(pBG1->GroundCheck);
-        Terrain* pBG2 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(120, 10, 145), 0.0f, 45.0f, 0.0f, Vector3(3, 1, 3));
+        Terrain* pBG2 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(190, 10, 0), 0.0f, 0.0f, 0.0f, Vector3(2.5f, 1, 2.5f));
     m_BossGOs.push_back(pBG2);
     m_ColliderObjects.push_back(pBG2);
     m_Grounds.push_back(pBG2);
     m_BossGOs.push_back(pBG2->GroundCheck);
+        Terrain* pBG3 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(225, 20, 0), 0.0f, 0.0f, 0.0f, Vector3(2, 1, 2));
+    m_BossGOs.push_back(pBG3);
+    m_ColliderObjects.push_back(pBG3);
+    m_Grounds.push_back(pBG3);
+    m_BossGOs.push_back(pBG3->GroundCheck);
+        Terrain* pBG4 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(260, 30, 0), 0.0f, 0.0f, 0.0f, Vector3(1.5f, 1, 1.5f));
+    m_BossGOs.push_back(pBG4);
+    m_ColliderObjects.push_back(pBG4);
+    m_Grounds.push_back(pBG4);
+    m_BossGOs.push_back(pBG4->GroundCheck);
+        Terrain* pBG5 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(300, 40, 0), 0.0f, 0.0f, 0.0f, Vector3(3.5f, 1, 3.5f));
+    m_BossGOs.push_back(pBG5);
+    m_ColliderObjects.push_back(pBG5);
+    m_Grounds.push_back(pBG5);
+    m_BossGOs.push_back(pBG5->GroundCheck);
+        pCore1 = new CMOGO("BossCore", m_d3dDevice.Get(), m_fxFactory);
+    pCore1->SetPos(Vector3(300, 45, 0));
+    pCore1->SetScale(Vector3::One * 0.75f);
+    m_BossGOs.push_back(pCore1);
+    m_ColliderObjects.push_back(pCore1);
+    m_Destructibles.push_back(pCore1);
+
+    //Core 2
+        pMovePlatB1 = new MovingPlatform("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-150, -10, -150), 0.0f, 40.0f, 0.0f, Vector3(3, 1, 3));
+        pMovePlatB1->Moving = MOVEUP;
+    m_BossGOs.push_back(pMovePlatB1);
+    m_ColliderObjects.push_back(pMovePlatB1);
+    m_Platforms.push_back(pMovePlatB1);
+    m_BossGOs.push_back(pMovePlatB1->GroundCheck);
+        pMovePlatB2 = new MovingPlatform("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-175, 180, -175), 0.0f, 40.0f, 0.0f, Vector3(3, 1, 3));
+        pMovePlatB2->Moving = MOVEDOWN;
+    m_BossGOs.push_back(pMovePlatB2);
+    m_ColliderObjects.push_back(pMovePlatB2);
+    m_Platforms.push_back(pMovePlatB2);
+    m_BossGOs.push_back(pMovePlatB2->GroundCheck);
+        Terrain* pBG6 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-210, 170, -210), 0.0f, 40.0f, 0.0f, Vector3(3.5f, 1, 3.5f));
+    m_BossGOs.push_back(pBG6);
+    m_ColliderObjects.push_back(pBG6);
+    m_Grounds.push_back(pBG6);
+    m_BossGOs.push_back(pBG6->GroundCheck);
+        pCore2 = new CMOGO("BossCore", m_d3dDevice.Get(), m_fxFactory);
+    pCore2->SetPos(Vector3(-210, 175, -210));
+    pCore2->SetScale(Vector3::One * 0.75f);
+    m_BossGOs.push_back(pCore2);
+    m_ColliderObjects.push_back(pCore2);
+    m_Destructibles.push_back(pCore2);
+
+    //Core 3
+        pMovePlatB3 = new MovingPlatform("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-185, 0, 185), 0.0f, 40.0f, 0.0f, Vector3(15, 1, 3));
+        pMovePlatB3->Moving = ROTATEANTICLOCKWISE;
+    m_BossGOs.push_back(pMovePlatB3);
+    m_ColliderObjects.push_back(pMovePlatB3);
+    m_Platforms.push_back(pMovePlatB3);
+    m_BossGOs.push_back(pMovePlatB3->GroundCheck);
+        pMovePlatB4 = new MovingPlatform("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-300, 0, 300), 0.0f, 40.0f, 0.0f, Vector3(15, 1, 3));
+        pMovePlatB4->Moving = ROTATECLOCKWISE;
+    m_BossGOs.push_back(pMovePlatB4);
+    m_ColliderObjects.push_back(pMovePlatB4);
+    m_Platforms.push_back(pMovePlatB4);
+    m_BossGOs.push_back(pMovePlatB4->GroundCheck);
+        Terrain* pBG7 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-375, 0, 375), 0.0f, 40.0f, 0.0f, Vector3(3.5f, 1, 3.5f));
+    m_BossGOs.push_back(pBG7);
+    m_ColliderObjects.push_back(pBG7);
+    m_Grounds.push_back(pBG7);
+    m_BossGOs.push_back(pBG7->GroundCheck);
+        pCore3 = new CMOGO("BossCore", m_d3dDevice.Get(), m_fxFactory);
+    pCore3->SetPos(Vector3(-375, 5, 375));
+    pCore3->SetScale(Vector3::One * 0.75f);
+    m_BossGOs.push_back(pCore3);
+    m_ColliderObjects.push_back(pCore3);
+    m_Destructibles.push_back(pCore3);
 }
 
 void Game::CreateAudio()
@@ -1719,17 +1790,6 @@ void Game::CreateEnemies()
     m_Enemies.push_back(pStrongE3);
     m_GameObjects.push_back(pStrongE3->EnemySensor);
     m_EnemySensors.push_back(pStrongE3->EnemySensor);
-
-        Enemy* pEnemy14 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(32.5f, 162.5f, -155));
-    m_GameObjects.push_back(pEnemy14);
-    m_Enemies.push_back(pEnemy14);
-    m_GameObjects.push_back(pEnemy14->EnemySensor);
-    m_EnemySensors.push_back(pEnemy14->EnemySensor);
-        Enemy* pEnemy15 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(32.5f, 162.5f, -175));
-    m_GameObjects.push_back(pEnemy15);
-    m_Enemies.push_back(pEnemy15);
-    m_GameObjects.push_back(pEnemy15->EnemySensor);
-    m_EnemySensors.push_back(pEnemy15->EnemySensor);
 
         Enemy* pStrongE4 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-90, 165, -365));
         pStrongE4->speed = pStrongE4->speed * 2;

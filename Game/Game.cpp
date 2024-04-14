@@ -215,8 +215,17 @@ void Game::Update(DX::StepTimer const& _timer)
     {
         for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
         {
-            if ((*it)->isRendered())
-                (*it)->Tick(m_GD);
+            if ((*it)->isRendered() ||
+                (*it) == pMovePlat1->GroundCheck ||
+                (*it) == pMovePlat2->GroundCheck ||
+                (*it) == pMovePlat3->GroundCheck ||
+                (*it) == pMovePlat4->GroundCheck ||
+                (*it) == pMovePlat5->GroundCheck ||
+                (*it) == pMovePlat6->GroundCheck ||
+                (*it) == pMovePlat7->GroundCheck ||
+                (*it) == pMovePlat8->GroundCheck ||
+                (*it) == pMovePlat9->GroundCheck)
+                    (*it)->Tick(m_GD);
         }
 
         for (int i = 0; i < m_Enemies.size(); i++)
@@ -272,10 +281,6 @@ void Game::Update(DX::StepTimer const& _timer)
         m_Grounds[i]->GroundCheck->SetRendered(false);
     for (int i = 0; i < m_Platforms.size(); i++)
         m_Platforms[i]->GroundCheck->SetRendered(false);
-        // if (m_Platforms[i]->Moving == MOVEUP)
-        //     m_Platforms[i]->GroundCheck->SetRendered(true);
-        // else
-        //     m_Platforms[i]->GroundCheck->SetRendered(false);
     for (int i = 0; i < m_Signs.size(); i++)
         m_Signs[i]->SignTrigger->SetRendered(false);
 
@@ -334,6 +339,9 @@ void Game::Update(DX::StepTimer const& _timer)
             pKazcranak->dying_time = 0;
         }
     }
+
+    //std::cout << std::to_string(pMovePlat3->GroundCheck->GetPos().y) << std::endl;
+    std::cout << pPlayer->is_grounded << std::endl;
 
     CheckCollision();
     CheckTriggers();
@@ -879,6 +887,7 @@ void Game::SwordCollision()
             else
             {
                 m_Destructibles[j]->SetRendered(false);
+                hit_sfx->Play();
                 if (m_Destructibles[j] == pCore1 ||
                     m_Destructibles[j] == pCore2 ||
                     m_Destructibles[j] == pCore3)
@@ -1128,7 +1137,7 @@ void Game::CreateGround()
     m_BossGOs.push_back(pDeathTrigger);
     m_TriggerObjects.push_back(pDeathTrigger);
     //Boss fight trigger
-    pBossTrigger = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 800, 0), 0.0f, 0.0f, 0.0f, Vector3(1000, 1, 1000));
+    pBossTrigger = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 900, 0), 0.0f, 0.0f, 0.0f, Vector3(1000, 1, 1000));
     m_GameObjects.push_back(pBossTrigger);
     m_TriggerObjects.push_back(pBossTrigger);
 
@@ -1153,13 +1162,13 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround3);
     m_Grounds.push_back(pGround3);
     m_GameObjects.push_back(pGround3->GroundCheck);
-        MovingPlatform* pMovePlat1 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-200, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
+        pMovePlat1 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-200, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
         pMovePlat1->Moving = ROTATEANTICLOCKWISE;
     m_GameObjects.push_back(pMovePlat1);
     m_ColliderObjects.push_back(pMovePlat1);
     m_Platforms.push_back(pMovePlat1);
     m_GameObjects.push_back(pMovePlat1->GroundCheck);
-        MovingPlatform* pMovePlat2 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-350, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
+        pMovePlat2 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-350, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
         pMovePlat2->Moving = ROTATECLOCKWISE;
     m_GameObjects.push_back(pMovePlat2);
     m_ColliderObjects.push_back(pMovePlat2);
@@ -1177,7 +1186,7 @@ void Game::CreateGround()
     m_Checkpoints.push_back(pCheckpoint1);
 
     // LAYER 2 - COMBAT
-        MovingPlatform* pMovePlat3 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 0, -60), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 1.5f, 7.5f));
+        pMovePlat3 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 0, -60), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 1.5f, 7.5f));
         pMovePlat3->Moving = MOVEUP;
     m_GameObjects.push_back(pMovePlat3);
     m_ColliderObjects.push_back(pMovePlat3);
@@ -1188,8 +1197,8 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround5);
     m_Grounds.push_back(pGround5);
     m_GameObjects.push_back(pGround5->GroundCheck);
-        MovingPlatform* pMovePlat4 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 90, 25), 0.0f, 0.0f, 0.0f, Vector3(25, 2, 3));
-    pMovePlat4->Moving = ROTATECLOCKWISE;
+        pMovePlat4 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 90, 25), 0.0f, 0.0f, 0.0f, Vector3(25, 2, 3));
+        pMovePlat4->Moving = ROTATECLOCKWISE;
     m_GameObjects.push_back(pMovePlat4);
     m_ColliderObjects.push_back(pMovePlat4);
     m_Platforms.push_back(pMovePlat4);
@@ -1251,8 +1260,8 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround15);
     m_Grounds.push_back(pGround15);
     m_GameObjects.push_back(pGround15->GroundCheck);
-        MovingPlatform* pMovePlat5 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(200, 150, -165), 0.0f, 0.0f, 0.0f, Vector3(3, 1, 3));
-    pMovePlat5->Moving = MOVELEFTX;
+        pMovePlat5 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(200, 150, -165), 0.0f, 0.0f, 0.0f, Vector3(3, 1, 3));
+        pMovePlat5->Moving = MOVELEFTX;
     m_GameObjects.push_back(pMovePlat5);
     m_ColliderObjects.push_back(pMovePlat5);
     m_Platforms.push_back(pMovePlat5);
@@ -1262,8 +1271,8 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround16);
     m_Grounds.push_back(pGround16);
     m_GameObjects.push_back(pGround16->GroundCheck);
-        MovingPlatform* pMovePlat6 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 150, -225), 0.0f, 0.0f, 0.0f, Vector3(3, 1, 3));
-    pMovePlat6->Moving = MOVEFORWARDZ;
+        pMovePlat6 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 150, -225), 0.0f, 0.0f, 0.0f, Vector3(3, 1, 3));
+        pMovePlat6->Moving = MOVEFORWARDZ;
     m_GameObjects.push_back(pMovePlat6);
     m_ColliderObjects.push_back(pMovePlat6);
     m_Platforms.push_back(pMovePlat6);
@@ -1290,19 +1299,19 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround19);
     m_Grounds.push_back(pGround19);
     m_GameObjects.push_back(pGround19->GroundCheck);
-        MovingPlatform* pMovePlat7 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-175, 150, -400), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
+        pMovePlat7 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-175, 150, -400), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
         pMovePlat7->Moving = MOVEUP;
     m_GameObjects.push_back(pMovePlat7);
     m_ColliderObjects.push_back(pMovePlat7);
     m_Platforms.push_back(pMovePlat7);
     m_GameObjects.push_back(pMovePlat7->GroundCheck);
-        MovingPlatform* pMovePlat8 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-225, 325, -400), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
+        pMovePlat8 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-225, 325, -400), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
         pMovePlat8->Moving = MOVEDOWN;
     m_GameObjects.push_back(pMovePlat8);
     m_ColliderObjects.push_back(pMovePlat8);
     m_Platforms.push_back(pMovePlat8);
     m_GameObjects.push_back(pMovePlat8->GroundCheck);
-        MovingPlatform* pMovePlat9 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 300, -400), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
+        pMovePlat9 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 300, -400), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
         pMovePlat9->Moving = MOVEUP;
     m_GameObjects.push_back(pMovePlat9);
     m_ColliderObjects.push_back(pMovePlat9);
@@ -1313,23 +1322,21 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround20);
     m_Grounds.push_back(pGround20);
     m_GameObjects.push_back(pGround20->GroundCheck);
-        MovingPlatform* pMovePlat10 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -255), 0.0f, 0.0f, 0.0f, Vector3(2, 1, 2));
-        pMovePlat10->Moving = ROTATECLOCKWISE;
-    m_GameObjects.push_back(pMovePlat10);
-    m_ColliderObjects.push_back(pMovePlat10);
-    m_Platforms.push_back(pMovePlat10);
-    m_GameObjects.push_back(pMovePlat10->GroundCheck);
-        MovingPlatform* pMovePlat11 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -220), 0.0f, 0.0f, 0.0f, Vector3(2, 1, 2));
-        pMovePlat11->Moving = ROTATEANTICLOCKWISE;
-    m_GameObjects.push_back(pMovePlat11);
-    m_ColliderObjects.push_back(pMovePlat11);
-    m_Platforms.push_back(pMovePlat11);
-    m_GameObjects.push_back(pMovePlat11->GroundCheck);
-        Terrain* pGround21 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -175), 0.0f, 0.0f, 0.0f, Vector3(5, 2, 5));
+        Terrain* pGround21 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -255), 0.0f, 45.0f, 0.0f, Vector3(2, 1, 2));
     m_GameObjects.push_back(pGround21);
     m_ColliderObjects.push_back(pGround21);
     m_Grounds.push_back(pGround21);
     m_GameObjects.push_back(pGround21->GroundCheck);
+        Terrain* pGround22 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -220), 0.0f, 45.0f, 0.0f, Vector3(2, 1, 2));
+    m_GameObjects.push_back(pGround22);
+    m_ColliderObjects.push_back(pGround22);
+    m_Grounds.push_back(pGround22);
+    m_GameObjects.push_back(pGround22->GroundCheck);
+        Terrain* pGround23 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -175), 0.0f, 0.0f, 0.0f, Vector3(5, 2, 5));
+    m_GameObjects.push_back(pGround23);
+    m_ColliderObjects.push_back(pGround23);
+    m_Grounds.push_back(pGround23);
+    m_GameObjects.push_back(pGround23->GroundCheck);
         CMOGO* pCheckpoint4 = new CMOGO("Checkpoint", m_d3dDevice.Get(), m_fxFactory);
     pCheckpoint4->SetPos(Vector3(-275, 410, -175));
     pCheckpoint4->SetScale(Vector3(1, 1, 1));
@@ -1347,29 +1354,31 @@ void Game::CreateGround()
     pLaunchpadTrigger->SetScale(Vector3(4, 1, 4));
     m_GameObjects.push_back(pLaunchpadTrigger);
     m_TriggerObjects.push_back(pLaunchpadTrigger);
+        Terrain* pBossStageBelow = new Terrain("BossStage", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 900, -125), 0.0f, 0.0f, 0.0f, Vector3(5, 1, 5));
+    m_GameObjects.push_back(pBossStageBelow);
 }
 void Game::CreateIntroGround()
 {
-        Terrain* pGroundIntro = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -10, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 35));
+        Terrain* pGroundIntro = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -12.5f, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 17.5f));
     m_IntroGOs.push_back(pGroundIntro);
     m_ColliderObjects.push_back(pGroundIntro);
     m_Grounds.push_back(pGroundIntro);
     m_IntroGOs.push_back(pGroundIntro->GroundCheck);
-    //    Terrain* pIntroLWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 10, 35));
-    //m_IntroGOs.push_back(pIntroLWall);
-    //m_ColliderObjects.push_back(pIntroLWall);
-    //    Terrain* pIntroRWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 10, 35));
-    //m_IntroGOs.push_back(pIntroRWall);
-    //m_ColliderObjects.push_back(pIntroRWall);
-    //    Terrain* pIntroCeiling = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 25, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 35));
-    //m_IntroGOs.push_back(pIntroCeiling);
-    //m_ColliderObjects.push_back(pIntroCeiling);
-    //    Terrain* pIntroBackWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 5), 0.0f, 0.0f, 0.0f, Vector3(15, 10, 1));
-    //m_IntroGOs.push_back(pIntroBackWall);
-    //m_ColliderObjects.push_back(pIntroBackWall);
-    //    Terrain* pIntroFrontWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -135), 0.0f, 0.0f, 0.0f, Vector3(15, 10, 1));
-    //m_IntroGOs.push_back(pIntroFrontWall);
-    //m_ColliderObjects.push_back(pIntroFrontWall);
+        Terrain* pIntroLWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 5, 17.5f));
+    m_IntroGOs.push_back(pIntroLWall);
+    m_ColliderObjects.push_back(pIntroLWall);
+        Terrain* pIntroRWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 5, 17.5f));
+    m_IntroGOs.push_back(pIntroRWall);
+    m_ColliderObjects.push_back(pIntroRWall);
+        Terrain* pIntroCeiling = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 30, -50), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 1, 17.5f));
+    m_IntroGOs.push_back(pIntroCeiling);
+    m_ColliderObjects.push_back(pIntroCeiling);
+        Terrain* pIntroBackWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 5), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 5, 1));
+    m_IntroGOs.push_back(pIntroBackWall);
+    m_ColliderObjects.push_back(pIntroBackWall);
+        Terrain* pIntroFrontWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -137.5f), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 5, 1));
+    m_IntroGOs.push_back(pIntroFrontWall);
+    m_ColliderObjects.push_back(pIntroFrontWall);
 
         Terrain* pIntroBreakable = new Terrain("CrackedWall", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2.5, -134), 0.0f, 0.0f, 0.0f, Vector3(4, 5.5f, 3));
     m_IntroGOs.push_back(pIntroBreakable);
@@ -1411,12 +1420,12 @@ void Game::CreateBossGround()
     m_ColliderObjects.push_back(pCore3);
     m_Destructibles.push_back(pCore3);
 
-        Terrain* pBG1 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(120, 0, 120), 0.0f, 45.0f, 0.0f, Vector3(3, 1, 3));
+        Terrain* pBG1 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(120, 0, 120), 0.0f, 45.0f, 0.0f, Vector3(3, 1, 3));
     m_BossGOs.push_back(pBG1);
     m_ColliderObjects.push_back(pBG1);
     m_Grounds.push_back(pBG1);
     m_BossGOs.push_back(pBG1->GroundCheck);
-        Terrain* pBG2 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(120, 10, 145), 0.0f, 45.0f, 0.0f, Vector3(3, 1, 3));
+        Terrain* pBG2 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(120, 10, 145), 0.0f, 45.0f, 0.0f, Vector3(3, 1, 3));
     m_BossGOs.push_back(pBG2);
     m_ColliderObjects.push_back(pBG2);
     m_Grounds.push_back(pBG2);

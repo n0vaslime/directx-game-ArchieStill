@@ -222,6 +222,16 @@ private:
     Sound* hurt3;
     Loop* KZK_final;
 
+    MovingPlatform* pMovePlat1;
+    MovingPlatform* pMovePlat2;
+    MovingPlatform* pMovePlat3;
+    MovingPlatform* pMovePlat4;
+    MovingPlatform* pMovePlat5;
+    MovingPlatform* pMovePlat6;
+    MovingPlatform* pMovePlat7;
+    MovingPlatform* pMovePlat8;
+    MovingPlatform* pMovePlat9;
+
     void CollectCoin();
     void LoseLife();
     void ReturnToDefault();

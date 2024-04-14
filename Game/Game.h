@@ -195,7 +195,7 @@ private:
     ImageGO2D* title_screen;
     ImageGO2D* credits;
     ImageGO2D* lose_screen;
-    float scroll = 300;
+    float scroll = 2700;
     bool reset = false;
 
     Loop* ambience;
@@ -232,7 +232,6 @@ private:
     void DisplayBoss();
     void DisplayWin();
     void DisplayLoss();
-    void BeatGame();
 
     void CreateGround();
     void CreateIntroGround();

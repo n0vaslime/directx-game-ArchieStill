@@ -26,8 +26,6 @@ void Boss::Tick(GameData* _GD)
 {
     if (_GD->m_GS == GS_BOSS)
     {
-        std::cout << dying_time << std::endl;
-
         BossFacing();
         if (is_talking)
             BossIntroduction(_GD);
@@ -90,10 +88,10 @@ void Boss::BossFacing()
 
 void Boss::BossIntroduction(GameData* _GD) 
 {
-    if (m_pos.y > 80)
+    if (m_pos.y > 100)
         m_pos.y -= _GD->m_dt * 5;
     else
-        m_pos.y = 80;
+        m_pos.y = 100;
 
     intro_talk += _GD->m_dt;
     if (intro_talk >= 66)
@@ -106,17 +104,17 @@ void Boss::BossEnding(GameData* _GD)
 {
     m_pitch = -5;
     m_pos.y += _GD->m_dt * 2.5f;
-
+    
     if (m_scale.x > 0)
-        m_scale.x -= _GD->m_dt / 25;
+        m_scale.x -= _GD->m_dt / 35;
     else
         m_scale.x = 0;
     if (m_scale.y > 0)
-        m_scale.y -= _GD->m_dt / 25;
+        m_scale.y -= _GD->m_dt / 35;
     else
         m_scale.y = 0;
     if (m_scale.z > 0)
-        m_scale.z -= _GD->m_dt / 25;
+        m_scale.z -= _GD->m_dt / 35;
     else
         m_scale.z = 0;
 
@@ -127,7 +125,7 @@ void Boss::BossHealth()
 {
     //as more cores are destroyed, he gets closer to the ground
     if (boss_health == 2)
-        m_pos.y = 70;
+        m_pos.y = 80;
     if (boss_health == 1)
         m_pos.y = 60;
     if (boss_health == 0)

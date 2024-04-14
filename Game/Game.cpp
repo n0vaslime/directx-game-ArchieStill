@@ -129,7 +129,6 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_Destructibles.push_back(pKazcranak);
     m_BossGOs.push_back(pKazcranak->pBossProjectile);
     m_TriggerObjects.push_back(pKazcranak->pBossProjectile);
-    pKazcranak->pBossProjectile->SetRendered(false);
 
     //add a PRIMARY camera
     m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f)); // Vector3(0,0,0.1f)
@@ -154,23 +153,21 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_DD->m_cam = m_TPScam;
     m_DD->m_light = m_light;
 
-    //example basic 2D stuff
+    //2D screens
     title_screen = new ImageGO2D("TitleScreen", m_d3dDevice.Get());
     title_screen->SetPos(Vector2(400,300));
-    title_screen->SetScale(1.25f);
-    m_GameObjects2D.push_back(title_screen);
+    title_screen->SetScale(0.35f);
+    credits = new ImageGO2D("Goldedge2Credits", m_d3dDevice.Get());
+    credits->SetPos(Vector2(400, 0));
+    credits->SetScale(1.5f);
+    lose_screen = new ImageGO2D("GameOverScreen", m_d3dDevice.Get());
+    lose_screen->SetPos(Vector2(400, 300));
+    lose_screen->SetScale(0.35f);
 
     //add sounds
     CreateAudio();
-    ambience->m_playing = true;
-
-    // TestSound* TS = new TestSound(m_audioEngine.get(), "Explo1");
-    // m_Sounds.push_back(TS);
 
     DisplayMenu();
-    // DisplayGame();
-    // CreateUI();
-    // pPlayer->has_sword = true;
 }
 
 // Executes the basic game loop.
@@ -214,12 +211,6 @@ void Game::Update(DX::StepTimer const& _timer)
     ReadInput();
 
     //////update all objects
-    if (m_GD->m_GS == GS_MENU)
-    {
-        scroll = scroll -= m_GD->m_dt * 10;
-        std::cout << scroll << std::endl;
-        title_screen->SetPos(Vector2(400, scroll));
-    }
     if (m_GD->m_GS == GS_GAME)
     {
         for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
@@ -256,6 +247,19 @@ void Game::Update(DX::StepTimer const& _timer)
         pKazcranak->player_opposite = pPlayer->GetPos().z / 2;
         pKazcranak->player_pitch = pPlayer->GetPitch();
     }
+    else if (m_GD->m_GS == GS_WIN)
+    {
+        if (scroll >= -2250)
+        {
+            scroll = scroll -= m_GD->m_dt * 20;
+            credits->SetPos(Vector2(400, scroll));
+        }
+        else
+        {
+            //END AT -2250 (end of credits)
+            scroll == -2250;
+        }
+    }
 
     for (std::vector<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
     {
@@ -268,6 +272,10 @@ void Game::Update(DX::StepTimer const& _timer)
         m_Grounds[i]->GroundCheck->SetRendered(false);
     for (int i = 0; i < m_Platforms.size(); i++)
         m_Platforms[i]->GroundCheck->SetRendered(false);
+        // if (m_Platforms[i]->Moving == MOVEUP)
+        //     m_Platforms[i]->GroundCheck->SetRendered(true);
+        // else
+        //     m_Platforms[i]->GroundCheck->SetRendered(false);
     for (int i = 0; i < m_Signs.size(); i++)
         m_Signs[i]->SignTrigger->SetRendered(false);
 
@@ -318,9 +326,8 @@ void Game::Update(DX::StepTimer const& _timer)
             pKazcranak->dying_words = false;
         }
 
-        if(pKazcranak->dying_time >= 42)
+        if(pKazcranak->dying_time >= 42.2f)
         {
-            std::cout << "WIN!" << std::endl;
             KZK_final->m_playing = false;
             KZK_final->~Loop();
             DisplayWin();
@@ -680,6 +687,10 @@ void Game::ReadInput()
     {
         ExitGame();
     }
+    if (m_GD->m_KBS.U)
+    {
+        DisplayWin();
+    }
 
     if (pPlayer->play_jump_sfx)
     {
@@ -696,26 +707,29 @@ void Game::ReadInput()
     {
         case(GS_MENU):
         {
-            if (m_GD->m_KBS.Enter)
+            if (m_GD->m_KBS.Enter && m_GD->m_GS == GS_MENU)
             {
                 m_GD->m_GS = GS_INTRO;
                 DisplayIntro();
-            }
-        }
-        case(GS_GAME):
-        {
-            if (m_GD->m_KBS.Home)
-            {
-                ReturnToDefault();
             }
         }
         case(GS_BOSS):
         {
             if (m_GD->m_KBS.Enter && pKazcranak->is_talking && m_GD->m_GS == GS_BOSS)
             {
-                pKazcranak->SetPos(Vector3(pKazcranak->GetPos().x, 70, pKazcranak->GetPos().z));
+                pKazcranak->SetPos(Vector3(pKazcranak->GetPos().x, 100, pKazcranak->GetPos().z));
                 pKazcranak->is_talking = false;
             }
+        }
+        case(GS_LOSS):
+        {
+            if (m_GD->m_KBS.Enter && m_GD->m_GS == GS_LOSS)
+                ReturnToDefault();
+        }
+        case(GS_WIN):
+        {
+            if (m_GD->m_KBS.Enter && m_GD->m_GS == GS_WIN)
+                ReturnToDefault();
         }
     default:
         break;
@@ -956,6 +970,8 @@ void Game::LoseLife()
     livesText->SetScale(Vector2(1.1f, 1));
     m_GameObjects2D.push_back(livesText);
     pPlayer->is_respawning = true;
+    if (lives == 0)
+        DisplayLoss();
 }
 void Game::ReturnToDefault()
 {
@@ -965,14 +981,29 @@ void Game::ReturnToDefault()
         reset = false;
         score = 0;
         lives = 5;
+        m_GameObjects2D.clear();
         m_GD->m_GS = GS_MENU;
         DisplayMenu();
+        m_GameObjects2D.push_back(checkpoint_notif);
+        for (int i = 0; i < m_Signs.size(); i++)
+            m_GameObjects2D.push_back(m_Signs[i]->ReadText);
+        m_GameObjects2D.push_back(sign1Image);
+        m_GameObjects2D.push_back(sign2Image);
+        m_GameObjects2D.push_back(sign3Image);
+        m_GameObjects2D.push_back(sign4Image);
+        m_GameObjects2D.push_back(sign5Image);
+        m_GameObjects2D.push_back(sign6Image);
+        m_GameObjects2D.push_back(sign7Image);
+        game_music->m_playing = false;
+        game_music->~Loop();
+        boss_music->m_playing = false;
+        boss_music->~Loop();
+        ending_music->m_playing = false;
+        ending_music->~Loop();
         pPlayer->SetPos(Vector3(0, 1, 0));
         pPlayer->has_sword = false;
-        m_GameObjects2D.clear();
-        m_GameObjects2D.push_back(title_screen);
-        m_IntroGOs.push_back(pFloatingSword);
-        m_TriggerObjects.push_back(pFloatingSword);
+        // m_IntroGOs.push_back(pFloatingSword);
+        // m_TriggerObjects.push_back(pFloatingSword);
     }
 }
 
@@ -981,6 +1012,9 @@ void Game::DisplayMenu()
     //set menu active
     m_GD->m_GS = GS_MENU;
     title_screen->SetRendered(true);
+    m_GameObjects2D.push_back(title_screen);
+    pPlayer->SetYaw(0);
+    ambience->m_playing = true;
 
     //set others inactive
     for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
@@ -1032,6 +1066,13 @@ void Game::DisplayBoss()
 {
     //set boss active
     m_GD->m_GS = GS_BOSS;
+    pKazcranak->SetScale(1.25f);
+    pKazcranak->SetPos(Vector3(0, 375, 0));
+    pKazcranak->SetPitch(0);
+    pKazcranak->is_talking = true;
+    pKazcranak->is_dying = false;
+    pKazcranak->boss_health = 3;
+
     game_music->m_playing = false;
     game_music->~Loop();
     boss_intro->m_playing = true;
@@ -1055,11 +1096,28 @@ void Game::DisplayWin()
 {
     //set win active
     m_GD->m_GS = GS_WIN;
+    m_GameObjects2D.clear();
+    credits->SetPos(Vector2(400, 2700));
+    credits->SetRendered(true);
+    m_GameObjects2D.push_back(credits);
+
+    //set others inactive
+    for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
+        (*it)->SetRendered(false);
 }
 void Game::DisplayLoss()
 {
     //set loss active
     m_GD->m_GS = GS_LOSS;
+    m_GameObjects2D.clear();
+    lose_screen->SetRendered(true);
+    m_GameObjects2D.push_back(lose_screen);
+
+    //set others inactive
+    for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+        (*it)->SetRendered(false);
+    for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
+        (*it)->SetRendered(false);
 }
 
 void Game::CreateGround()
@@ -1762,11 +1820,6 @@ void Game::CreateSigns()
     sign7Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign7Image);
 
-    m_GameObjects2D.push_back(pSign1->ReadText);
-    m_GameObjects2D.push_back(pSign2->ReadText);
-    m_GameObjects2D.push_back(pSign3->ReadText);
-    m_GameObjects2D.push_back(pSign4->ReadText);
-    m_GameObjects2D.push_back(pSign5->ReadText);
-    m_GameObjects2D.push_back(pSign6->ReadText);
-    m_GameObjects2D.push_back(pSign7->ReadText);
+    for (int i = 0; i < m_Signs.size(); i++)
+        m_GameObjects2D.push_back(m_Signs[i]->ReadText);
 }

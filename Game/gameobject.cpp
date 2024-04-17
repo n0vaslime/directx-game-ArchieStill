@@ -27,7 +27,7 @@ void GameObject::Tick(GameData* _GD)
 	if (m_physicsOn)
 	{
 		//gravity enabled
-		m_acc.y -= 60;
+		m_acc.y -= 100;
 
 		Vector3 newVel = m_vel + _GD->m_dt * (m_acc - m_drag*m_vel);
 		Vector3 newPos = m_pos + _GD->m_dt * m_vel;

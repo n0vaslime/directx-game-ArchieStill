@@ -116,7 +116,7 @@ void Player::PlayerMovement(GameData* _GD)
 	//jumping code
 	if (_GD->m_KBS.Space && is_grounded && !is_attacking)
 	{
-		m_vel.y = 50;
+		m_vel.y = 100;
 		is_grounded = false;
 		play_jump_sfx = true;
 	}
@@ -126,7 +126,7 @@ void Player::PlayerMovement(GameData* _GD)
 		launching = false;
 		play_jump_sfx = true;
 	}
-
+	
 	//TESTING
 	if (_GD->m_KBS.Tab && is_grounded && !is_attacking)
 	{

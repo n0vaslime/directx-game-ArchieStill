@@ -114,7 +114,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     // m_cam = new Camera(0.25f * XM_PI, AR, 1.0f, 10000.0f, Vector3::UnitY, Vector3::Zero);
     // m_cam->SetPos(Vector3(0.0f, 200.0f, 200.0f));
     // m_GameObjects.push_back(m_cam);
-
+    
     //add Player - player object and adding swords to player class
     pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
     m_Player.push_back(pPlayer);
@@ -718,11 +718,14 @@ void Game::ReadInput()
         pPlayer->play_sword_sfx = false;
     }
 
+    if (m_GD->m_KBS.P)
+        LoseLife();
+
     switch (m_GD->m_GS)
     {
         case(GS_MENU):
         {
-            if (m_GD->m_KBS.Enter && m_GD->m_GS == GS_MENU)
+            if (m_GD->m_KBS_tracker.pressed.Enter && m_GD->m_GS == GS_MENU)
             {
                 m_GD->m_GS = GS_INTRO;
                 DisplayIntro();
@@ -738,13 +741,19 @@ void Game::ReadInput()
         }
         case(GS_LOSS):
         {
-            if (m_GD->m_KBS.Enter && m_GD->m_GS == GS_LOSS)
+            if (m_GD->m_KBS_tracker.pressed.Enter && m_GD->m_GS == GS_LOSS)
+            {
+                m_GD->m_KBS_tracker.released.Enter;
                 ReturnToDefault();
+            }
         }
         case(GS_WIN):
         {
-            if (m_GD->m_KBS.Enter && m_GD->m_GS == GS_WIN)
+            if (m_GD->m_KBS_tracker.pressed.Enter && m_GD->m_GS == GS_WIN)
+            {
+                m_GD->m_KBS_tracker.released.Enter;
                 ReturnToDefault();
+            }
         }
     default:
         break;
@@ -1023,7 +1032,8 @@ void Game::ReturnToDefault()
         boss_music->~Loop();
         ending_music->m_playing = false;
         ending_music->~Loop();
-        pPlayer->SetPos(Vector3(0, 1, 0));
+        pPlayer->respawn_pos = pPlayer->base_respawn;
+        pPlayer->is_respawning = true;
         pPlayer->has_sword = false;
         // m_IntroGOs.push_back(pFloatingSword);
         // m_TriggerObjects.push_back(pFloatingSword);

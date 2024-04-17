@@ -186,10 +186,10 @@ private:
     ImageGO2D* sign5Image;
     ImageGO2D* sign6Image;
     ImageGO2D* sign7Image;
-
+    
     int score = 0;
     TextGO2D* scoreText;
-    int lives = 5;
+    int lives = 9;
     TextGO2D* livesText;
     ImageGO2D* spottedImage;
 

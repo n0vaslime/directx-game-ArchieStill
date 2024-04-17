@@ -83,13 +83,13 @@ void Player::PlayerMovement(GameData* _GD)
 	if (!is_attacking)
 	{
 		if (_GD->m_KBS.W)
-			m_acc += forwardMove;
+			m_acc += forwardMove * 1.25;
 		if (_GD->m_KBS.S)
-			m_acc -= forwardMove;
+			m_acc -= forwardMove * 1.25;
 		if (_GD->m_KBS.A)
-			m_acc += leftMove;
+			m_acc += leftMove * 1.25;
 		if (_GD->m_KBS.D)
-			m_acc -= leftMove;
+			m_acc -= leftMove * 1.25;
 	}
 
 	//change orientation of player

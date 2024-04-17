@@ -16,4 +16,8 @@ public:
 	float direction_lifetime = 0.0f;
 	float back_lifetime = 5.0f;
 	bool going = true;
+
+	float rotate_speed = 4;
+	float updown_speed = 20;
+	float leftright_speed = 20;
 };

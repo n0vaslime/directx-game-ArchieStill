@@ -32,26 +32,25 @@ void MovingPlatform::Tick(GameData* _GD)
 	if (direction_lifetime > 5.0f)
 		going = false;
 
-
 	switch (this->Moving)
 	{
 	case ROTATEANTICLOCKWISE:
-		m_yaw -= _GD->m_dt / 4;
+		m_yaw -= _GD->m_dt / rotate_speed;
 		break;
 	case ROTATECLOCKWISE:
-		m_yaw += _GD->m_dt / 4;
+		m_yaw += _GD->m_dt / rotate_speed;
 		break;
 	case MOVEUP:
 		if (going)
 		{
 			back_lifetime = 0;
-			m_pos.y += _GD->m_dt * 20;
+			m_pos.y += _GD->m_dt * updown_speed;
 			direction_lifetime += _GD->m_dt;
 		}
 		else
 		{
 			direction_lifetime = 0;
-			m_pos.y -= _GD->m_dt * 20;
+			m_pos.y -= _GD->m_dt * updown_speed;
 			back_lifetime += _GD->m_dt;
 		}
 		break;
@@ -59,13 +58,13 @@ void MovingPlatform::Tick(GameData* _GD)
 		if (going)
 		{
 			back_lifetime = 0;
-			m_pos.y -= _GD->m_dt * 20;
+			m_pos.y -= _GD->m_dt * updown_speed;
 			direction_lifetime += _GD->m_dt;
 		}
 		else
 		{
 			direction_lifetime = 0;
-			m_pos.y += _GD->m_dt * 20;
+			m_pos.y += _GD->m_dt * updown_speed;
 			back_lifetime += _GD->m_dt;
 		}
 		break;
@@ -73,13 +72,13 @@ void MovingPlatform::Tick(GameData* _GD)
 		if (going)
 		{
 			back_lifetime = 0;
-			m_pos.x -= _GD->m_dt * 20;
+			m_pos.x -= _GD->m_dt * leftright_speed;
 			direction_lifetime += _GD->m_dt;
 		}
 		else
 		{
 			direction_lifetime = 0;
-			m_pos.x += _GD->m_dt * 20;
+			m_pos.x += _GD->m_dt * leftright_speed;
 			back_lifetime += _GD->m_dt;
 		}
 		break;
@@ -87,13 +86,13 @@ void MovingPlatform::Tick(GameData* _GD)
 		if (going)
 		{
 			back_lifetime = 0;
-			m_pos.z -= _GD->m_dt * 20;
+			m_pos.z -= _GD->m_dt * leftright_speed;
 			direction_lifetime += _GD->m_dt;
 		}
 		else
 		{
 			direction_lifetime = 0;
-			m_pos.z += _GD->m_dt * 20;
+			m_pos.z += _GD->m_dt * leftright_speed;
 			back_lifetime += _GD->m_dt;
 		}
 		break;

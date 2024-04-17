@@ -189,6 +189,10 @@ void Game::Tick()
 // Updates the world.
 void Game::Update(DX::StepTimer const& _timer)
 {
+    std::cout << "X: " + std::to_string(pPlayer->GetPos().x) << std::endl;
+    std::cout << "Y: " + std::to_string(pPlayer->GetPos().y) << std::endl;
+    std::cout << "Z: " + std::to_string(pPlayer->GetPos().z) << std::endl;
+
     float elapsedTime = float(_timer.GetElapsedSeconds());
     m_GD->m_dt = elapsedTime;
 
@@ -1009,7 +1013,7 @@ void Game::ReturnToDefault()
     {
         reset = false;
         score = 0;
-        lives = 5;
+        lives = 9;
         scroll = 0;
         skip_notif->SetRendered(false);
         m_GameObjects2D.clear();
@@ -1032,8 +1036,8 @@ void Game::ReturnToDefault()
         boss_music->~Loop();
         ending_music->m_playing = false;
         ending_music->~Loop();
-        pPlayer->respawn_pos = pPlayer->base_respawn;
-        pPlayer->is_respawning = true;
+        pPlayer->respawn_pos = Vector3(0, -1, 0);
+        //pPlayer->is_respawning = true;
         pPlayer->has_sword = false;
         // m_IntroGOs.push_back(pFloatingSword);
         // m_TriggerObjects.push_back(pFloatingSword);
@@ -1189,13 +1193,13 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround3);
     m_Grounds.push_back(pGround3);
     m_GameObjects.push_back(pGround3->GroundCheck);
-        pMovePlat1 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-200, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
+        pMovePlat1 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-190, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
         pMovePlat1->Moving = ROTATEANTICLOCKWISE;
     m_GameObjects.push_back(pMovePlat1);
     m_ColliderObjects.push_back(pMovePlat1);
     m_Platforms.push_back(pMovePlat1);
     m_GameObjects.push_back(pMovePlat1->GroundCheck);
-        pMovePlat2 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-350, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
+        pMovePlat2 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-340, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
         pMovePlat2->Moving = ROTATECLOCKWISE;
     m_GameObjects.push_back(pMovePlat2);
     m_ColliderObjects.push_back(pMovePlat2);
@@ -1387,6 +1391,7 @@ void Game::CreateGround()
 void Game::CreateIntroGround()
 {
         Terrain* pGroundIntro = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -12.5f, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 17.5f));
+        //Terrain* pGroundIntro = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 17.5f));
     m_IntroGOs.push_back(pGroundIntro);
     m_ColliderObjects.push_back(pGroundIntro);
     m_Grounds.push_back(pGroundIntro);
@@ -1465,12 +1470,14 @@ void Game::CreateBossGround()
     //Core 2
         pMovePlatB1 = new MovingPlatform("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-150, -10, -150), 0.0f, 40.0f, 0.0f, Vector3(3, 1, 3));
         pMovePlatB1->Moving = MOVEUP;
+        pMovePlatB1->updown_speed = 35;
     m_BossGOs.push_back(pMovePlatB1);
     m_ColliderObjects.push_back(pMovePlatB1);
     m_Platforms.push_back(pMovePlatB1);
     m_BossGOs.push_back(pMovePlatB1->GroundCheck);
         pMovePlatB2 = new MovingPlatform("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-175, 180, -175), 0.0f, 40.0f, 0.0f, Vector3(3, 1, 3));
         pMovePlatB2->Moving = MOVEDOWN;
+        pMovePlatB2->updown_speed = 35;
     m_BossGOs.push_back(pMovePlatB2);
     m_ColliderObjects.push_back(pMovePlatB2);
     m_Platforms.push_back(pMovePlatB2);
@@ -1490,12 +1497,14 @@ void Game::CreateBossGround()
     //Core 3
         pMovePlatB3 = new MovingPlatform("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-185, 0, 185), 0.0f, 40.0f, 0.0f, Vector3(15, 1, 3));
         pMovePlatB3->Moving = ROTATEANTICLOCKWISE;
+        pMovePlatB3->rotate_speed = 1.75f;
     m_BossGOs.push_back(pMovePlatB3);
     m_ColliderObjects.push_back(pMovePlatB3);
     m_Platforms.push_back(pMovePlatB3);
     m_BossGOs.push_back(pMovePlatB3->GroundCheck);
         pMovePlatB4 = new MovingPlatform("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-300, 0, 300), 0.0f, 40.0f, 0.0f, Vector3(15, 1, 3));
         pMovePlatB4->Moving = ROTATECLOCKWISE;
+        pMovePlatB4->rotate_speed = 1.75f;
     m_BossGOs.push_back(pMovePlatB4);
     m_ColliderObjects.push_back(pMovePlatB4);
     m_Platforms.push_back(pMovePlatB4);

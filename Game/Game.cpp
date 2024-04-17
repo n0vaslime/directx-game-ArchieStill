@@ -164,7 +164,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     title_screen->SetPos(Vector2(400,300));
     title_screen->SetScale(0.35f);
     credits = new ImageGO2D("Goldedge2Credits", m_d3dDevice.Get());
-    credits->SetPos(Vector2(400, 0));
+    credits->SetPos(Vector2(400, 2700));
     credits->SetScale(1.5f);
     lose_screen = new ImageGO2D("GameOverScreen", m_d3dDevice.Get());
     lose_screen->SetPos(Vector2(400, 300));
@@ -189,10 +189,9 @@ void Game::Tick()
 // Updates the world.
 void Game::Update(DX::StepTimer const& _timer)
 {
-    std::cout << "X: " + std::to_string(pPlayer->GetPos().x) << std::endl;
-    std::cout << "Y: " + std::to_string(pPlayer->GetPos().y) << std::endl;
-    std::cout << "Z: " + std::to_string(pPlayer->GetPos().z) << std::endl;
-
+    if (m_GD->m_dt > 1 / 30)
+        m_GD->m_dt = 1 / 30;
+    
     float elapsedTime = float(_timer.GetElapsedSeconds());
     m_GD->m_dt = elapsedTime;
 
@@ -272,16 +271,21 @@ void Game::Update(DX::StepTimer const& _timer)
     }
     else if (m_GD->m_GS == GS_WIN)
     {
-        if (scroll >= -2250)
+        if (credits_scroll)
         {
-            scroll = scroll -= m_GD->m_dt * 20;
-            credits->SetPos(Vector2(400, scroll));
+            if (scroll >= -2250)
+            {
+                scroll = scroll -= m_GD->m_dt * 20;
+                credits->SetPos(Vector2(400, scroll));
+            }
+            else
+            {
+                //END AT -2250 (end of credits)
+                scroll == -2250;
+            }
         }
         else
-        {
-            //END AT -2250 (end of credits)
-            scroll == -2250;
-        }
+            credits->SetPos(Vector2(400, 2700));
     }
 
     for (std::vector<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
@@ -724,6 +728,8 @@ void Game::ReadInput()
 
     if (m_GD->m_KBS.P)
         LoseLife();
+    if (m_GD->m_KBS.O)
+        pKazcranak->boss_health = 0;
 
     switch (m_GD->m_GS)
     {
@@ -1014,7 +1020,7 @@ void Game::ReturnToDefault()
         reset = false;
         score = 0;
         lives = 9;
-        scroll = 0;
+        scroll = 2700;
         skip_notif->SetRendered(false);
         m_GameObjects2D.clear();
         m_GD->m_GS = GS_MENU;
@@ -1030,6 +1036,8 @@ void Game::ReturnToDefault()
         m_GameObjects2D.push_back(sign5Image);
         m_GameObjects2D.push_back(sign6Image);
         m_GameObjects2D.push_back(sign7Image);
+        credits_scroll = false;
+        credits->SetPos(Vector2(400, 2700));
         game_music->m_playing = false;
         game_music->~Loop();
         boss_music->m_playing = false;
@@ -1037,7 +1045,7 @@ void Game::ReturnToDefault()
         ending_music->m_playing = false;
         ending_music->~Loop();
         pPlayer->respawn_pos = Vector3(0, -1, 0);
-        //pPlayer->is_respawning = true;
+        pPlayer->is_respawning = true;
         pPlayer->has_sword = false;
         // m_IntroGOs.push_back(pFloatingSword);
         // m_TriggerObjects.push_back(pFloatingSword);
@@ -1135,6 +1143,7 @@ void Game::DisplayWin()
     //set win active
     m_GD->m_GS = GS_WIN;
     m_GameObjects2D.clear();
+    credits_scroll = true;
     credits->SetPos(Vector2(400, 2700));
     credits->SetRendered(true);
     m_GameObjects2D.push_back(credits);
@@ -1810,13 +1819,13 @@ void Game::CreateEnemies()
     m_GameObjects.push_back(pStrongE3->EnemySensor);
     m_EnemySensors.push_back(pStrongE3->EnemySensor);
 
-        Enemy* pStrongE4 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-90, 165, -365));
+        Enemy* pStrongE4 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-125, 165, -365));
         pStrongE4->speed = pStrongE4->speed * 2;
     m_GameObjects.push_back(pStrongE4);
     m_Enemies.push_back(pStrongE4);
     m_GameObjects.push_back(pStrongE4->EnemySensor);
     m_EnemySensors.push_back(pStrongE4->EnemySensor);
-        Enemy* pStrongE5 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-90, 165, -435));
+        Enemy* pStrongE5 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-125, 165, -435));
         pStrongE5->speed = pStrongE5->speed * 2;
     m_GameObjects.push_back(pStrongE5);
     m_Enemies.push_back(pStrongE5);

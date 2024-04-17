@@ -197,6 +197,7 @@ private:
     ImageGO2D* credits;
     ImageGO2D* lose_screen;
     float scroll = 2700;
+    bool credits_scroll = false;
     bool reset = false;
 
     Loop* ambience;

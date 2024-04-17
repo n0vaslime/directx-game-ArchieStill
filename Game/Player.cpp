@@ -139,6 +139,12 @@ void Player::PlayerMovement(GameData* _GD)
 		is_grounded = false;
 	}
 
+	//Checkpoint reset
+	if (_GD->m_KBS.C && is_grounded && !is_attacking)
+	{
+		is_respawning = true;
+	}
+
 	//set boss' position to match player
 	Vector3 bossConstant = Vector3(10, 100, 10);
 	boss_pos_set = (forwardMove + bossConstant);

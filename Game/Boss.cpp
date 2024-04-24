@@ -14,6 +14,7 @@ Boss::Boss(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF) : C
     is_dying = false;
 
     pBossProjectile = new CMOGO("Projectile", _pd3dDevice, _EF);
+    pBossProjectile->SetPos(Vector3::One * 1000000);
     pBossProjectile->SetScale(Vector3::One * 2.5f);
     pBossProjectile->SetRendered(false);
 }
@@ -82,8 +83,9 @@ void Boss::Draw(DrawData* _DD)
 void Boss::BossFacing()
 {
     float angleLookAt = atan2(player_adjacent, player_opposite);
-    this->SetYaw((angleLookAt + 3.1415f));
+    this->SetYaw(angleLookAt + 3.1415f);
     this->SetPitch(-player_pitch * 1.1f);
+
 }
 
 void Boss::BossIntroduction(GameData* _GD) 

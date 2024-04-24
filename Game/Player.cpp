@@ -140,7 +140,7 @@ void Player::PlayerMovement(GameData* _GD)
 	}
 
 	//Checkpoint reset
-	if (_GD->m_KBS.C && is_grounded && !is_attacking)
+	if (_GD->m_KBS.C && is_grounded && !is_attacking && _GD->m_GS == GS_GAME)
 	{
 		is_respawning = true;
 	}

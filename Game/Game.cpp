@@ -134,6 +134,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_ColliderObjects.push_back(pKazcranak);
     m_Destructibles.push_back(pKazcranak);
     m_BossGOs.push_back(pKazcranak->pBossProjectile);
+    pKazcranak->pBossProjectile->SetRendered(false);
     m_TriggerObjects.push_back(pKazcranak->pBossProjectile);
 
     //add a PRIMARY camera
@@ -963,6 +964,7 @@ void Game::SignReading()
             sign5Image->SetRendered(false);
             sign6Image->SetRendered(false);
             sign7Image->SetRendered(false);
+            sign8Image->SetRendered(false);
         }
 
         //choosing image to render depending on the sign
@@ -980,6 +982,8 @@ void Game::SignReading()
             sign6Image->SetRendered(true);
         if (pSign7->is_reading)
             sign7Image->SetRendered(true);
+        if (pSign8->is_reading)
+            sign8Image->SetRendered(true);
 
         //removing read prompt while player is reading
         if (m_Signs[j]->is_reading)
@@ -1880,16 +1884,21 @@ void Game::CreateSigns()
     m_Signs.push_back(pSign5);
     m_ColliderObjects.push_back(pSign5);
     m_GameObjects.push_back(pSign5->SignTrigger);
-        pSign6 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 160, -400), 0);
+        pSign6 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-160, 102.5f, 25), 80);
     m_GameObjects.push_back(pSign6);
     m_Signs.push_back(pSign6);
     m_ColliderObjects.push_back(pSign6);
-    m_GameObjects.push_back(pSign6->SignTrigger);
-        pSign7 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 412.5f, -160), 179);
+    m_GameObjects.push_back(pSign5->SignTrigger);
+        pSign7 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 160, -400), 0);
     m_GameObjects.push_back(pSign7);
     m_Signs.push_back(pSign7);
     m_ColliderObjects.push_back(pSign7);
-    m_GameObjects.push_back(pSign7->SignTrigger);
+    m_GameObjects.push_back(pSign6->SignTrigger);
+        pSign8 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 412.5f, -160), 179);
+    m_GameObjects.push_back(pSign8);
+    m_Signs.push_back(pSign8);
+    m_ColliderObjects.push_back(pSign8);
+    m_GameObjects.push_back(pSign8->SignTrigger);
 
         sign1Image = new ImageGO2D("IntroLoreSign", m_d3dDevice.Get());
     sign1Image->SetPos(Vector2(400, 300));
@@ -1911,14 +1920,18 @@ void Game::CreateSigns()
     sign5Image->SetPos(Vector2(400, 300));
     sign5Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign5Image);
-        sign6Image = new ImageGO2D("AlmostThereSign", m_d3dDevice.Get());
+        sign6Image = new ImageGO2D("MovePlatHint", m_d3dDevice.Get());
     sign6Image->SetPos(Vector2(400, 300));
     sign6Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign6Image);
-        sign7Image = new ImageGO2D("FinalSign", m_d3dDevice.Get());
+        sign7Image = new ImageGO2D("AlmostThereSign", m_d3dDevice.Get());
     sign7Image->SetPos(Vector2(400, 300));
     sign7Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign7Image);
+        sign8Image = new ImageGO2D("FinalSign", m_d3dDevice.Get());
+    sign8Image->SetPos(Vector2(400, 300));
+    sign8Image->SetScale(Vector2(0.75f, 0.75f));
+    m_GameObjects2D.push_back(sign8Image);
 
     for (int i = 0; i < m_Signs.size(); i++)
         m_GameObjects2D.push_back(m_Signs[i]->ReadText);

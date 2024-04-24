@@ -179,6 +179,7 @@ private:
     Sign* pSign5;
     Sign* pSign6;
     Sign* pSign7;
+    Sign* pSign8;
     ImageGO2D* sign1Image;
     ImageGO2D* sign2Image;
     ImageGO2D* sign3Image;
@@ -186,6 +187,7 @@ private:
     ImageGO2D* sign5Image;
     ImageGO2D* sign6Image;
     ImageGO2D* sign7Image;
+    ImageGO2D* sign8Image;
     
     int score = 0;
     TextGO2D* scoreText;

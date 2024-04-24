@@ -11,7 +11,6 @@
     <ImageContentTask Include="..\RawAssets\Images\Coin.png" />
     <ImageContentTask Include="..\RawAssets\Images\Heart.png" />
     <ImageContentTask Include="..\RawAssets\Images\Spotted.png" />
-    <ImageContentTask Include="..\RawAssets\Images\CheckpointSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\AlmostThereSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\CubeMinionSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\IntroLoreSign.png" />
@@ -20,5 +19,6 @@
     <ImageContentTask Include="..\RawAssets\Images\TitleScreen.png" />
     <ImageContentTask Include="..\RawAssets\Images\Goldedge2Credits.png" />
     <ImageContentTask Include="..\RawAssets\Images\GameOverScreen.png" />
+    <ImageContentTask Include="..\RawAssets\Images\CheckpointSign.png" />
   </ItemGroup>
 </Project>

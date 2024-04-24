@@ -170,9 +170,6 @@
     <ImageContentTask Include="..\RawAssets\Images\Spotted.png" />
   </ItemGroup>
   <ItemGroup>
-    <ImageContentTask Include="..\RawAssets\Images\CheckpointSign.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ImageContentTask Include="..\RawAssets\Images\AlmostThereSign.png" />
   </ItemGroup>
   <ItemGroup>
@@ -191,6 +188,9 @@
     <ImageContentTask Include="..\RawAssets\Images\GameOverScreen.png" />
     <ImageContentTask Include="..\RawAssets\Images\Goldedge2Credits.png" />
     <ImageContentTask Include="..\RawAssets\Images\TitleScreen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="..\RawAssets\Images\CheckpointSign.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

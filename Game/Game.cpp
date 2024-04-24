@@ -191,6 +191,9 @@ void Game::Update(DX::StepTimer const& _timer)
 {
     if (m_GD->m_dt > 1 / 30)
         m_GD->m_dt = 1 / 30;
+
+    if (ambience->m_playing == false)
+        ambience->SetPlaying(false);
     
     float elapsedTime = float(_timer.GetElapsedSeconds());
     m_GD->m_dt = elapsedTime;
@@ -1300,7 +1303,7 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround15);
     m_Grounds.push_back(pGround15);
     m_GameObjects.push_back(pGround15->GroundCheck);
-        pMovePlat5 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(200, 150, -165), 0.0f, 0.0f, 0.0f, Vector3(3, 1, 3));
+        pMovePlat5 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(200, 150, -165), 0.0f, 0.0f, 0.0f, Vector3(3.5, 1, 3.5));
         pMovePlat5->Moving = MOVELEFTX;
     m_GameObjects.push_back(pMovePlat5);
     m_ColliderObjects.push_back(pMovePlat5);
@@ -1311,7 +1314,7 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround16);
     m_Grounds.push_back(pGround16);
     m_GameObjects.push_back(pGround16->GroundCheck);
-        pMovePlat6 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 150, -225), 0.0f, 0.0f, 0.0f, Vector3(3, 1, 3));
+        pMovePlat6 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 150, -225), 0.0f, 0.0f, 0.0f, Vector3(3.5, 1, 3.5));
         pMovePlat6->Moving = MOVEFORWARDZ;
     m_GameObjects.push_back(pMovePlat6);
     m_ColliderObjects.push_back(pMovePlat6);
@@ -1362,12 +1365,12 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround20);
     m_Grounds.push_back(pGround20);
     m_GameObjects.push_back(pGround20->GroundCheck);
-        Terrain* pGround21 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -255), 0.0f, 45.0f, 0.0f, Vector3(2, 1, 2));
+        Terrain* pGround21 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -255), 0.0f, 0.0f, 0.0f, Vector3(2, 1, 2));
     m_GameObjects.push_back(pGround21);
     m_ColliderObjects.push_back(pGround21);
     m_Grounds.push_back(pGround21);
     m_GameObjects.push_back(pGround21->GroundCheck);
-        Terrain* pGround22 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -220), 0.0f, 45.0f, 0.0f, Vector3(2, 1, 2));
+        Terrain* pGround22 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -220), 0.0f, 0.0f, 0.0f, Vector3(2, 1, 2));
     m_GameObjects.push_back(pGround22);
     m_ColliderObjects.push_back(pGround22);
     m_Grounds.push_back(pGround22);
@@ -1831,19 +1834,19 @@ void Game::CreateEnemies()
     m_Enemies.push_back(pStrongE5);
     m_GameObjects.push_back(pStrongE5->EnemySensor);
     m_EnemySensors.push_back(pStrongE5->EnemySensor);
-        Enemy* pStrongE6 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 415, -325));
+        Enemy* pStrongE6 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 415, -300));
         pStrongE6->speed = pStrongE6->speed * 2;
     m_GameObjects.push_back(pStrongE6);
     m_Enemies.push_back(pStrongE6);
     m_GameObjects.push_back(pStrongE6->EnemySensor);
     m_EnemySensors.push_back(pStrongE6->EnemySensor);
-        Enemy* pStrongE7 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-250, 415, -300));
+        Enemy* pStrongE7 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-250, 415, -285));
         pStrongE7->speed = pStrongE7->speed * 2;
     m_GameObjects.push_back(pStrongE7);
     m_Enemies.push_back(pStrongE7);
     m_GameObjects.push_back(pStrongE7->EnemySensor);
     m_EnemySensors.push_back(pStrongE7->EnemySensor);
-        Enemy* pStrongE8 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-300, 415, -300));
+        Enemy* pStrongE8 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-300, 415, -285));
         pStrongE8->speed = pStrongE8->speed * 2;
     m_GameObjects.push_back(pStrongE8);
     m_Enemies.push_back(pStrongE8);

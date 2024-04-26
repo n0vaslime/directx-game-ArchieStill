@@ -309,11 +309,9 @@ void Game::Update(DX::StepTimer const& _timer)
     if (!pKazcranak->is_talking && m_GD->m_GS == GS_BOSS)
     {
         skip_notif->SetRendered(false);
-        boss_intro->m_playing = false;
-        boss_intro->~Loop();
-        KZK_intro->m_playing = false;
-        KZK_intro->~Loop();
-        boss_music->m_playing = true;
+        boss_intro->Play();
+        KZK_intro->Play();
+        boss_music->Play();
 
         if (pKazcranak->play_combat_sfx && !pKazcranak->play_hurt_sfx)
         {
@@ -347,16 +345,14 @@ void Game::Update(DX::StepTimer const& _timer)
         if (pKazcranak->dying_words)
         {
             KZK_final->m_playing = true;
-            boss_music->m_playing = false;
-            boss_music->~Loop();
-            ending_music->m_playing = true;
+            boss_music->Play();
+            ending_music->Play();
             pKazcranak->dying_words = false;
         }
 
         if(pKazcranak->dying_time >= 42.2f)
         {
-            KZK_final->m_playing = false;
-            KZK_final->~Loop();
+            KZK_final->Play();
             DisplayWin();
             pKazcranak->dying_time = 0;
         }
@@ -1045,12 +1041,12 @@ void Game::ReturnToDefault()
         m_GameObjects2D.push_back(sign7Image);
         credits_scroll = false;
         credits->SetPos(Vector2(400, 2700));
-        game_music->m_playing = false;
-        game_music->~Loop();
-        boss_music->m_playing = false;
-        boss_music->~Loop();
-        ending_music->m_playing = false;
-        ending_music->~Loop();
+        if(game_music->m_playing)
+            game_music->Play();
+        if(boss_music->m_playing)
+            boss_music->Play();
+        if(ending_music->m_playing)
+            ending_music->Play();
         pPlayer->respawn_pos = Vector3(0, -1, 0);
         pPlayer->is_respawning = true;
         pPlayer->has_sword = false;
@@ -1066,7 +1062,7 @@ void Game::DisplayMenu()
     title_screen->SetRendered(true);
     m_GameObjects2D.push_back(title_screen);
     pPlayer->SetYaw(0);
-    ambience->m_playing = true;
+    ambience->Play();
 
     //set others inactive
     for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
@@ -1076,9 +1072,8 @@ void Game::DisplayIntro()
 {
     //set intro active
     m_GD->m_GS = GS_INTRO;
-    ambience->m_playing = false;
-    ambience->~Loop();
-    intro_music->m_playing = true;
+    ambience->Play();
+    intro_music->Play();
 
     for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
     {
@@ -1092,9 +1087,8 @@ void Game::DisplayGame()
 {
     //set game active
     m_GD->m_GS = GS_GAME;
-    intro_music->m_playing = false;
-    intro_music->~Loop();
-    game_music->m_playing = true;
+    intro_music->Play();
+    game_music->Play();
 
     pPlayer->respawn_pos = pPlayer->base_respawn;
     pPlayer->is_respawning = true;
@@ -1126,10 +1120,9 @@ void Game::DisplayBoss()
     pKazcranak->boss_health = 3;
 
     skip_notif->SetRendered(true);
-    game_music->m_playing = false;
-    game_music->~Loop();
-    boss_intro->m_playing = true;
-    KZK_intro->m_playing = true;
+    game_music->Play();
+    boss_intro->Play();
+    KZK_intro->Play();
 
     pPlayer->respawn_pos = Vector3(0, 5, 50);
     pPlayer->is_respawning = true;

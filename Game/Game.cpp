@@ -7,6 +7,7 @@
 #include <time.h>
 
 #include <iostream>
+#include <fstream>
 
 //Scarle Headers
 #include "GameData.h"

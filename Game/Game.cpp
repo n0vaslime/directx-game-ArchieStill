@@ -150,8 +150,13 @@ void Game::Initialize(HWND _window, int _width, int _height)
     CreateSigns();
 
     //L-system like tree
-    Tree* tree = new Tree(4, 4, 1.0f, 10.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
+    Tree* tree = new Tree(4, 3, 1.0f, 8.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(tree);
+    treeCollision = new CMOGO("Player", m_d3dDevice.Get(), m_fxFactory);
+    treeCollision->SetPos(Vector3(tree->GetPos().x, tree->GetPos().y, tree->GetPos().z));
+    treeCollision->SetScale(Vector3(2.5f, 10, 2.5f));
+    m_GameObjects.push_back(treeCollision);
+    m_ColliderObjects.push_back(treeCollision);
 
     //create DrawData struct and populate its pointers
     m_DD = new DrawData;
@@ -192,9 +197,6 @@ void Game::Update(DX::StepTimer const& _timer)
 {
     if (m_GD->m_dt > 1 / 30)
         m_GD->m_dt = 1 / 30;
-
-    if (ambience->m_playing == false)
-        ambience->SetPlaying(false);
     
     float elapsedTime = float(_timer.GetElapsedSeconds());
     m_GD->m_dt = elapsedTime;
@@ -237,7 +239,8 @@ void Game::Update(DX::StepTimer const& _timer)
                 (*it) == pMovePlat6->GroundCheck ||
                 (*it) == pMovePlat7->GroundCheck ||
                 (*it) == pMovePlat8->GroundCheck ||
-                (*it) == pMovePlat9->GroundCheck)
+                (*it) == pMovePlat9->GroundCheck ||
+                (*it) == treeCollision)
                     (*it)->Tick(m_GD);
         }
 
@@ -309,10 +312,12 @@ void Game::Update(DX::StepTimer const& _timer)
     if (!pKazcranak->is_talking && m_GD->m_GS == GS_BOSS)
     {
         skip_notif->SetRendered(false);
-        boss_intro->Play();
-        KZK_intro->Play();
-        boss_music->Play();
+        boss_intro->Stop();
+        KZK_intro->Stop();
+        if (!pKazcranak->is_dying)
+            boss_music->Play();
 
+        // plays random voice lines
         if (pKazcranak->play_combat_sfx && !pKazcranak->play_hurt_sfx)
         {
             int combat_sfx = (rand() % 6) + 1;
@@ -344,15 +349,15 @@ void Game::Update(DX::StepTimer const& _timer)
 
         if (pKazcranak->dying_words)
         {
-            KZK_final->m_playing = true;
-            boss_music->Play();
+            boss_music->Stop();
+            KZK_final->Play();
             ending_music->Play();
             pKazcranak->dying_words = false;
         }
 
         if(pKazcranak->dying_time >= 42.2f)
         {
-            KZK_final->Play();
+            KZK_final->Stop();
             DisplayWin();
             pKazcranak->dying_time = 0;
         }
@@ -398,7 +403,8 @@ void Game::Render()
             if ((*it)->isRendered()
                 && (*it) != pPlayer->pSwordTrigger
                 && (*it) != pLaunchpadTrigger
-                && (*it) != pBossTrigger)
+                && (*it) != pBossTrigger
+                && (*it) != treeCollision)
             {
                 (*it)->Draw(m_DD);
             }
@@ -710,10 +716,6 @@ void Game::ReadInput()
     {
         ExitGame();
     }
-    if (m_GD->m_KBS.U)
-    {
-        DisplayWin();
-    }
 
     if (pPlayer->play_jump_sfx)
     {
@@ -730,6 +732,8 @@ void Game::ReadInput()
         LoseLife();
     if (m_GD->m_KBS.O)
         pKazcranak->boss_health = 0;
+    if (m_GD->m_KBS.NumPad0)
+        ReturnToDefault();
 
     switch (m_GD->m_GS)
     {
@@ -813,6 +817,7 @@ void Game::CheckTriggers()
             }
             if (m_TriggerObjects[j] == pKazcranak->pBossProjectile)
             {
+                m_TriggerObjects[j]->SetRendered(false);
                 LoseLife();
             }
         }
@@ -837,6 +842,7 @@ void Game::CheckpointCheck()
     {
         if (m_Player[i]->Intersects(*m_Checkpoints[j]) && m_Checkpoints[j]->isRendered())
         {
+            //changes player's respawn when colliding
             pPlayer->respawn_pos = m_Checkpoints[j]->GetPos();
             checkpoint_notif->SetRendered(true);
             notif_active = true;
@@ -1039,15 +1045,13 @@ void Game::ReturnToDefault()
         m_GameObjects2D.push_back(sign5Image);
         m_GameObjects2D.push_back(sign6Image);
         m_GameObjects2D.push_back(sign7Image);
+        m_GameObjects2D.push_back(sign8Image);
         credits_scroll = false;
         credits->SetPos(Vector2(400, 2700));
-        if(game_music->m_playing)
-            game_music->Play();
-        if(boss_music->m_playing)
-            boss_music->Play();
-        if(ending_music->m_playing)
-            ending_music->Play();
-        pPlayer->respawn_pos = Vector3(0, -1, 0);
+        game_music->Stop();
+        boss_music->Stop();
+        ending_music->Stop();
+        pPlayer->respawn_pos = Vector3(0, -5, -10);
         pPlayer->is_respawning = true;
         pPlayer->has_sword = false;
         // m_IntroGOs.push_back(pFloatingSword);
@@ -1072,7 +1076,7 @@ void Game::DisplayIntro()
 {
     //set intro active
     m_GD->m_GS = GS_INTRO;
-    ambience->Play();
+    ambience->Stop();
     intro_music->Play();
 
     for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
@@ -1087,10 +1091,10 @@ void Game::DisplayGame()
 {
     //set game active
     m_GD->m_GS = GS_GAME;
-    intro_music->Play();
+    intro_music->Stop();
     game_music->Play();
 
-    pPlayer->respawn_pos = pPlayer->base_respawn;
+    pPlayer->respawn_pos = pPlayer->base_game_respawn;
     pPlayer->is_respawning = true;
     pPlayer->SetPos(Vector3(pPlayer->GetPos().x, pPlayer->GetPos().y + 25, pPlayer->GetPos().z));
     for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
@@ -1120,7 +1124,7 @@ void Game::DisplayBoss()
     pKazcranak->boss_health = 3;
 
     skip_notif->SetRendered(true);
-    game_music->Play();
+    game_music->Stop();
     boss_intro->Play();
     KZK_intro->Play();
 
@@ -1400,7 +1404,6 @@ void Game::CreateGround()
 void Game::CreateIntroGround()
 {
         Terrain* pGroundIntro = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -12.5f, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 17.5f));
-        //Terrain* pGroundIntro = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 17.5f));
     m_IntroGOs.push_back(pGroundIntro);
     m_ColliderObjects.push_back(pGroundIntro);
     m_Grounds.push_back(pGroundIntro);
@@ -1414,7 +1417,7 @@ void Game::CreateIntroGround()
         Terrain* pIntroCeiling = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 30, -50), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 1, 17.5f));
     m_IntroGOs.push_back(pIntroCeiling);
     m_ColliderObjects.push_back(pIntroCeiling);
-        Terrain* pIntroBackWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 5), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 5, 1));
+        Terrain* pIntroBackWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 5), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 5, 3));
     m_IntroGOs.push_back(pIntroBackWall);
     m_ColliderObjects.push_back(pIntroBackWall);
         Terrain* pIntroFrontWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -137.5f), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 5, 1));
@@ -1537,10 +1540,10 @@ void Game::CreateAudio()
     ambience->SetVolume(0.1f);
     m_Music.push_back(ambience);
         intro_music = new Loop(m_audioEngine.get(), "BondsOfSeaAndFire");
-    intro_music->SetVolume(0.3f);
+    intro_music->SetVolume(0.003f);
     m_Music.push_back(intro_music);
         game_music = new Loop(m_audioEngine.get(), "GaurPlains");
-    game_music->SetVolume(0.3f);
+    game_music->SetVolume(0.003f);
     m_Music.push_back(game_music);
         boss_intro = new Loop(m_audioEngine.get(), "Courtesy");
     boss_intro->SetVolume(0.3f);
@@ -1553,7 +1556,7 @@ void Game::CreateAudio()
     m_Music.push_back(ending_music);
 
         hit_sfx = new Sound(m_audioEngine.get(), "Explo1");
-    hit_sfx->SetVolume(0.75f);
+    hit_sfx->SetVolume(0.5f);
     hit_sfx->SetPitch(0.9f);
     m_Sounds.push_back(hit_sfx);
         coin_sfx = new Sound(m_audioEngine.get(), "Coin");
@@ -1881,12 +1884,12 @@ void Game::CreateSigns()
     m_GameObjects.push_back(pSign6);
     m_Signs.push_back(pSign6);
     m_ColliderObjects.push_back(pSign6);
-    m_GameObjects.push_back(pSign5->SignTrigger);
+    m_GameObjects.push_back(pSign6->SignTrigger);
         pSign7 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 160, -400), 0);
     m_GameObjects.push_back(pSign7);
     m_Signs.push_back(pSign7);
     m_ColliderObjects.push_back(pSign7);
-    m_GameObjects.push_back(pSign6->SignTrigger);
+    m_GameObjects.push_back(pSign7->SignTrigger);
         pSign8 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 412.5f, -160), 179);
     m_GameObjects.push_back(pSign8);
     m_Signs.push_back(pSign8);

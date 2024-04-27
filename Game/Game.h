@@ -161,6 +161,7 @@ private:
     CMOGO* pCore1;
     CMOGO* pCore2;
     CMOGO* pCore3;
+    CMOGO* treeCollision;
 
     Terrain* pIntroExit;
     Terrain* pDeathTrigger;

@@ -15,6 +15,7 @@ public:
 	virtual void Tick(GameData* _GSD);
 
 	virtual void Play();
+	virtual void Stop();
 
 	bool GetPlaying() { return m_playing; }
 	void TogglePlaying() { m_playing = !m_playing; }

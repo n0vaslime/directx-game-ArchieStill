@@ -9,11 +9,11 @@ Player::Player(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF)
 	//any special set up for Player goes here
 	m_fudge = Matrix::CreateRotationY(XM_PI);
 	m_pos.y = 1.0f;
+	m_pos.z = -10.0f;
 	SetDrag(1.5f);
 	SetPhysicsOn(true);
 	SetScale(Vector3(1,2,1));
-	respawn_pos = Vector3(0, 5, 75);
-	base_respawn = Vector3(0, 5, 75);
+	base_game_respawn = Vector3(0, 5, 75);
 
 	pSwordTrigger = new CMOGO("table", _pd3dDevice, _EF);
 	pSwordTrigger->SetScale(Vector3(0.075f, -0.075f, 0.075f));

@@ -25,7 +25,7 @@ public:
 	bool is_attacking = false;
 	bool is_respawning = false;
 	Vector3 respawn_pos;
-	Vector3 base_respawn;
+	Vector3 base_game_respawn;
 	bool is_reading = false;
 	bool launching = false;
 	Vector3 boss_pos_set;

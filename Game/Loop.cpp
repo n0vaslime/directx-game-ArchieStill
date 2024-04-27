@@ -19,16 +19,22 @@ Loop::~Loop()
 
 void Loop::Play()
 {
-	if (m_playing)
-	{
-		m_loop->Stop(true);
-	}
-	else
-	{
-		m_loop->Play(true);
-	}
-	m_playing = !m_playing;
+	//if (m_playing)
+	//{
+	//	m_loop->Stop(true);
+	//}
+	//else
+	//{
+	//	m_loop->Play(true);
+	//}
+	//m_playing = !m_playing;
 
+	m_loop->Play(true);
+}
+
+void Loop::Stop()
+{
+	m_loop->Stop(true);
 }
 
 
@@ -39,4 +45,5 @@ void Loop::Tick(GameData* _GD)
 	m_loop->SetPitch(m_pitch);
 	m_loop->SetPan(m_pan);
 	m_loop->Play(m_playing);
+	m_loop->Stop(m_playing);
 }

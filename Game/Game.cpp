@@ -136,6 +136,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_BossGOs.push_back(pKazcranak->pBossProjectile);
     pKazcranak->pBossProjectile->SetRendered(false);
     m_TriggerObjects.push_back(pKazcranak->pBossProjectile);
+    m_Destructibles.push_back(pKazcranak->pBossProjectile);
 
     //add a PRIMARY camera
     m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f)); // Vector3(0,0,0.1f)
@@ -198,6 +199,8 @@ void Game::Update(DX::StepTimer const& _timer)
     if (m_GD->m_dt > 1 / 30)
         m_GD->m_dt = 1 / 30;
     
+    std::cout << pPlayer->GetPitch() << std::endl;
+
     float elapsedTime = float(_timer.GetElapsedSeconds());
     m_GD->m_dt = elapsedTime;
 
@@ -225,7 +228,7 @@ void Game::Update(DX::StepTimer const& _timer)
 
     ReadInput();
 
-    //////update all objects
+    //////  update all objects
     if (m_GD->m_GS == GS_GAME)
     {
         for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
@@ -272,9 +275,16 @@ void Game::Update(DX::StepTimer const& _timer)
         if (pKazcranak->is_talking)
             pPlayer->is_attacking = true;
 
+        //determines where Kazcranak fires projectiles
         pKazcranak->player_adjacent = pPlayer->GetPos().x / 2;
         pKazcranak->player_opposite = pPlayer->GetPos().z / 2;
-        pKazcranak->player_pitch = pPlayer->GetPitch();
+        pKazcranak->player_pitch = pPlayer->GetPitch() + 0.3f;
+        //looking down
+        if (pKazcranak->player_pitch > 1.15f)
+            pKazcranak->player_pitch = 1.15f;
+        //looking up
+        if (pKazcranak->player_pitch < -0.25f)
+            pKazcranak->player_pitch = -0.25f;
     }
     else if (m_GD->m_GS == GS_WIN)
     {
@@ -1054,8 +1064,6 @@ void Game::ReturnToDefault()
         pPlayer->respawn_pos = Vector3(0, -5, -10);
         pPlayer->is_respawning = true;
         pPlayer->has_sword = false;
-        // m_IntroGOs.push_back(pFloatingSword);
-        // m_TriggerObjects.push_back(pFloatingSword);
     }
 }
 
@@ -1304,7 +1312,7 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround15);
     m_Grounds.push_back(pGround15);
     m_GameObjects.push_back(pGround15->GroundCheck);
-        pMovePlat5 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(200, 150, -165), 0.0f, 0.0f, 0.0f, Vector3(3.5, 1, 3.5));
+        pMovePlat5 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(200, 150, -165), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
         pMovePlat5->Moving = MOVELEFTX;
     m_GameObjects.push_back(pMovePlat5);
     m_ColliderObjects.push_back(pMovePlat5);
@@ -1315,7 +1323,7 @@ void Game::CreateGround()
     m_ColliderObjects.push_back(pGround16);
     m_Grounds.push_back(pGround16);
     m_GameObjects.push_back(pGround16->GroundCheck);
-        pMovePlat6 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 150, -225), 0.0f, 0.0f, 0.0f, Vector3(3.5, 1, 3.5));
+        pMovePlat6 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 150, -225), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
         pMovePlat6->Moving = MOVEFORWARDZ;
     m_GameObjects.push_back(pMovePlat6);
     m_ColliderObjects.push_back(pMovePlat6);
@@ -1509,14 +1517,14 @@ void Game::CreateBossGround()
     //Core 3
         pMovePlatB3 = new MovingPlatform("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-185, 0, 185), 0.0f, 40.0f, 0.0f, Vector3(15, 1, 3));
         pMovePlatB3->Moving = ROTATEANTICLOCKWISE;
-        pMovePlatB3->rotate_speed = 1.75f;
+        pMovePlatB3->rotate_speed = 2.25f;
     m_BossGOs.push_back(pMovePlatB3);
     m_ColliderObjects.push_back(pMovePlatB3);
     m_Platforms.push_back(pMovePlatB3);
     m_BossGOs.push_back(pMovePlatB3->GroundCheck);
         pMovePlatB4 = new MovingPlatform("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-300, 0, 300), 0.0f, 40.0f, 0.0f, Vector3(15, 1, 3));
         pMovePlatB4->Moving = ROTATECLOCKWISE;
-        pMovePlatB4->rotate_speed = 1.75f;
+        pMovePlatB4->rotate_speed = 2.25f;
     m_BossGOs.push_back(pMovePlatB4);
     m_ColliderObjects.push_back(pMovePlatB4);
     m_Platforms.push_back(pMovePlatB4);

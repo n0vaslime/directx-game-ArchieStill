@@ -37,6 +37,7 @@ public:
 
 	CMOGO* pSwordTrigger;
 	CMOGO* pSwordObject;
+	Vector3 base_trigger_size;
 
 protected:
 

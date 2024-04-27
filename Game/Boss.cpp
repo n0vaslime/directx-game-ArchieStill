@@ -144,5 +144,5 @@ void Boss::BossAttacking()
     pBossProjectile->SetPos(this->GetPos() + forwardMove);
     pBossProjectile->SetPhysicsOn(true);
     pBossProjectile->SetRendered(true);
-    pBossProjectile->SetAcceleration(forwardMove * 1000);
+    pBossProjectile->SetAcceleration(forwardMove * 800);
 }

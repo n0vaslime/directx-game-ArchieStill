@@ -12,11 +12,12 @@ Player::Player(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF)
 	m_pos.z = -10.0f;
 	SetDrag(1.5f);
 	SetPhysicsOn(true);
-	SetScale(Vector3(1,2,1));
+	SetScale(Vector3(1, 2, 1));
 	base_game_respawn = Vector3(0, 5, 75);
 
+	base_trigger_size = Vector3(0.075f, -0.1f, 0.075f);
 	pSwordTrigger = new CMOGO("table", _pd3dDevice, _EF);
-	pSwordTrigger->SetScale(Vector3(0.075f, -0.075f, 0.075f));
+	pSwordTrigger->SetScale(base_trigger_size);
 	pSwordTrigger->SetRendered(false);
 
 	pSwordObject = new CMOGO("Sword", _pd3dDevice, _EF);
@@ -183,6 +184,16 @@ void Player::SwordTriggers(GameData* _GD)
 			pSwordTrigger->SetYaw(this->GetYaw());
 			m_vel *= 0;
 		}
+	}
+
+	if (_GD->m_GS == GS_INTRO || _GD->m_GS == GS_GAME)
+	{
+		pSwordTrigger->SetScale(base_trigger_size);
+	}
+	else if (_GD->m_GS == GS_BOSS)
+	{
+		//changes player sword size to deflect projectiles better
+		pSwordTrigger->SetScale(Vector3(base_trigger_size.x * 1.5f, base_trigger_size.y * 5, base_trigger_size.z * 1.5f));
 	}
 }
 

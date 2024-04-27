@@ -977,6 +977,7 @@ void Game::SignReading()
             sign6Image->SetRendered(false);
             sign7Image->SetRendered(false);
             sign8Image->SetRendered(false);
+            sign9Image->SetRendered(false);
         }
 
         //choosing image to render depending on the sign
@@ -996,6 +997,8 @@ void Game::SignReading()
             sign7Image->SetRendered(true);
         if (pSign8->is_reading)
             sign8Image->SetRendered(true);
+        if (pSign9->is_reading)
+            sign9Image->SetRendered(true);
 
         //removing read prompt while player is reading
         if (m_Signs[j]->is_reading)
@@ -1056,6 +1059,7 @@ void Game::ReturnToDefault()
         m_GameObjects2D.push_back(sign6Image);
         m_GameObjects2D.push_back(sign7Image);
         m_GameObjects2D.push_back(sign8Image);
+        m_GameObjects2D.push_back(sign9Image);
         credits_scroll = false;
         credits->SetPos(Vector2(400, 2700));
         game_music->Stop();
@@ -1903,6 +1907,11 @@ void Game::CreateSigns()
     m_Signs.push_back(pSign8);
     m_ColliderObjects.push_back(pSign8);
     m_GameObjects.push_back(pSign8->SignTrigger);
+        pSign9 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-290, 412.5f, -155), 179);
+    m_GameObjects.push_back(pSign9);
+    m_Signs.push_back(pSign9);
+    m_ColliderObjects.push_back(pSign9);
+    m_GameObjects.push_back(pSign9->SignTrigger);
 
         sign1Image = new ImageGO2D("IntroLoreSign", m_d3dDevice.Get());
     sign1Image->SetPos(Vector2(400, 300));
@@ -1936,6 +1945,10 @@ void Game::CreateSigns()
     sign8Image->SetPos(Vector2(400, 300));
     sign8Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign8Image);
+        sign9Image = new ImageGO2D("BossHintSign", m_d3dDevice.Get());
+    sign9Image->SetPos(Vector2(400, 300));
+    sign9Image->SetScale(Vector2(0.75f, 0.75f));
+    m_GameObjects2D.push_back(sign9Image);
 
     for (int i = 0; i < m_Signs.size(); i++)
         m_GameObjects2D.push_back(m_Signs[i]->ReadText);

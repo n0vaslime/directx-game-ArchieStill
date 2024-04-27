@@ -195,6 +195,9 @@
   <ItemGroup>
     <ImageContentTask Include="..\RawAssets\Images\MovePlatHint.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="..\RawAssets\Images\BossHintSign.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\ImageContentTask.targets" />

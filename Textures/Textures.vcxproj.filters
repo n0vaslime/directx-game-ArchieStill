@@ -21,5 +21,6 @@
     <ImageContentTask Include="..\RawAssets\Images\GameOverScreen.png" />
     <ImageContentTask Include="..\RawAssets\Images\CheckpointSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\MovePlatHint.png" />
+    <ImageContentTask Include="..\RawAssets\Images\BossHintSign.png" />
   </ItemGroup>
 </Project>

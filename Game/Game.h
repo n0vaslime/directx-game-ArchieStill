@@ -238,7 +238,6 @@ private:
     MovingPlatform* pMovePlat7;
     MovingPlatform* pMovePlat8;
     MovingPlatform* pMovePlat9;
-
     MovingPlatform* pMovePlatB1;
     MovingPlatform* pMovePlatB2;
     MovingPlatform* pMovePlatB3;

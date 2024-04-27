@@ -111,9 +111,9 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects2D.push_back(skip_notif);
 
     //create a base camera
-    // m_cam = new Camera(0.25f * XM_PI, AR, 1.0f, 10000.0f, Vector3::UnitY, Vector3::Zero);
-    // m_cam->SetPos(Vector3(0.0f, 200.0f, 200.0f));
-    // m_GameObjects.push_back(m_cam);
+    //m_cam = new Camera(0.25f * XM_PI, AR, 1.0f, 10000.0f, Vector3::UnitY, Vector3::Zero);
+    //m_cam->SetPos(Vector3(0.0f, 200.0f, 200.0f));
+    //m_GameObjects.push_back(m_cam);
     
     //add Player - player object and adding swords to player class
     pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
@@ -198,8 +198,6 @@ void Game::Update(DX::StepTimer const& _timer)
 {
     if (m_GD->m_dt > 1 / 30)
         m_GD->m_dt = 1 / 30;
-    
-    std::cout << pPlayer->GetPitch() << std::endl;
 
     float elapsedTime = float(_timer.GetElapsedSeconds());
     m_GD->m_dt = elapsedTime;
@@ -278,10 +276,10 @@ void Game::Update(DX::StepTimer const& _timer)
         //determines where Kazcranak fires projectiles
         pKazcranak->player_adjacent = pPlayer->GetPos().x / 2;
         pKazcranak->player_opposite = pPlayer->GetPos().z / 2;
-        pKazcranak->player_pitch = pPlayer->GetPitch() + 0.3f;
+        pKazcranak->player_pitch = pPlayer->GetPitch() + 0.15f;
         //looking down
-        if (pKazcranak->player_pitch > 1.15f)
-            pKazcranak->player_pitch = 1.15f;
+        if (pKazcranak->player_pitch > 0.9f)
+            pKazcranak->player_pitch = 0.9f;
         //looking up
         if (pKazcranak->player_pitch < -0.25f)
             pKazcranak->player_pitch = -0.25f;
@@ -1065,7 +1063,7 @@ void Game::ReturnToDefault()
         game_music->Stop();
         boss_music->Stop();
         ending_music->Stop();
-        pPlayer->respawn_pos = Vector3(0, -5, -10);
+        pPlayer->respawn_pos = Vector3(0, -7.5f, -10);
         pPlayer->is_respawning = true;
         pPlayer->has_sword = false;
     }
@@ -1201,6 +1199,7 @@ void Game::CreateGround()
     Terrain* pCave = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 200), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 7.5f, 25));
     m_GameObjects.push_back(pCave);
     m_ColliderObjects.push_back(pCave);
+    m_GameObjects.push_back(pCave->GroundCheck);
 
     // LAYER 1 - BASICS
         Terrain* pGround1 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-10,0), 0.0f, 0.0f, 0.0f, Vector3(10, 1, 25));
@@ -1419,6 +1418,7 @@ void Game::CreateIntroGround()
     m_IntroGOs.push_back(pGroundIntro);
     m_ColliderObjects.push_back(pGroundIntro);
     m_Grounds.push_back(pGroundIntro);
+    // pGroundIntro->GroundCheck->SetPos(Vector3(pGroundIntro->GetPos().x, -12.5f, pGroundIntro->GetPos().z));
     m_IntroGOs.push_back(pGroundIntro->GroundCheck);
         Terrain* pIntroLWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 5, 17.5f));
     m_IntroGOs.push_back(pIntroLWall);
@@ -1552,10 +1552,10 @@ void Game::CreateAudio()
     ambience->SetVolume(0.1f);
     m_Music.push_back(ambience);
         intro_music = new Loop(m_audioEngine.get(), "BondsOfSeaAndFire");
-    intro_music->SetVolume(0.003f);
+    intro_music->SetVolume(0.3f);
     m_Music.push_back(intro_music);
         game_music = new Loop(m_audioEngine.get(), "GaurPlains");
-    game_music->SetVolume(0.003f);
+    game_music->SetVolume(0.3f);
     m_Music.push_back(game_music);
         boss_intro = new Loop(m_audioEngine.get(), "Courtesy");
     boss_intro->SetVolume(0.3f);

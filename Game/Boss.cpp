@@ -47,9 +47,9 @@ void Boss::Tick(GameData* _GD)
                     }
                 }
 
-                //attacks every 3 seconds
+                //attacks every 4.5 seconds
                 projectile_timer += _GD->m_dt;
-                if (projectile_timer >= 3)
+                if (projectile_timer >= 4.5f)
                 {
                     BossAttacking();
                     projectile_timer = 0;
@@ -144,5 +144,5 @@ void Boss::BossAttacking()
     pBossProjectile->SetPos(this->GetPos() + forwardMove);
     pBossProjectile->SetPhysicsOn(true);
     pBossProjectile->SetRendered(true);
-    pBossProjectile->SetAcceleration(forwardMove * 800);
+    pBossProjectile->SetAcceleration(forwardMove * 600);
 }

@@ -7,7 +7,6 @@
     <ImageContentTask Include="..\RawAssets\Images\pain.jpg" />
     <ImageContentTask Include="..\RawAssets\Images\PlaceholderSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\UIBackground.png" />
-    <ImageContentTask Include="..\RawAssets\Images\TreeInfoSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\Coin.png" />
     <ImageContentTask Include="..\RawAssets\Images\Heart.png" />
     <ImageContentTask Include="..\RawAssets\Images\Spotted.png" />
@@ -22,5 +21,6 @@
     <ImageContentTask Include="..\RawAssets\Images\CheckpointSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\MovePlatHint.png" />
     <ImageContentTask Include="..\RawAssets\Images\BossHintSign.png" />
+    <ImageContentTask Include="..\RawAssets\Images\TreeInfoSign.png" />
   </ItemGroup>
 </Project>

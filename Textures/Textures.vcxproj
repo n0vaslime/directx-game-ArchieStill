@@ -160,9 +160,6 @@
     <ImageContentTask Include="..\RawAssets\Images\UIBackground.png" />
   </ItemGroup>
   <ItemGroup>
-    <ImageContentTask Include="..\RawAssets\Images\TreeInfoSign.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ImageContentTask Include="..\RawAssets\Images\Coin.png" />
     <ImageContentTask Include="..\RawAssets\Images\Heart.png" />
   </ItemGroup>
@@ -197,6 +194,9 @@
   </ItemGroup>
   <ItemGroup>
     <ImageContentTask Include="..\RawAssets\Images\BossHintSign.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="..\RawAssets\Images\TreeInfoSign.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1454,7 +1454,6 @@ void Game::CreateIntroGround()
     m_IntroGOs.push_back(pGroundIntro);
     m_ColliderObjects.push_back(pGroundIntro);
     m_Grounds.push_back(pGroundIntro);
-    // pGroundIntro->GroundCheck->SetPos(Vector3(pGroundIntro->GetPos().x, -12.5f, pGroundIntro->GetPos().z));
     m_IntroGOs.push_back(pGroundIntro->GroundCheck);
         Terrain* pIntroLWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 5, 17.5f));
     m_IntroGOs.push_back(pIntroLWall);

@@ -114,7 +114,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     string line;
     int lore_offset = 10;
     m_StringLines.push_back(line);
-    ifstream secret_lore("../RawAssets/TXT/TheStoryOfLordKazcranak.txt");
+    ifstream secret_lore("../RawAssets/TheStoryOfLordKazcranak.txt");
     if (secret_lore.is_open())
     {
         while (getline(secret_lore, line))
@@ -205,7 +205,6 @@ void Game::Initialize(HWND _window, int _width, int _height)
     lose_screen->SetPos(Vector2(400, 300));
     lose_screen->SetScale(0.35f);
 
-    //add sounds
     CreateAudio();
 
     DisplayMenu();

@@ -76,20 +76,23 @@ void Boss::Tick(GameData* _GD)
 
 void Boss::Draw(DrawData* _DD)
 {
-    if (this->isRendered())
+    if (isRendered())
         CMOGO::Draw(_DD);
 }
 
 void Boss::BossFacing()
 {
+    //get player's current position to set yaw
     float angleLookAt = atan2(player_adjacent, player_opposite);
-    this->SetYaw(angleLookAt + 3.1415f);
-    this->SetPitch(-player_pitch * 1.1f);
+    SetYaw(angleLookAt + 3.1415f);
+    //get player's current pitch + alter it a bit to set pitch
+    SetPitch(-player_pitch * 1.1f);
 
 }
 
 void Boss::BossIntroduction(GameData* _GD) 
 {
+    //slowly descending down to the ground
     if (m_pos.y > 100)
         m_pos.y -= _GD->m_dt * 5;
     else
@@ -104,6 +107,7 @@ void Boss::BossIntroduction(GameData* _GD)
 }
 void Boss::BossEnding(GameData* _GD)
 {
+    //lying down in agony and slowly rising into the sky
     m_pitch = -5;
     m_pos.y += _GD->m_dt * 2.5f;
     

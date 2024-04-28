@@ -155,10 +155,10 @@ private:
 	//See here: https://github.com/Microsoft/DirectXTK/wiki/Creating-and-playing-sounds Using wave banks Section
     std::unique_ptr<DirectX::AudioEngine> m_audioEngine;
     std::vector<Sound*>m_Sounds;
-    std::vector<Loop*>m_Music;
 
+    //The Super Important Stuff!!!!!
     Player* pPlayer;
-    Coin* pFloatingSword;
+    Coin* pGoldedge;
     Boss* pKazcranak;
     CMOGO* pCore1;
     CMOGO* pCore2;
@@ -166,18 +166,23 @@ private:
     CMOGO* treeCollision;
     CMOGO* secretTrigger;
 
+    //Assorted triggers & cave exterior
     Terrain* pIntroExit;
     Terrain* pDeathTrigger;
     CMOGO* pLaunchpadTrigger;
     Terrain* pBossTrigger;
 
+    //Checkpoint notifications
     TextGO2D* checkpoint_notif;
     float checkpoint_life = 0.0f;
     bool notif_active = false;
     TextGO2D* skip_notif;
+
+    //Text for storing .txt text
     TextGO2D* imported_lore;
     ImageGO2D* secret_bg;
 
+    //Signs & sign images
     Sign* pSign1;
     Sign* pSign2;
     Sign* pSign3;
@@ -197,12 +202,13 @@ private:
     ImageGO2D* sign8Image;
     ImageGO2D* sign9Image;
     
+    //Score & lives
     int score = 0;
     TextGO2D* scoreText;
     int lives = 9;
     TextGO2D* livesText;
-    ImageGO2D* spottedImage;
 
+    //Assorted 2D images for states
     ImageGO2D* title_screen;
     ImageGO2D* credits;
     ImageGO2D* lose_screen;
@@ -210,6 +216,7 @@ private:
     bool credits_scroll = false;
     bool reset = false;
 
+    //Music & sound effects
     Loop* ambience;
     Loop* intro_music;
     Loop* game_music;
@@ -222,6 +229,7 @@ private:
     Sound* jump_sfx;
     Sound* sword_sfx;
 
+    //Boss sounds
     Loop* KZK_intro;
     Sound* combat1;
     Sound* combat2;
@@ -234,6 +242,7 @@ private:
     Sound* hurt3;
     Loop* KZK_final;
 
+    //Moving platforms
     MovingPlatform* pMovePlat1;
     MovingPlatform* pMovePlat2;
     MovingPlatform* pMovePlat3;

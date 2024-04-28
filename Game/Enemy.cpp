@@ -45,6 +45,7 @@ void Enemy::EnemyAI(GameData* _GD)
     {
         if (player_spotted)
         {
+            //sets forward vector to face the player and moves towards that
             SetYaw(player_facing);
             Vector3 forwardMove = 0.2f * Vector3::Forward;
             Matrix rotMove = Matrix::CreateRotationY(GetYaw());

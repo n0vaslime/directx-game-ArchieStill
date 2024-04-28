@@ -15,11 +15,13 @@ Player::Player(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF)
 	SetScale(Vector3(1, 2, 1));
 	base_game_respawn = Vector3(0, 5, 75);
 
+	//Set up sword trigger
 	base_trigger_size = Vector3(0.075f, -0.1f, 0.075f);
 	pSwordTrigger = new CMOGO("table", _pd3dDevice, _EF);
 	pSwordTrigger->SetScale(base_trigger_size);
 	pSwordTrigger->SetRendered(false);
 
+	//Set up sword object
 	pSwordObject = new CMOGO("Sword", _pd3dDevice, _EF);
 	pSwordObject->SetScale(Vector3(0.15f, 0.2f, 0.2f));
 }
@@ -50,7 +52,7 @@ void Player::Tick(GameData* _GD)
 			}
 		}
 
-		//if the player dies, they respawn at start
+		//if the player dies, they respawn at the start/their last checkpoint
 		if (is_respawning)
 		{
 			this->SetPos(Vector3(respawn_pos.x, respawn_pos.y + 5, respawn_pos.z));
@@ -68,13 +70,14 @@ void Player::Tick(GameData* _GD)
 
 void Player::Draw(DrawData* _DD)
 {
+	//don't draw the player
 	if (false)
 		CMOGO::Draw(_DD);
 }
 
 void Player::PlayerMovement(GameData* _GD)
 {
-	//MOVEMENT CONTROL HERE
+	///MOVEMENT CONTROL HERE
 	Vector3 forwardMove = 40.0f * Vector3::Forward;
 	Vector3 leftMove = 40.0f * Vector3::Left;
 	Matrix rotMove = Matrix::CreateRotationY(m_yaw);
@@ -128,27 +131,9 @@ void Player::PlayerMovement(GameData* _GD)
 		play_jump_sfx = true;
 	}
 	
-	//TESTING
-	if (_GD->m_KBS.Tab && is_grounded && !is_attacking)
-	{
-		m_vel.y = 1250;
-		is_grounded = false;
-	}
-	if (_GD->m_KBS.NumPad5 && is_grounded && !is_attacking)
-	{
-		m_vel.y = 2000;
-		is_grounded = false;
-	}
-
 	//Checkpoint reset
 	if (_GD->m_KBS.C && is_grounded && !is_attacking && _GD->m_GS == GS_GAME)
-	{
 		is_respawning = true;
-	}
-
-	//set boss' position to match player
-	Vector3 bossConstant = Vector3(10, 100, 10);
-	boss_pos_set = (forwardMove + bossConstant);
 
 	//limit motion of the player
 	float length = m_pos.Length();
@@ -192,7 +177,7 @@ void Player::SwordTriggers(GameData* _GD)
 	}
 	else if (_GD->m_GS == GS_BOSS)
 	{
-		//changes player sword size to deflect projectiles better
+		//changes player sword size in the boss fight to deflect projectiles better!
 		pSwordTrigger->SetScale(Vector3(base_trigger_size.x * 1.5f, base_trigger_size.y * 5, base_trigger_size.z * 1.5f));
 	}
 }
@@ -208,6 +193,7 @@ void Player::SwordObjects()
 	pSwordObject->SetYaw(this->GetYaw());
 	pSwordObject->SetPitch(0);
 
+	//sword swinging animation
 	if (is_attacking)
 	{
 		pSwordObject->SetPitch(pSwordObject->GetPitch() - XM_PI / 4);

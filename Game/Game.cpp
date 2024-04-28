@@ -45,13 +45,6 @@ void Game::Initialize(HWND _window, int _width, int _height)
 
     CreateResources();
 
-    // TODO: Change the timer settings if you want something other than the default variable timestep mode.
-    // e.g. for 60 FPS fixed timestep update logic, call:
-    /*
-    m_timer.SetFixedTimeStep(true);
-    m_timer.SetTargetElapsedSeconds(1.0 / 60);
-    */
-
     //seed the random number generator
     srand((UINT)time(NULL));
 
@@ -98,6 +91,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     CreateIntroGround();
     CreateGround();
 
+    //creating basic 2D text notifications
         checkpoint_notif = new TextGO2D("Checkpoint!");
     checkpoint_notif->SetPos(Vector2(30, 10));
     checkpoint_notif->SetColour(Color((float*)&Colors::Blue));
@@ -111,12 +105,12 @@ void Game::Initialize(HWND _window, int _width, int _height)
     skip_notif->SetRendered(false);
     m_GameObjects2D.push_back(skip_notif);
 
-
-    //importing txt file
+    //Secret Lore - creating background
     secret_bg = new ImageGO2D("UIBackground", m_d3dDevice.Get());
     secret_bg->SetScale(Vector2(2, 4));
     m_GameObjects2D.push_back(secret_bg);
     secret_bg->SetRendered(false);
+    //Secret Lore - importing .txt
     string line;
     int lore_offset = 10;
     m_StringLines.push_back(line);
@@ -125,6 +119,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     {
         while (getline(secret_lore, line))
         {
+            //Secret Lore - setting .txt lines to TextGO2D on different lines
             for (int i = 0; i < m_StringLines.size(); i++)
             {
                 imported_lore = new TextGO2D(line + "\n");
@@ -136,17 +131,12 @@ void Game::Initialize(HWND _window, int _width, int _height)
                 m_GameObjects2D.push_back(imported_lore);
                 m_TextLines.push_back(imported_lore);
             }
+            //Secret Lore - pushing back the whole text as one object to set as rendered
             for (int j = 0; j < m_TextLines.size(); j++)
                 m_TextLines[j]->SetRendered(false);
         }
         secret_lore.close();
     }
-
-
-    //create a base camera
-    //m_cam = new Camera(0.25f * XM_PI, AR, 1.0f, 10000.0f, Vector3::UnitY, Vector3::Zero);
-    //m_cam->SetPos(Vector3(0.0f, 200.0f, 200.0f));
-    //m_GameObjects.push_back(m_cam);
     
     //add Player - player object and adding swords to player class
     pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
@@ -256,11 +246,6 @@ void Game::Update(DX::StepTimer const& _timer)
         {
             (*it)->Tick(m_GD);
         }
-        for (std::vector<Loop*>::iterator it = m_Music.begin(); it != m_Music.end(); it++)
-        {
-            if((*it)->GetPlaying())
-                (*it)->Tick(m_GD);
-        }
     }
 
     ReadInput();
@@ -326,6 +311,7 @@ void Game::Update(DX::StepTimer const& _timer)
     }
     else if (m_GD->m_GS == GS_WIN)
     {
+        //credits are just a super long image slowly moving up!
         if (credits_scroll)
         {
             if (scroll >= -2250)
@@ -357,6 +343,7 @@ void Game::Update(DX::StepTimer const& _timer)
     for (int i = 0; i < m_Signs.size(); i++)
         m_Signs[i]->SignTrigger->SetRendered(false);
 
+    //boss fight updating
     if (!pKazcranak->is_talking && m_GD->m_GS == GS_BOSS)
     {
         skip_notif->SetRendered(false);
@@ -365,7 +352,7 @@ void Game::Update(DX::StepTimer const& _timer)
         if (!pKazcranak->is_dying)
             boss_music->Play();
 
-        // plays random voice lines
+        //plays random voice lines
         if (pKazcranak->play_combat_sfx && !pKazcranak->play_hurt_sfx)
         {
             int combat_sfx = (rand() % 6) + 1;
@@ -395,6 +382,7 @@ void Game::Update(DX::StepTimer const& _timer)
             pKazcranak->play_combat_sfx = false;
         }
 
+        //Big K flying into the air after he's defeated
         if (pKazcranak->dying_words)
         {
             boss_music->Stop();
@@ -402,7 +390,7 @@ void Game::Update(DX::StepTimer const& _timer)
             ending_music->Play();
             pKazcranak->dying_words = false;
         }
-
+        //once his monologue ends, roll credits
         if(pKazcranak->dying_time >= 42.2f)
         {
             KZK_final->Stop();
@@ -777,6 +765,7 @@ void Game::ReadInput()
         pPlayer->play_sword_sfx = false;
     }
 
+    //state transitions from pressing Enter
     switch (m_GD->m_GS)
     {
         case(GS_MENU):
@@ -831,13 +820,12 @@ void Game::CheckCollision()
 void Game::CheckTriggers()
 {
     for (int i = 0; i < m_Player.size(); i++) for (int j = 0; j < m_TriggerObjects.size(); j++)
-       // for (int secret = 0; secret < m_TextLines.size(); secret++)
     {
         if (m_Player[i]->Intersects(*m_TriggerObjects[j]) && m_TriggerObjects[j]->isRendered())
         {
-            if (m_TriggerObjects[j] == pFloatingSword)
+            if (m_TriggerObjects[j] == pGoldedge)
             {
-                pFloatingSword->SetRendered(false);
+                pGoldedge->SetRendered(false);
                 pPlayer->has_sword = true;
             }
             if (m_TriggerObjects[j] == pIntroExit)
@@ -1246,10 +1234,9 @@ void Game::CreateGround()
     m_TriggerObjects.push_back(pBossTrigger);
 
     //Cave exterior
-    Terrain* pCave = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 200), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 7.5f, 25));
+        Terrain* pCave = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 200), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 7.5f, 25));
     m_GameObjects.push_back(pCave);
     m_ColliderObjects.push_back(pCave);
-    m_GameObjects.push_back(pCave->GroundCheck);
 
     // LAYER 1 - BASICS
         Terrain* pGround1 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-10,0), 0.0f, 0.0f, 0.0f, Vector3(10, 1, 25));
@@ -1494,11 +1481,11 @@ void Game::CreateIntroGround()
     m_IntroGOs.push_back(pIntroExit);
     m_TriggerObjects.push_back(pIntroExit);
 
-        pFloatingSword = new Coin("Sword", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -75));
-    pFloatingSword->SetYaw(90);
-    pFloatingSword->SetScale(Vector3(0.25f, 0.3f, 0.25f));
-    m_IntroGOs.push_back(pFloatingSword);
-    m_TriggerObjects.push_back(pFloatingSword);
+        pGoldedge = new Coin("Sword", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -75));
+    pGoldedge->SetYaw(90);
+    pGoldedge->SetScale(Vector3(0.25f, 0.3f, 0.25f));
+    m_IntroGOs.push_back(pGoldedge);
+    m_TriggerObjects.push_back(pGoldedge);
 }
 void Game::CreateBossGround()
 {
@@ -1599,23 +1586,11 @@ void Game::CreateBossGround()
 void Game::CreateAudio()
 {
         ambience = new Loop(m_audioEngine.get(), "NightAmbienceSimple_02");
-    ambience->SetVolume(0.1f);
-    m_Music.push_back(ambience);
         intro_music = new Loop(m_audioEngine.get(), "BondsOfSeaAndFire");
-    intro_music->SetVolume(0.3f);
-    m_Music.push_back(intro_music);
         game_music = new Loop(m_audioEngine.get(), "GaurPlains");
-    game_music->SetVolume(0.3f);
-    m_Music.push_back(game_music);
         boss_intro = new Loop(m_audioEngine.get(), "Courtesy");
-    boss_intro->SetVolume(0.3f);
-    m_Music.push_back(boss_intro);
         boss_music = new Loop(m_audioEngine.get(), "Awakening");
-    boss_music->SetVolume(0.5f);
-    m_Music.push_back(boss_music);
         ending_music = new Loop(m_audioEngine.get(), "SmallTwoOfPieces");
-    ending_music->SetVolume(0.3f);
-    m_Music.push_back(ending_music);
 
         hit_sfx = new Sound(m_audioEngine.get(), "Explo1");
     hit_sfx->SetVolume(0.3f);
@@ -1636,8 +1611,6 @@ void Game::CreateAudio()
     m_Sounds.push_back(sword_sfx);
 
         KZK_intro = new Loop(m_audioEngine.get(), "KazcranakIntro");
-    KZK_intro->SetVolume(0.8f);
-    m_Music.push_back(KZK_intro);
         combat1 = new Sound(m_audioEngine.get(), "Combat1");
     combat1->SetVolume(0.4f);
     m_Sounds.push_back(combat1);
@@ -1666,8 +1639,6 @@ void Game::CreateAudio()
     hurt3->SetVolume(0.4f);
     m_Sounds.push_back(hurt3);
         KZK_final = new Loop(m_audioEngine.get(), "KazcranakFinal");
-    KZK_final->SetVolume(0.8f);
-    m_Music.push_back(KZK_final);
 }
 void Game::CreateUI()
 {
@@ -1702,6 +1673,7 @@ void Game::CreateUI()
 
 void Game::CreateCoins()
 {
+    // LAYER 1
         Coin* pCoin1 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 50));
     m_GameObjects.push_back(pCoin1);
     m_Coins.push_back(pCoin1);
@@ -1739,6 +1711,7 @@ void Game::CreateCoins()
     m_GameObjects.push_back(pCoin12);
     m_Coins.push_back(pCoin12);
 
+    // LAYER 2
         Coin* pCoin13 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 125, -60));
     m_GameObjects.push_back(pCoin13);
     m_Coins.push_back(pCoin13);
@@ -1764,6 +1737,7 @@ void Game::CreateCoins()
     m_GameObjects.push_back(pCoin20);
     m_Coins.push_back(pCoin20);
 
+    // LAYER 3
         Coin* pCoin21 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(300, 155, -105));
     m_GameObjects.push_back(pCoin21);
     m_Coins.push_back(pCoin21);
@@ -1779,7 +1753,8 @@ void Game::CreateCoins()
         Coin* pCoin25 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 162.5f, -165));
     m_GameObjects.push_back(pCoin25);
     m_Coins.push_back(pCoin25);
-
+    
+    // LAYER 4
         Coin* pCoin26 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-90, 165, -400));
     m_GameObjects.push_back(pCoin26);
     m_Coins.push_back(pCoin26);
@@ -1851,6 +1826,7 @@ void Game::CreateEnemies()
     m_GameObjects.push_back(pEnemy9->EnemySensor);
     m_EnemySensors.push_back(pEnemy9->EnemySensor);
 
+    // LAYER 2
         Enemy* pEnemy10 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-225, 105, 25));
     m_GameObjects.push_back(pEnemy10);
     m_Enemies.push_back(pEnemy10);
@@ -1884,6 +1860,7 @@ void Game::CreateEnemies()
     m_GameObjects.push_back(pStrongE3->EnemySensor);
     m_EnemySensors.push_back(pStrongE3->EnemySensor);
 
+    // LAYER 4
         Enemy* pStrongE4 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-125, 165, -365));
         pStrongE4->speed = pStrongE4->speed * 2;
     m_GameObjects.push_back(pStrongE4);

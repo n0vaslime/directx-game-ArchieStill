@@ -177,7 +177,6 @@ private:
     TextGO2D* skip_notif;
     TextGO2D* imported_lore;
     ImageGO2D* secret_bg;
-    bool secret_found = false;
 
     Sign* pSign1;
     Sign* pSign2;

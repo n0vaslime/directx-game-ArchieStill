@@ -30,11 +30,6 @@ public:
 	void SetPan(float _pan) { m_pan = _pan; }
 	float GetPan() { return m_pan; }
 
-	bool GetPlaying() { return is_playing; }
-	void TogglePlaying() { is_playing = !is_playing; }
-	void SetPlaying(bool _playing) { is_playing = _playing; }
-	bool is_playing = false;
-
 protected:
 	std::unique_ptr<DirectX::SoundEffect> m_sfx;
 

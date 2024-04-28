@@ -8,8 +8,8 @@ Loop::Loop(AudioEngine* _audEngine, string _filename) :Sound(_audEngine, _filena
 	{
 		m_loop = m_sfx->CreateInstance();
 	}
+	m_loop->SetVolume(0.25f);
 }
-
 
 Loop::~Loop()
 {
@@ -19,15 +19,15 @@ Loop::~Loop()
 
 void Loop::Play()
 {
-	//if (m_playing)
-	//{
-	//	m_loop->Stop(true);
-	//}
-	//else
-	//{
-	//	m_loop->Play(true);
-	//}
-	//m_playing = !m_playing;
+	// if (m_playing)
+	// {
+	// 	m_loop->Stop(true);
+	// }
+	// else
+	// {
+	// 	m_loop->Play(true);
+	// }
+	// m_playing = !m_playing;
 
 	m_loop->Play(true);
 }
@@ -36,7 +36,6 @@ void Loop::Stop()
 {
 	m_loop->Stop(true);
 }
-
 
 void Loop::Tick(GameData* _GD)
 {

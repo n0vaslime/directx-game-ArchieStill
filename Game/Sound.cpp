@@ -12,7 +12,6 @@ Sound::Sound(AudioEngine* _audEngine, string _filename)
 
 }
 
-
 Sound::~Sound()
 {
 	m_sfx.reset();
@@ -23,9 +22,5 @@ void Sound::Play()
 	if (m_sfx)
 	{
 		m_sfx->Play(m_volume, m_pitch, m_pan);
-		// if (is_playing)
-		// 	m_sfx->Play(m_volume, m_pitch, m_pan);
-		// else
-		// 	std::cout << "NOT";
 	}
 }

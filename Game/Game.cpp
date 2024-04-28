@@ -258,7 +258,7 @@ void Game::Update(DX::StepTimer const& _timer)
         }
         for (std::vector<Loop*>::iterator it = m_Music.begin(); it != m_Music.end(); it++)
         {
-            if ((*it)->GetPlaying())
+            if((*it)->GetPlaying())
                 (*it)->Tick(m_GD);
         }
     }
@@ -486,7 +486,7 @@ void Game::Render()
         }
     }
 
-    // Draw sprite batch stuff 
+    // Draw sprite batch stuff
     m_DD2D->m_Sprites->Begin(SpriteSortMode_Deferred, m_states->NonPremultiplied());
     for (std::vector<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
     {
@@ -777,22 +777,6 @@ void Game::ReadInput()
         pPlayer->play_sword_sfx = false;
     }
 
-    if (m_GD->m_KBS.P)
-        LoseLife();
-    if (m_GD->m_KBS.O)
-        pKazcranak->boss_health = 0;
-    if (m_GD->m_KBS.NumPad0)
-        ReturnToDefault();
-    for (int j = 0; j < m_TextLines.size(); j++)
-    {
-        if (m_GD->m_KBS.L)
-            m_TextLines[j]->SetRendered(true);
-        if (m_GD->m_KBS.M)
-            m_TextLines[j]->SetRendered(false);
-    }
-    if (m_GD->m_KBS.V)
-        CollectCoin();
-
     switch (m_GD->m_GS)
     {
         case(GS_MENU):
@@ -847,7 +831,7 @@ void Game::CheckCollision()
 void Game::CheckTriggers()
 {
     for (int i = 0; i < m_Player.size(); i++) for (int j = 0; j < m_TriggerObjects.size(); j++)
-        for (int secret = 0; secret < m_TextLines.size(); secret++)
+       // for (int secret = 0; secret < m_TextLines.size(); secret++)
     {
         if (m_Player[i]->Intersects(*m_TriggerObjects[j]) && m_TriggerObjects[j]->isRendered())
         {
@@ -879,16 +863,18 @@ void Game::CheckTriggers()
                 m_TriggerObjects[j]->SetRendered(false);
                 LoseLife();
             }
-            if (m_TriggerObjects[j] == secretTrigger && score >= 30)
+            if (m_TriggerObjects[j] == secretTrigger && score == 30)
             {
                 secret_bg->SetRendered(true);
-                m_TextLines[secret]->SetRendered(true);
+                for (int secret = 0; secret < m_TextLines.size(); secret++)
+                    m_TextLines[secret]->SetRendered(true);
             }
         }
         else
         {
             secret_bg->SetRendered(false);
-            m_TextLines[secret]->SetRendered(false);
+            for (int secret = 0; secret < m_TextLines.size(); secret++)
+                m_TextLines[secret]->SetRendered(false);
         }
     }
 }
@@ -1119,6 +1105,9 @@ void Game::ReturnToDefault()
         m_GameObjects2D.push_back(sign7Image);
         m_GameObjects2D.push_back(sign8Image);
         m_GameObjects2D.push_back(sign9Image);
+        m_GameObjects2D.push_back(secret_bg);
+        for(int i = 0; i < m_TextLines.size(); i++)
+            m_GameObjects2D.push_back(m_TextLines[i]);
         credits_scroll = false;
         credits->SetPos(Vector2(400, 2700));
         game_music->Stop();
@@ -1247,7 +1236,7 @@ void Game::DisplayLoss()
 void Game::CreateGround()
 {
     //Death trigger
-    pDeathTrigger = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -50, 0), 0.0f, 0.0f, 0.0f, Vector3(1000, 1, 1000));
+    pDeathTrigger = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -50, 0), 0.0f, 0.0f, 0.0f, Vector3(1000, 0.01f, 1000));
     m_GameObjects.push_back(pDeathTrigger);
     m_BossGOs.push_back(pDeathTrigger);
     m_TriggerObjects.push_back(pDeathTrigger);
@@ -1629,7 +1618,7 @@ void Game::CreateAudio()
     m_Music.push_back(ending_music);
 
         hit_sfx = new Sound(m_audioEngine.get(), "Explo1");
-    hit_sfx->SetVolume(0.5f);
+    hit_sfx->SetVolume(0.3f);
     hit_sfx->SetPitch(0.9f);
     m_Sounds.push_back(hit_sfx);
         coin_sfx = new Sound(m_audioEngine.get(), "Coin");
@@ -1650,34 +1639,34 @@ void Game::CreateAudio()
     KZK_intro->SetVolume(0.8f);
     m_Music.push_back(KZK_intro);
         combat1 = new Sound(m_audioEngine.get(), "Combat1");
-    combat1->SetVolume(0.75f);
+    combat1->SetVolume(0.4f);
     m_Sounds.push_back(combat1);
         combat2 = new Sound(m_audioEngine.get(), "Combat2");
-    combat2->SetVolume(0.75f);
+    combat2->SetVolume(0.4f);
     m_Sounds.push_back(combat2);
         combat3 = new Sound(m_audioEngine.get(), "Combat3");
-    combat3->SetVolume(0.75f);
+    combat3->SetVolume(0.4f);
     m_Sounds.push_back(combat3);
         combat4 = new Sound(m_audioEngine.get(), "Combat4");
-    combat4->SetVolume(0.75f);
+    combat4->SetVolume(0.4f);
     m_Sounds.push_back(combat4);
         combat5 = new Sound(m_audioEngine.get(), "Combat5");
-    combat5->SetVolume(0.75f);
+    combat5->SetVolume(0.4f);
     m_Sounds.push_back(combat5);
         combat6 = new Sound(m_audioEngine.get(), "Combat6");
-    combat6->SetVolume(0.75f);
+    combat6->SetVolume(0.4f);
     m_Sounds.push_back(combat6);
         hurt1 = new Sound(m_audioEngine.get(), "Hurt1");
-    hurt1->SetVolume(0.75f);
+    hurt1->SetVolume(0.4f);
     m_Sounds.push_back(hurt1);
         hurt2 = new Sound(m_audioEngine.get(), "Hurt2");
-    hurt2->SetVolume(0.75f);
+    hurt2->SetVolume(0.4);
     m_Sounds.push_back(hurt2);
         hurt3 = new Sound(m_audioEngine.get(), "Hurt3");
-    hurt3->SetVolume(0.75f);
+    hurt3->SetVolume(0.4f);
     m_Sounds.push_back(hurt3);
-    KZK_final = new Loop(m_audioEngine.get(), "KazcranakFinal");
-    KZK_final->SetVolume(0.75f);
+        KZK_final = new Loop(m_audioEngine.get(), "KazcranakFinal");
+    KZK_final->SetVolume(0.8f);
     m_Music.push_back(KZK_final);
 }
 void Game::CreateUI()

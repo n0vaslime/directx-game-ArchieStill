@@ -111,6 +111,38 @@ void Game::Initialize(HWND _window, int _width, int _height)
     skip_notif->SetRendered(false);
     m_GameObjects2D.push_back(skip_notif);
 
+
+    //importing txt file
+    secret_bg = new ImageGO2D("UIBackground", m_d3dDevice.Get());
+    secret_bg->SetScale(Vector2(2, 4));
+    m_GameObjects2D.push_back(secret_bg);
+    secret_bg->SetRendered(false);
+    string line;
+    int lore_offset = 10;
+    m_StringLines.push_back(line);
+    ifstream secret_lore("../RawAssets/TXT/TheStoryOfLordKazcranak.txt");
+    if (secret_lore.is_open())
+    {
+        while (getline(secret_lore, line))
+        {
+            for (int i = 0; i < m_StringLines.size(); i++)
+            {
+                imported_lore = new TextGO2D(line + "\n");
+                imported_lore->SetPos(Vector2(20, lore_offset));
+                imported_lore->SetScale(0.4f);
+                imported_lore->SetColour(Color((float*)&Colors::White));
+                imported_lore->Tick(m_GD);
+                lore_offset += 25;
+                m_GameObjects2D.push_back(imported_lore);
+                m_TextLines.push_back(imported_lore);
+            }
+            for (int j = 0; j < m_TextLines.size(); j++)
+                m_TextLines[j]->SetRendered(false);
+        }
+        secret_lore.close();
+    }
+
+
     //create a base camera
     //m_cam = new Camera(0.25f * XM_PI, AR, 1.0f, 10000.0f, Vector3::UnitY, Vector3::Zero);
     //m_cam->SetPos(Vector3(0.0f, 200.0f, 200.0f));
@@ -152,13 +184,18 @@ void Game::Initialize(HWND _window, int _width, int _height)
     CreateSigns();
 
     //L-system like tree
-    Tree* tree = new Tree(4, 3, 1.0f, 8.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
+        Tree* tree = new Tree(4, 3, 1.0f, 8.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
     m_GameObjects.push_back(tree);
-    treeCollision = new CMOGO("Player", m_d3dDevice.Get(), m_fxFactory);
+        treeCollision = new CMOGO("Player", m_d3dDevice.Get(), m_fxFactory);
     treeCollision->SetPos(Vector3(tree->GetPos().x, tree->GetPos().y, tree->GetPos().z));
     treeCollision->SetScale(Vector3(2.5f, 10, 2.5f));
     m_GameObjects.push_back(treeCollision);
     m_ColliderObjects.push_back(treeCollision);
+        secretTrigger = new CMOGO("Player", m_d3dDevice.Get(), m_fxFactory);
+    secretTrigger->SetPos(Vector3(tree->GetPos().x, tree->GetPos().y, tree->GetPos().z));
+    secretTrigger->SetScale(Vector3(5, 10, 5));
+    m_GameObjects.push_back(secretTrigger);
+    m_TriggerObjects.push_back(secretTrigger);
 
     //create DrawData struct and populate its pointers
     m_DD = new DrawData;
@@ -197,6 +234,7 @@ void Game::Tick()
 // Updates the world.
 void Game::Update(DX::StepTimer const& _timer)
 {
+    //make deltatime consistent
     if (m_GD->m_dt > 1 / 30)
         m_GD->m_dt = 1 / 30;
 
@@ -242,7 +280,8 @@ void Game::Update(DX::StepTimer const& _timer)
                 (*it) == pMovePlat7->GroundCheck ||
                 (*it) == pMovePlat8->GroundCheck ||
                 (*it) == pMovePlat9->GroundCheck ||
-                (*it) == treeCollision)
+                (*it) == treeCollision || 
+                (*it) == secretTrigger)
                     (*it)->Tick(m_GD);
         }
 
@@ -413,7 +452,8 @@ void Game::Render()
                 && (*it) != pPlayer->pSwordTrigger
                 && (*it) != pLaunchpadTrigger
                 && (*it) != pBossTrigger
-                && (*it) != treeCollision)
+                && (*it) != treeCollision
+                && (*it) != secretTrigger)
             {
                 (*it)->Draw(m_DD);
             }
@@ -743,6 +783,15 @@ void Game::ReadInput()
         pKazcranak->boss_health = 0;
     if (m_GD->m_KBS.NumPad0)
         ReturnToDefault();
+    for (int j = 0; j < m_TextLines.size(); j++)
+    {
+        if (m_GD->m_KBS.L)
+            m_TextLines[j]->SetRendered(true);
+        if (m_GD->m_KBS.M)
+            m_TextLines[j]->SetRendered(false);
+    }
+    if (m_GD->m_KBS.V)
+        CollectCoin();
 
     switch (m_GD->m_GS)
     {
@@ -798,6 +847,7 @@ void Game::CheckCollision()
 void Game::CheckTriggers()
 {
     for (int i = 0; i < m_Player.size(); i++) for (int j = 0; j < m_TriggerObjects.size(); j++)
+        for (int secret = 0; secret < m_TextLines.size(); secret++)
     {
         if (m_Player[i]->Intersects(*m_TriggerObjects[j]) && m_TriggerObjects[j]->isRendered())
         {
@@ -829,6 +879,16 @@ void Game::CheckTriggers()
                 m_TriggerObjects[j]->SetRendered(false);
                 LoseLife();
             }
+            if (m_TriggerObjects[j] == secretTrigger && score >= 30)
+            {
+                secret_bg->SetRendered(true);
+                m_TextLines[secret]->SetRendered(true);
+            }
+        }
+        else
+        {
+            secret_bg->SetRendered(false);
+            m_TextLines[secret]->SetRendered(false);
         }
     }
 }

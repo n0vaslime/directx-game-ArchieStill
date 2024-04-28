@@ -137,6 +137,8 @@ private:
     std::vector<CMOGO*> m_Destructibles;
     std::vector<CMOGO*> m_EnemySensors;
     std::vector<Sign*>  m_Signs;
+    std::vector<string> m_StringLines;
+    std::vector<TextGO2D*> m_TextLines;
 
     void CheckCollision();
     void CheckTriggers();
@@ -162,6 +164,7 @@ private:
     CMOGO* pCore2;
     CMOGO* pCore3;
     CMOGO* treeCollision;
+    CMOGO* secretTrigger;
 
     Terrain* pIntroExit;
     Terrain* pDeathTrigger;
@@ -172,6 +175,9 @@ private:
     float checkpoint_life = 0.0f;
     bool notif_active = false;
     TextGO2D* skip_notif;
+    TextGO2D* imported_lore;
+    ImageGO2D* secret_bg;
+    bool secret_found = false;
 
     Sign* pSign1;
     Sign* pSign2;

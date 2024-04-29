@@ -17,12 +17,12 @@ Player::Player(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF)
 
 	//Set up sword trigger
 	base_trigger_size = Vector3(0.075f, -0.1f, 0.075f);
-	pSwordTrigger = new CMOGO("table", _pd3dDevice, _EF);
+	pSwordTrigger = std::make_shared<CMOGO>("table", _pd3dDevice, _EF);
 	pSwordTrigger->SetScale(base_trigger_size);
 	pSwordTrigger->SetRendered(false);
 
 	//Set up sword object
-	pSwordObject = new CMOGO("Sword", _pd3dDevice, _EF);
+	pSwordObject = std::make_shared<CMOGO>("Sword", _pd3dDevice, _EF);
 	pSwordObject->SetScale(Vector3(0.15f, 0.2f, 0.2f));
 }
 

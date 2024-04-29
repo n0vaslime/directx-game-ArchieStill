@@ -14,7 +14,7 @@ Enemy::Enemy(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, V
 	player_spotted = false;
     player_facing = 0.0f;
 
-    EnemySensor = new CMOGO("Enemy", _pd3dDevice, _EF);
+    EnemySensor = std::make_shared<CMOGO>("Enemy", _pd3dDevice, _EF);
     EnemySensor->SetScale(10, 3, 10);
     EnemySensor->SetPos(GetPos());
 }

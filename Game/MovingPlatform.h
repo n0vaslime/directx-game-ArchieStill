@@ -11,7 +11,7 @@ public:
 	void Tick(GameData* _GD);
 	MoveState Moving;
 
-	CMOGO* GroundCheck;
+	std::shared_ptr<CMOGO> GroundCheck;
 
 	float direction_lifetime = 0.0f;
 	float back_lifetime = 5.0f;

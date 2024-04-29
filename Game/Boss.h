@@ -13,11 +13,10 @@ public:
 	void BossIntroduction(GameData* _GD);
 	void BossEnding(GameData* _GD);
 
-
 	void BossHealth();
 	void BossAttacking();
 
-	CMOGO* pBossProjectile;
+	std::shared_ptr<CMOGO> pBossProjectile;
 
 	float player_adjacent;
 	float player_opposite;

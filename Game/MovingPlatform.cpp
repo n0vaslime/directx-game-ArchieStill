@@ -11,7 +11,7 @@ MovingPlatform::MovingPlatform(string _fileName, ID3D11Device* _pd3dDevice, IEff
 	m_yaw = _yaw;
 	m_scale = _scale;
 
-	GroundCheck = new CMOGO("GreenCube", _pd3dDevice, _EF);
+	GroundCheck = std::make_shared<CMOGO>("GreenCube", _pd3dDevice, _EF);
 	GroundCheck->SetScale(this->GetScale());
 }
 

@@ -9,7 +9,7 @@ Terrain::Terrain(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _E
 	m_yaw = _yaw;
 	m_scale = _scale;
 	
-	GroundCheck = new CMOGO("GreenCube", _pd3dDevice, _EF);
+	GroundCheck = std::make_shared<CMOGO>("GreenCube", _pd3dDevice, _EF);
 	GroundCheck->SetScale(this->GetScale());
 	GroundCheck->SetPos(Vector3(this->GetPos().x, this->GetPos().y + 0.25f, this->GetPos().z));
 

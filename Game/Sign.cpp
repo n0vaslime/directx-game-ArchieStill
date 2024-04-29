@@ -10,7 +10,7 @@ Sign::Sign(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, Vec
 	m_yaw = _yaw;
 	SetScale(Vector3(0.45f, 0.4f, 0.45f));
 
-	SignTrigger = new CMOGO("Sign", _pd3dDevice, _EF);
+	SignTrigger = std::make_shared<CMOGO>("Sign", _pd3dDevice, _EF);
 	SignTrigger->SetPos(this->GetPos());
 	SignTrigger->SetScale(Vector3(0.65f, 0.4f, 2.5f));
 
@@ -47,7 +47,7 @@ void Sign::SetTriggerPos(GameData* _GD)
 
 void Sign::CreateText()
 {
-	ReadText = new TextGO2D("Press 'E' to read!");
+	ReadText = std::make_shared<TextGO2D>("Press 'E' to read!");
 	ReadText->SetPos(Vector2(275, 550));
 	ReadText->SetColour(Color((float*)&Colors::WhiteSmoke));
 	ReadText->SetScale(0.75f);

@@ -14,7 +14,7 @@ public:
 	Vector3 base_pos;
 	float speed;
 	bool player_spotted;
-	CMOGO* EnemySensor;
+	std::shared_ptr<CMOGO> EnemySensor;
 	float player_facing;
 };
 

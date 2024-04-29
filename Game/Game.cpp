@@ -82,8 +82,8 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_audioEngine = std::make_unique<AudioEngine>(eflags);
 
     //create a base light
-    m_light = std::make_shared<Light>(Vector3(0.0f, 100.0f, 160.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(110.4f, 110.1f, 0.1f, 1.0f));
-    m_GameObjects.push_back(m_light);
+    m_light = new Light(Vector3(0.0f, 100.0f, 160.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(110.4f, 110.1f, 0.1f, 1.0f));
+    // m_GameObjects.push_back(m_light);
 
     //find how big my window is to correctly calculate my aspect ratio
     float AR = (float)_width / (float)_height;
@@ -92,13 +92,13 @@ void Game::Initialize(HWND _window, int _width, int _height)
     CreateGround();
 
     //creating basic 2D text notifications
-        checkpoint_notif = new TextGO2D("Checkpoint!");
+        checkpoint_notif = std::make_shared<TextGO2D>("Checkpoint!");
     checkpoint_notif->SetPos(Vector2(30, 10));
     checkpoint_notif->SetColour(Color((float*)&Colors::Blue));
     checkpoint_notif->SetScale(1);
     checkpoint_notif->SetRendered(false);
     m_GameObjects2D.push_back(checkpoint_notif);
-        skip_notif = new TextGO2D("PRESS ENTER TO SKIP");
+        skip_notif = std::make_shared<TextGO2D>("PRESS ENTER TO SKIP");
     skip_notif->SetPos(Vector2(10, 10));
     skip_notif->SetColour(Color((float*)&Colors::Red));
     skip_notif->SetScale(0.5f);
@@ -106,7 +106,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_GameObjects2D.push_back(skip_notif);
 
     //Secret Lore - creating background
-    secret_bg = new ImageGO2D("UIBackground", m_d3dDevice.Get());
+    secret_bg = std::make_shared<ImageGO2D>("UIBackground", m_d3dDevice.Get());
     secret_bg->SetScale(Vector2(2, 4));
     m_GameObjects2D.push_back(secret_bg);
     secret_bg->SetRendered(false);
@@ -122,7 +122,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
             //Secret Lore - setting .txt lines to TextGO2D on different lines
             for (int i = 0; i < m_StringLines.size(); i++)
             {
-                imported_lore = new TextGO2D(line + "\n");
+                imported_lore = std::make_shared<TextGO2D>(line + "\n");
                 imported_lore->SetPos(Vector2(20, lore_offset));
                 imported_lore->SetScale(0.4f);
                 imported_lore->SetColour(Color((float*)&Colors::White));
@@ -152,7 +152,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_BossGOs.push_back(pPlayer->pSwordObject);
 
     //add Lord Kazcranak - boss fight enemy
-    pKazcranak = new Boss("LordKazcranak", m_d3dDevice.Get(), m_fxFactory);
+    pKazcranak = std::make_shared<Boss>("LordKazcranak", m_d3dDevice.Get(), m_fxFactory);
     m_BossGOs.push_back(pKazcranak);
     m_ColliderObjects.push_back(pKazcranak);
     m_Destructibles.push_back(pKazcranak);
@@ -163,9 +163,9 @@ void Game::Initialize(HWND _window, int _width, int _height)
 
     //add a PRIMARY camera
     m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f)); // Vector3(0,0,0.1f)
-    m_GameObjects.push_back(m_TPScam);
-    m_IntroGOs.push_back(m_TPScam);
-    m_BossGOs.push_back(m_TPScam);
+    // m_GameObjects.push_back(m_TPScam);
+    // m_IntroGOs.push_back(m_TPScam);
+    // m_BossGOs.push_back(m_TPScam);
 
     CreateBossGround();
 
@@ -174,18 +174,18 @@ void Game::Initialize(HWND _window, int _width, int _height)
     CreateSigns();
 
     //L-system like tree
-        Tree* tree = new Tree(4, 3, 1.0f, 8.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
-    m_GameObjects.push_back(tree);
-        treeCollision = new CMOGO("Player", m_d3dDevice.Get(), m_fxFactory);
-    treeCollision->SetPos(Vector3(tree->GetPos().x, tree->GetPos().y, tree->GetPos().z));
-    treeCollision->SetScale(Vector3(2.5f, 10, 2.5f));
-    m_GameObjects.push_back(treeCollision);
-    m_ColliderObjects.push_back(treeCollision);
-        secretTrigger = new CMOGO("Player", m_d3dDevice.Get(), m_fxFactory);
-    secretTrigger->SetPos(Vector3(tree->GetPos().x, tree->GetPos().y, tree->GetPos().z));
-    secretTrigger->SetScale(Vector3(5, 10, 5));
-    m_GameObjects.push_back(secretTrigger);
-    m_TriggerObjects.push_back(secretTrigger);
+    //     tree = std::make_shared<Tree>(4, 3, 1.0f, 8.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
+    // m_GameObjects.push_back(tree);
+    //     treeCollision = std::make_shared<CMOGO>("Player", m_d3dDevice.Get(), m_fxFactory);
+    // treeCollision->SetPos(Vector3(tree->GetPos().x, tree->GetPos().y, tree->GetPos().z));
+    // treeCollision->SetScale(Vector3(2.5f, 10, 2.5f));
+    // m_GameObjects.push_back(treeCollision);
+    // m_ColliderObjects.push_back(treeCollision);
+    //     secretTrigger = std::make_shared<CMOGO>("Player", m_d3dDevice.Get(), m_fxFactory);
+    // secretTrigger->SetPos(Vector3(tree->GetPos().x, tree->GetPos().y, tree->GetPos().z));
+    // secretTrigger->SetScale(Vector3(5, 10, 5));
+    // m_GameObjects.push_back(secretTrigger);
+    // m_TriggerObjects.push_back(secretTrigger);
 
     //create DrawData struct and populate its pointers
     m_DD = new DrawData;
@@ -195,13 +195,13 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_DD->m_light = m_light;
 
     //2D screens
-    title_screen = new ImageGO2D("TitleScreen", m_d3dDevice.Get());
+    title_screen = std::make_shared<ImageGO2D>("TitleScreen", m_d3dDevice.Get());
     title_screen->SetPos(Vector2(400,300));
     title_screen->SetScale(0.35f);
-    credits = new ImageGO2D("Goldedge2Credits", m_d3dDevice.Get());
+    credits = std::make_shared<ImageGO2D>("Goldedge2Credits", m_d3dDevice.Get());
     credits->SetPos(Vector2(400, 2700));
     credits->SetScale(1.5f);
-    lose_screen = new ImageGO2D("GameOverScreen", m_d3dDevice.Get());
+    lose_screen = std::make_shared<ImageGO2D>("GameOverScreen", m_d3dDevice.Get());
     lose_screen->SetPos(Vector2(400, 300));
     lose_screen->SetScale(0.35f);
 
@@ -252,21 +252,40 @@ void Game::Update(DX::StepTimer const& _timer)
     //////  update all objects
     if (m_GD->m_GS == GS_GAME)
     {
-        for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+        // for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+        // {
+        //     if ((*it)->isRendered() ||
+        //         (*it) == pMovePlat1->GroundCheck ||
+        //         (*it) == pMovePlat2->GroundCheck ||
+        //         (*it) == pMovePlat3->GroundCheck ||
+        //         (*it) == pMovePlat4->GroundCheck ||
+        //         (*it) == pMovePlat5->GroundCheck ||
+        //         (*it) == pMovePlat6->GroundCheck ||
+        //         (*it) == pMovePlat7->GroundCheck ||
+        //         (*it) == pMovePlat8->GroundCheck ||
+        //         (*it) == pMovePlat9->GroundCheck ||
+        //         (*it) == treeCollision || 
+        //         (*it) == secretTrigger)
+        //             (*it)->Tick(m_GD);
+        // }
+
+        for (auto GameObject : m_GameObjects)
         {
-            if ((*it)->isRendered() ||
-                (*it) == pMovePlat1->GroundCheck ||
-                (*it) == pMovePlat2->GroundCheck ||
-                (*it) == pMovePlat3->GroundCheck ||
-                (*it) == pMovePlat4->GroundCheck ||
-                (*it) == pMovePlat5->GroundCheck ||
-                (*it) == pMovePlat6->GroundCheck ||
-                (*it) == pMovePlat7->GroundCheck ||
-                (*it) == pMovePlat8->GroundCheck ||
-                (*it) == pMovePlat9->GroundCheck ||
-                (*it) == treeCollision || 
-                (*it) == secretTrigger)
-                    (*it)->Tick(m_GD);
+            if (GameObject->isRendered() ||
+                GameObject == pMovePlat1->GroundCheck ||
+                GameObject == pMovePlat2->GroundCheck ||
+                GameObject == pMovePlat3->GroundCheck ||
+                GameObject == pMovePlat4->GroundCheck ||
+                GameObject == pMovePlat5->GroundCheck ||
+                GameObject == pMovePlat6->GroundCheck ||
+                GameObject == pMovePlat7->GroundCheck ||
+                GameObject == pMovePlat8->GroundCheck ||
+                GameObject == pMovePlat9->GroundCheck ||
+                GameObject == treeCollision ||
+                GameObject == secretTrigger)
+            {
+                GameObject->Tick(m_GD);
+            }
         }
 
         for (int i = 0; i < m_Enemies.size(); i++)
@@ -277,22 +296,38 @@ void Game::Update(DX::StepTimer const& _timer)
     }
     else if (m_GD->m_GS == GS_INTRO)
     {
-        for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
+        // for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
+        // {
+        //     if ((*it)->isRendered())
+        //         (*it)->Tick(m_GD);
+        // }
+        for (auto GameObject : m_IntroGOs)
         {
-            if ((*it)->isRendered())
-                (*it)->Tick(m_GD);
+            if (GameObject->isRendered())
+                GameObject->Tick(m_GD);
         }
     }
     else if (m_GD->m_GS == GS_BOSS)
     {
-        for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
+        // for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
+        // {
+        //     if ((*it)->isRendered() ||
+        //         (*it) == pMovePlatB1->GroundCheck ||
+        //         (*it) == pMovePlatB2->GroundCheck ||
+        //         (*it) == pMovePlatB3->GroundCheck ||
+        //         (*it) == pMovePlatB4->GroundCheck)
+        //         (*it)->Tick(m_GD);
+        // }
+        for (auto GameObject : m_BossGOs)
         {
-            if ((*it)->isRendered() ||
-                (*it) == pMovePlatB1->GroundCheck ||
-                (*it) == pMovePlatB2->GroundCheck ||
-                (*it) == pMovePlatB3->GroundCheck ||
-                (*it) == pMovePlatB4->GroundCheck)
-                (*it)->Tick(m_GD);
+            if (GameObject->isRendered() ||
+                GameObject == pMovePlatB1->GroundCheck ||
+                GameObject == pMovePlatB2->GroundCheck ||
+                GameObject == pMovePlatB3->GroundCheck ||
+                GameObject == pMovePlatB4->GroundCheck)
+            {
+                GameObject->Tick(m_GD);
+            }
         }
         if (pKazcranak->is_talking)
             pPlayer->is_attacking = true;
@@ -328,10 +363,15 @@ void Game::Update(DX::StepTimer const& _timer)
             credits->SetPos(Vector2(400, 2700));
     }
 
-    for (std::vector<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
+    // for (std::vector<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
+    // {
+    //     if ((*it)->isRendered())
+    //         (*it)->Tick(m_GD);
+    // }
+    for (auto GameObject : m_GameObjects2D)
     {
-        if ((*it)->isRendered())
-            (*it)->Tick(m_GD);
+        if (GameObject->isRendered())
+            GameObject->Tick(m_GD);
     }
 
     //make ground and sign checks invisible
@@ -425,7 +465,7 @@ void Game::Render()
     m_DD->m_pd3dImmediateContext = m_d3dContext.Get();
 
     //set which camera to be used
-    m_DD->m_cam = m_TPScam;
+    // m_DD->m_cam = std::make_shared<TPSCamera> m_TPScam;
 
     //update the constant buffer for the rendering of VBGOs
     VBGO::UpdateConstantBuffer(m_DD);
@@ -433,55 +473,85 @@ void Game::Render()
     //Draw 3D Game Objects
     if (m_GD->m_GS == GS_GAME)
     {
-        for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+        // for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+        // {
+        //     if ((*it)->isRendered()
+        //         && (*it) != pPlayer->pSwordTrigger
+        //         && (*it) != pLaunchpadTrigger
+        //         && (*it) != pBossTrigger
+        //         && (*it) != treeCollision
+        //         && (*it) != secretTrigger)
+        //     {
+        //         (*it)->Draw(m_DD);
+        //     }
+        // }
+        for (auto GameObject : m_GameObjects)
         {
-            if ((*it)->isRendered()
-                && (*it) != pPlayer->pSwordTrigger
-                && (*it) != pLaunchpadTrigger
-                && (*it) != pBossTrigger
-                && (*it) != treeCollision
-                && (*it) != secretTrigger)
+            if (GameObject->isRendered()
+                && GameObject != pPlayer->pSwordTrigger
+                && GameObject != pLaunchpadTrigger
+                && GameObject != pBossTrigger
+                && GameObject != treeCollision
+                && GameObject != secretTrigger)
             {
-                (*it)->Draw(m_DD);
+                GameObject->Draw(m_DD);
             }
         }
         
-        for (std::vector<CMOGO*>::iterator it = m_EnemySensors.begin(); it != m_EnemySensors.end(); it++)
-            if ((*it)->isRendered())
-                (*it)->Draw(m_DD);
+        // for (std::vector<CMOGO*>::iterator it = m_EnemySensors.begin(); it != m_EnemySensors.end(); it++)
+        //     if ((*it)->isRendered())
+        //         (*it)->Draw(m_DD);
+        for (auto CMOGO : m_EnemySensors)
+            if (CMOGO->isRendered())
+                CMOGO->Draw(m_DD);
     }
     else if (m_GD->m_GS == GS_INTRO)
     {
-        for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
+        // for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
+        // {
+        //     if ((*it)->isRendered()
+        //         && (*it) != pPlayer->pSwordTrigger)
+        //     {
+        //         (*it)->Draw(m_DD);
+        //     }
+        // }
+        for (auto GameObject : m_IntroGOs)
         {
-            if ((*it)->isRendered()
-                && (*it) != pPlayer->pSwordTrigger)
-            {
-                (*it)->Draw(m_DD);
-            }
+            if (GameObject->isRendered()
+                && GameObject != pPlayer->pSwordTrigger)
+                GameObject->Draw(m_DD);
         }
     }
     else if (m_GD->m_GS == GS_BOSS)
     {
-        for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
+        // for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
+        // {
+        //     if ((*it)->isRendered()
+        //         && (*it) != pPlayer->pSwordTrigger)
+        //     {
+        //         (*it)->Draw(m_DD);
+        //     }
+        // }
+        for (auto GameObject : m_BossGOs)
         {
-            if ((*it)->isRendered()
-                && (*it) != pPlayer->pSwordTrigger)
-            {
-                (*it)->Draw(m_DD);
-            }
+            if (GameObject->isRendered()
+                && GameObject != pPlayer->pSwordTrigger)
+                GameObject->Draw(m_DD);
         }
     }
 
     // Draw sprite batch stuff
     m_DD2D->m_Sprites->Begin(SpriteSortMode_Deferred, m_states->NonPremultiplied());
-    for (std::vector<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
-    {
-        if ((*it)->isRendered())
-        {
-            (*it)->Draw(m_DD2D);
-        }
-    }
+    // for (std::vector<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
+    // {
+    //     if ((*it)->isRendered())
+    //     {
+    //         (*it)->Draw(m_DD2D);
+    //     }
+    // }
+    for (auto GameObject2D : m_GameObjects2D)
+        if (GameObject2D->isRendered())
+            GameObject2D->Draw(m_DD2D);
     m_DD2D->m_Sprites->End();
 
     //drawing text screws up the Depth Stencil State, this puts it back again!
@@ -1043,7 +1113,7 @@ void Game::CollectCoin()
     scoreText->SetRendered(false);
     coin_sfx->Play();
     score++;
-    scoreText = new TextGO2D(std::to_string(score));
+    scoreText = std::make_shared<TextGO2D>(std::to_string(score));
     if (score < 10)
         scoreText->SetPos(Vector2(705, 15));
     else
@@ -1057,7 +1127,7 @@ void Game::LoseLife()
     livesText->SetRendered(false);
     death_sfx->Play();
     lives--;
-    livesText = new TextGO2D(std::to_string(lives));
+    livesText = std::make_shared<TextGO2D>(std::to_string(lives));
     livesText->SetPos(Vector2(595, 15));
     livesText->SetColour(Color((float*)&Colors::Black));
     livesText->SetScale(Vector2(1.1f, 1));
@@ -1116,8 +1186,10 @@ void Game::DisplayMenu()
     ambience->Play();
 
     //set others inactive
-    for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
-        (*it)->SetRendered(false);
+    // for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+    //     (*it)->SetRendered(false);
+    for (auto GameObject : m_GameObjects)
+        GameObject->SetRendered(false);
 }
 void Game::DisplayIntro()
 {
@@ -1126,10 +1198,11 @@ void Game::DisplayIntro()
     ambience->Stop();
     intro_music->Play();
 
-    for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
-    {
-        (*it)->SetRendered(true);
-    }
+    //for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
+    //    (*it)->SetRendered(true);
+    for (auto GameObject : m_IntroGOs)
+        GameObject->SetRendered(true);
+
     pPlayer->pSwordTrigger->SetRendered(false);
     pPlayer->pSwordObject->SetRendered(false);
     title_screen->SetRendered(false);
@@ -1144,19 +1217,26 @@ void Game::DisplayGame()
     pPlayer->respawn_pos = pPlayer->base_game_respawn;
     pPlayer->is_respawning = true;
     pPlayer->SetPos(Vector3(pPlayer->GetPos().x, pPlayer->GetPos().y + 25, pPlayer->GetPos().z));
-    for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
-    {
-        (*it)->SetRendered(true);
-    }
+    // for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+    //     (*it)->SetRendered(true);
+    for (auto GameObject : m_GameObjects)
+        GameObject->SetRendered(true);
     pPlayer->pSwordTrigger->SetRendered(false);
 
     //set others inactive
-    for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
+    // for (std::vector<GameObject*>::iterator it = m_IntroGOs.begin(); it != m_IntroGOs.end(); it++)
+    // {
+    //     if ((*it) == pPlayer)
+    //         (*it)->SetRendered(true);
+    //     else
+    //         (*it)->SetRendered(false);
+    // }
+    for (auto GameObject : m_IntroGOs)
     {
-        if ((*it) == pPlayer)
-            (*it)->SetRendered(true);
+        if (GameObject == pPlayer)
+            GameObject->SetRendered(true);
         else
-            (*it)->SetRendered(false);
+            GameObject->SetRendered(false);
     }
 }
 void Game::DisplayBoss()
@@ -1179,14 +1259,20 @@ void Game::DisplayBoss()
     pPlayer->is_respawning = true;
     pPlayer->is_attacking = true;
     
-    for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
-    {
-        (*it)->SetRendered(false);
-    }
-    for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
-    {
-        (*it)->SetRendered(true);
-    }
+    // for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+    // {
+    //     (*it)->SetRendered(false);
+    // }
+    // for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
+    // {
+    //     (*it)->SetRendered(true);
+    // }
+
+    for (auto GameObject : m_BossGOs)
+        GameObject->SetRendered(true);
+    for (auto GameObject : m_GameObjects)
+        GameObject->SetRendered(false);
+
     pPlayer->pSwordTrigger->SetRendered(false);
 }
 void Game::DisplayWin()
@@ -1202,8 +1288,10 @@ void Game::DisplayWin()
     m_GameObjects2D.push_back(skip_notif);
 
     //set others inactive
-    for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
-        (*it)->SetRendered(false);
+    // for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
+    //     (*it)->SetRendered(false);
+    for (auto GameObject : m_BossGOs)
+        GameObject->SetRendered(false);
 }
 void Game::DisplayLoss()
 {
@@ -1214,272 +1302,276 @@ void Game::DisplayLoss()
     m_GameObjects2D.push_back(lose_screen);
 
     //set others inactive
-    for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
-        (*it)->SetRendered(false);
-    for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
-        (*it)->SetRendered(false);
+    // for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
+    //     (*it)->SetRendered(false);
+    // for (std::vector<GameObject*>::iterator it = m_BossGOs.begin(); it != m_BossGOs.end(); it++)
+    //     (*it)->SetRendered(false);
+    for (auto GameObject : m_GameObjects)
+        GameObject->SetRendered(false);
+    for (auto GameObject : m_BossGOs)
+        GameObject->SetRendered(false);
 }
 
 void Game::CreateGround()
 {
     //Death trigger
-    pDeathTrigger = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -50, 0), 0.0f, 0.0f, 0.0f, Vector3(1000, 0.01f, 1000));
+    pDeathTrigger = std::make_shared<Terrain>("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -50, 0), 0.0f, 0.0f, 0.0f, Vector3(1000, 0.01f, 1000));
     m_GameObjects.push_back(pDeathTrigger);
     m_BossGOs.push_back(pDeathTrigger);
     m_TriggerObjects.push_back(pDeathTrigger);
     //Boss fight trigger
-    pBossTrigger = new Terrain("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 900, 0), 0.0f, 0.0f, 0.0f, Vector3(1000, 1, 1000));
+    pBossTrigger = std::make_shared<Terrain>("GreenCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 900, 0), 0.0f, 0.0f, 0.0f, Vector3(1000, 1, 1000));
     m_GameObjects.push_back(pBossTrigger);
     m_TriggerObjects.push_back(pBossTrigger);
 
     //Cave exterior
-        Terrain* pCave = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 200), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 7.5f, 25));
+        std::shared_ptr<Terrain> pCave = std::make_shared<Terrain>("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 200), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 7.5f, 25));
     m_GameObjects.push_back(pCave);
     m_ColliderObjects.push_back(pCave);
 
     // LAYER 1 - BASICS
-        Terrain* pGround1 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-10,0), 0.0f, 0.0f, 0.0f, Vector3(10, 1, 25));
+        std::shared_ptr<Terrain> pGround1 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0,-10,0), 0.0f, 0.0f, 0.0f, Vector3(10, 1, 25));
     m_GameObjects.push_back(pGround1);
     m_ColliderObjects.push_back(pGround1);
     m_Grounds.push_back(pGround1);
     m_GameObjects.push_back(pGround1->GroundCheck);
-        Terrain* pGround2 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -200), 0.0f, 0.0f, 0.0f, Vector3(20, 1, 20));
+        std::shared_ptr<Terrain> pGround2 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -200), 0.0f, 0.0f, 0.0f, Vector3(20, 1, 20));
     m_GameObjects.push_back(pGround2);
     m_ColliderObjects.push_back(pGround2);
     m_Grounds.push_back(pGround2);
     m_GameObjects.push_back(pGround2->GroundCheck);
-        Terrain* pGround3 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 8, -415), 0.0f, 0.0f, 0.0f, Vector3(20, 2, 20));
+        std::shared_ptr<Terrain> pGround3 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 8, -415), 0.0f, 0.0f, 0.0f, Vector3(20, 2, 20));
     m_GameObjects.push_back(pGround3);
     m_ColliderObjects.push_back(pGround3);
     m_Grounds.push_back(pGround3);
     m_GameObjects.push_back(pGround3->GroundCheck);
-        pMovePlat1 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-190, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
+        pMovePlat1 = std::make_shared<MovingPlatform>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-190, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
         pMovePlat1->Moving = ROTATEANTICLOCKWISE;
     m_GameObjects.push_back(pMovePlat1);
     m_ColliderObjects.push_back(pMovePlat1);
     m_Platforms.push_back(pMovePlat1);
     m_GameObjects.push_back(pMovePlat1->GroundCheck);
-        pMovePlat2 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-340, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
+        pMovePlat2 = std::make_shared<MovingPlatform>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-340, 12, -415), 0.0f, 45.0f, 0.0f, Vector3(10, 1, 10));
         pMovePlat2->Moving = ROTATECLOCKWISE;
     m_GameObjects.push_back(pMovePlat2);
     m_ColliderObjects.push_back(pMovePlat2);
     m_Platforms.push_back(pMovePlat2);
     m_GameObjects.push_back(pMovePlat2->GroundCheck);
-        Terrain* pGround4 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 15, -225), 0.0f, 0.0f, 0.0f, Vector3(20, 2, 20));
+        std::shared_ptr<Terrain> pGround4 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 15, -225), 0.0f, 0.0f, 0.0f, Vector3(20, 2, 20));
     m_GameObjects.push_back(pGround4);
     m_ColliderObjects.push_back(pGround4);
     m_Grounds.push_back(pGround4);
     m_GameObjects.push_back(pGround4->GroundCheck);
-        CMOGO* pCheckpoint1 = new CMOGO("Checkpoint", m_d3dDevice.Get(), m_fxFactory);
+        std::shared_ptr<CMOGO> pCheckpoint1 = std::make_shared<CMOGO>("Checkpoint", m_d3dDevice.Get(), m_fxFactory);
     pCheckpoint1->SetPos(Vector3(-400, 25, -175));
     pCheckpoint1->SetScale(Vector3(1, 1, 1));
     m_GameObjects.push_back(pCheckpoint1);
     m_Checkpoints.push_back(pCheckpoint1);
 
     // LAYER 2 - COMBAT
-        pMovePlat3 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 0, -60), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 1.5f, 7.5f));
+        pMovePlat3 = std::make_shared<MovingPlatform>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 0, -60), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 1.5f, 7.5f));
         pMovePlat3->Moving = MOVEUP;
     m_GameObjects.push_back(pMovePlat3);
     m_ColliderObjects.push_back(pMovePlat3);
     m_Platforms.push_back(pMovePlat3);
     m_GameObjects.push_back(pMovePlat3->GroundCheck);
-        Terrain* pGround5 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-300, 90, 25), 0.0f, 0.0f, 0.0f, Vector3(30, 2, 4));
+        std::shared_ptr<Terrain> pGround5 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-300, 90, 25), 0.0f, 0.0f, 0.0f, Vector3(30, 2, 4));
     m_GameObjects.push_back(pGround5);
     m_ColliderObjects.push_back(pGround5);
     m_Grounds.push_back(pGround5);
     m_GameObjects.push_back(pGround5->GroundCheck);
-        pMovePlat4 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 90, 25), 0.0f, 0.0f, 0.0f, Vector3(25, 2, 3));
+        pMovePlat4 = std::make_shared<MovingPlatform>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 90, 25), 0.0f, 0.0f, 0.0f, Vector3(25, 2, 3));
         pMovePlat4->Moving = ROTATECLOCKWISE;
     m_GameObjects.push_back(pMovePlat4);
     m_ColliderObjects.push_back(pMovePlat4);
     m_Platforms.push_back(pMovePlat4);
     m_GameObjects.push_back(pMovePlat4->GroundCheck);
-        Terrain* pGround6 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(300, 90, 25), 0.0f, 0.0f, 0.0f, Vector3(30, 2, 4));
+        std::shared_ptr<Terrain> pGround6 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(300, 90, 25), 0.0f, 0.0f, 0.0f, Vector3(30, 2, 4));
     m_GameObjects.push_back(pGround6);
     m_ColliderObjects.push_back(pGround6);
     m_Grounds.push_back(pGround6);
     m_GameObjects.push_back(pGround6->GroundCheck);
-        CMOGO* pCheckpoint2 = new CMOGO("Checkpoint", m_d3dDevice.Get(), m_fxFactory);
+        std::shared_ptr<CMOGO> pCheckpoint2 = std::make_shared<CMOGO>("Checkpoint", m_d3dDevice.Get(), m_fxFactory);
     pCheckpoint2->SetPos(Vector3(425, 100, 25));
     pCheckpoint2->SetScale(Vector3(1, 1, 1));
     m_GameObjects.push_back(pCheckpoint2);
     m_Checkpoints.push_back(pCheckpoint2);
 
     // LAYER 3 - PLATFORMING
-        Terrain* pGround7 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(425, 105, -15), 0.0f, 0.0f, 0.0f, Vector3(2, 1, 2));
+        std::shared_ptr<Terrain> pGround7 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(425, 105, -15), 0.0f, 0.0f, 0.0f, Vector3(2, 1, 2));
     m_GameObjects.push_back(pGround7);
     m_ColliderObjects.push_back(pGround7);
     m_Grounds.push_back(pGround7);
     m_GameObjects.push_back(pGround7->GroundCheck);
-        Terrain* pGround8 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(400, 115, -45), 0.0f, 0.0f, 0.0f, Vector3(1.75f, 1, 1.75f));
+        std::shared_ptr<Terrain> pGround8 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(400, 115, -45), 0.0f, 0.0f, 0.0f, Vector3(1.75f, 1, 1.75f));
     m_GameObjects.push_back(pGround8);
     m_ColliderObjects.push_back(pGround8);
     m_Grounds.push_back(pGround8);
     m_GameObjects.push_back(pGround8->GroundCheck);
-        Terrain* pGround9 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(375, 125, -75), 0.0f, 0.0f, 0.0f, Vector3(1.5f, 1, 1.5f));
+        std::shared_ptr<Terrain> pGround9 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(375, 125, -75), 0.0f, 0.0f, 0.0f, Vector3(1.5f, 1, 1.5f));
     m_GameObjects.push_back(pGround9);
     m_ColliderObjects.push_back(pGround9);
     m_Grounds.push_back(pGround9);
     m_GameObjects.push_back(pGround9->GroundCheck);
-        Terrain* pGround10 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(350, 135, -105), 0.0f, 0.0f, 0.0f, Vector3(1.25f, 1, 1.25f));
+        std::shared_ptr<Terrain> pGround10 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(350, 135, -105), 0.0f, 0.0f, 0.0f, Vector3(1.25f, 1, 1.25f));
     m_GameObjects.push_back(pGround10);
     m_ColliderObjects.push_back(pGround10);
     m_Grounds.push_back(pGround10);
     m_GameObjects.push_back(pGround10->GroundCheck);
-        Terrain* pGround11 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(325, 145, -135), 0.0f, 0.0f, 0.0f, Vector3(1, 1, 1));
+        std::shared_ptr<Terrain> pGround11 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(325, 145, -135), 0.0f, 0.0f, 0.0f, Vector3(1, 1, 1));
     m_GameObjects.push_back(pGround11);
     m_ColliderObjects.push_back(pGround11);
     m_Grounds.push_back(pGround11);
     m_GameObjects.push_back(pGround11->GroundCheck);
-        Terrain* pGround12 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(300, 145, -105), 0.0f, 0.0f, 0.0f, Vector3(1, 1, 1));
+        std::shared_ptr<Terrain> pGround12 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(300, 145, -105), 0.0f, 0.0f, 0.0f, Vector3(1, 1, 1));
     m_GameObjects.push_back(pGround12);
     m_ColliderObjects.push_back(pGround12);
     m_Grounds.push_back(pGround12);
     m_GameObjects.push_back(pGround12->GroundCheck);
-        Terrain* pGround13 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(275, 145, -135), 0.0f, 0.0f, 0.0f, Vector3(1, 1, 1));
+        std::shared_ptr<Terrain> pGround13 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(275, 145, -135), 0.0f, 0.0f, 0.0f, Vector3(1, 1, 1));
     m_GameObjects.push_back(pGround13);
     m_ColliderObjects.push_back(pGround13);
     m_Grounds.push_back(pGround13);
     m_GameObjects.push_back(pGround13->GroundCheck);
-        Terrain* pGround14 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(250, 145, -105), 0.0f, 0.0f, 0.0f, Vector3(1, 1, 1));
+        std::shared_ptr<Terrain> pGround14 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(250, 145, -105), 0.0f, 0.0f, 0.0f, Vector3(1, 1, 1));
     m_GameObjects.push_back(pGround14);
     m_ColliderObjects.push_back(pGround14);
     m_Grounds.push_back(pGround14);
     m_GameObjects.push_back(pGround14->GroundCheck);
-        Terrain* pGround15 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(225, 145, -135), 0.0f, 0.0f, 0.0f, Vector3(1, 1, 1));
+        std::shared_ptr<Terrain> pGround15 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(225, 145, -135), 0.0f, 0.0f, 0.0f, Vector3(1, 1, 1));
     m_GameObjects.push_back(pGround15);
     m_ColliderObjects.push_back(pGround15);
     m_Grounds.push_back(pGround15);
     m_GameObjects.push_back(pGround15->GroundCheck);
-        pMovePlat5 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(200, 150, -165), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
+        pMovePlat5 = std::make_shared<MovingPlatform>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(200, 150, -165), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
         pMovePlat5->Moving = MOVELEFTX;
     m_GameObjects.push_back(pMovePlat5);
     m_ColliderObjects.push_back(pMovePlat5);
     m_Platforms.push_back(pMovePlat5);
     m_GameObjects.push_back(pMovePlat5->GroundCheck);
-        Terrain* pGround16 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 150, -165), 0.0f, 0.0f, 0.0f, Vector3(5, 1.5f, 5));
+        std::shared_ptr<Terrain> pGround16 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 150, -165), 0.0f, 0.0f, 0.0f, Vector3(5, 1.5f, 5));
     m_GameObjects.push_back(pGround16);
     m_ColliderObjects.push_back(pGround16);
     m_Grounds.push_back(pGround16);
     m_GameObjects.push_back(pGround16->GroundCheck);
-        pMovePlat6 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 150, -225), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
+        pMovePlat6 = std::make_shared<MovingPlatform>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 150, -225), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
         pMovePlat6->Moving = MOVEFORWARDZ;
     m_GameObjects.push_back(pMovePlat6);
     m_ColliderObjects.push_back(pMovePlat6);
     m_Platforms.push_back(pMovePlat6);
     m_GameObjects.push_back(pMovePlat6->GroundCheck);
-        Terrain* pGround17 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 150, -385), 0.0f, 0.0f, 0.0f, Vector3(2.5f, 1.5f, 4));
+        std::shared_ptr<Terrain> pGround17 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 150, -385), 0.0f, 0.0f, 0.0f, Vector3(2.5f, 1.5f, 4));
     m_GameObjects.push_back(pGround17);
     m_ColliderObjects.push_back(pGround17);
     m_Grounds.push_back(pGround17);
     m_GameObjects.push_back(pGround17->GroundCheck);
-        CMOGO* pCheckpoint3 = new CMOGO("Checkpoint", m_d3dDevice.Get(), m_fxFactory);
+        std::shared_ptr<CMOGO> pCheckpoint3 = std::make_shared<CMOGO>("Checkpoint", m_d3dDevice.Get(), m_fxFactory);
     pCheckpoint3->SetPos(Vector3(50, 157.5f, -377.5f));
     pCheckpoint3->SetScale(Vector3(1, 1, 1));
     m_GameObjects.push_back(pCheckpoint3);
     m_Checkpoints.push_back(pCheckpoint3);
 
     // LAYER 4 - END
-        Terrain* pGround18 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 150, -400), 0.0f, 0.0f, 0.0f, Vector3(5, 1, 1));
+        std::shared_ptr<Terrain> pGround18 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 150, -400), 0.0f, 0.0f, 0.0f, Vector3(5, 1, 1));
     m_GameObjects.push_back(pGround18);
     m_ColliderObjects.push_back(pGround18);
     m_Grounds.push_back(pGround18);
     m_GameObjects.push_back(pGround18->GroundCheck);
-        Terrain* pGround19 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-90, 150, -400), 0.0f, 0.0f, 0.0f, Vector3(10, 2, 10));
+        std::shared_ptr<Terrain> pGround19 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-90, 150, -400), 0.0f, 0.0f, 0.0f, Vector3(10, 2, 10));
     m_GameObjects.push_back(pGround19);
     m_ColliderObjects.push_back(pGround19);
     m_Grounds.push_back(pGround19);
     m_GameObjects.push_back(pGround19->GroundCheck);
-        pMovePlat7 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-175, 150, -400), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
+        pMovePlat7 = std::make_shared<MovingPlatform>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-175, 150, -400), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
         pMovePlat7->Moving = MOVEUP;
     m_GameObjects.push_back(pMovePlat7);
     m_ColliderObjects.push_back(pMovePlat7);
     m_Platforms.push_back(pMovePlat7);
     m_GameObjects.push_back(pMovePlat7->GroundCheck);
-        pMovePlat8 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-225, 325, -400), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
+        pMovePlat8 = std::make_shared<MovingPlatform>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-225, 325, -400), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
         pMovePlat8->Moving = MOVEDOWN;
     m_GameObjects.push_back(pMovePlat8);
     m_ColliderObjects.push_back(pMovePlat8);
     m_Platforms.push_back(pMovePlat8);
     m_GameObjects.push_back(pMovePlat8->GroundCheck);
-        pMovePlat9 = new MovingPlatform("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 300, -400), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
+        pMovePlat9 = std::make_shared<MovingPlatform>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 300, -400), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
         pMovePlat9->Moving = MOVEUP;
     m_GameObjects.push_back(pMovePlat9);
     m_ColliderObjects.push_back(pMovePlat9);
     m_Platforms.push_back(pMovePlat9);
     m_GameObjects.push_back(pMovePlat9->GroundCheck);
-        Terrain* pGround20 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -325), 0.0f, 0.0f, 0.0f, Vector3(10, 2, 10));
+        std::shared_ptr<Terrain> pGround20 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -325), 0.0f, 0.0f, 0.0f, Vector3(10, 2, 10));
     m_GameObjects.push_back(pGround20);
     m_ColliderObjects.push_back(pGround20);
     m_Grounds.push_back(pGround20);
     m_GameObjects.push_back(pGround20->GroundCheck);
-        Terrain* pGround21 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -255), 0.0f, 0.0f, 0.0f, Vector3(2, 1, 2));
+        std::shared_ptr<Terrain> pGround21 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -255), 0.0f, 0.0f, 0.0f, Vector3(2, 1, 2));
     m_GameObjects.push_back(pGround21);
     m_ColliderObjects.push_back(pGround21);
     m_Grounds.push_back(pGround21);
     m_GameObjects.push_back(pGround21->GroundCheck);
-        Terrain* pGround22 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -220), 0.0f, 0.0f, 0.0f, Vector3(2, 1, 2));
+        std::shared_ptr<Terrain> pGround22 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -220), 0.0f, 0.0f, 0.0f, Vector3(2, 1, 2));
     m_GameObjects.push_back(pGround22);
     m_ColliderObjects.push_back(pGround22);
     m_Grounds.push_back(pGround22);
     m_GameObjects.push_back(pGround22->GroundCheck);
-        Terrain* pGround23 = new Terrain("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -175), 0.0f, 0.0f, 0.0f, Vector3(5, 2, 5));
+        std::shared_ptr<Terrain> pGround23 = std::make_shared<Terrain>("GrassCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -175), 0.0f, 0.0f, 0.0f, Vector3(5, 2, 5));
     m_GameObjects.push_back(pGround23);
     m_ColliderObjects.push_back(pGround23);
     m_Grounds.push_back(pGround23);
     m_GameObjects.push_back(pGround23->GroundCheck);
-        CMOGO* pCheckpoint4 = new CMOGO("Checkpoint", m_d3dDevice.Get(), m_fxFactory);
+        std::shared_ptr<CMOGO> pCheckpoint4 = std::make_shared<CMOGO>("Checkpoint", m_d3dDevice.Get(), m_fxFactory);
     pCheckpoint4->SetPos(Vector3(-275, 410, -175));
     pCheckpoint4->SetScale(Vector3(1, 1, 1));
     m_GameObjects.push_back(pCheckpoint4);
     m_Checkpoints.push_back(pCheckpoint4);
 
     // BOSS APPROACH
-        Terrain* pLaunchpad = new Terrain("Launchpad", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -125), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
+        std::shared_ptr<Terrain> pLaunchpad = std::make_shared<Terrain>("Launchpad", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 400, -125), 0.0f, 0.0f, 0.0f, Vector3(4, 1, 4));
     m_GameObjects.push_back(pLaunchpad);
     m_ColliderObjects.push_back(pLaunchpad);
     m_Grounds.push_back(pLaunchpad);
     m_GameObjects.push_back(pLaunchpad->GroundCheck);
-        pLaunchpadTrigger = new CMOGO("Launchpad", m_d3dDevice.Get(), m_fxFactory);
+        pLaunchpadTrigger = std::make_shared<CMOGO>("Launchpad", m_d3dDevice.Get(), m_fxFactory);
     pLaunchpadTrigger->SetPos(Vector3(-275, 410, -125));
     pLaunchpadTrigger->SetScale(Vector3(4, 1, 4));
     m_GameObjects.push_back(pLaunchpadTrigger);
     m_TriggerObjects.push_back(pLaunchpadTrigger);
-        Terrain* pBossStageBelow = new Terrain("BossStage", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 900, -125), 0.0f, 0.0f, 0.0f, Vector3(5, 1, 5));
+        std::shared_ptr<Terrain> pBossStageBelow = std::make_shared<Terrain>("BossStage", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 900, -125), 0.0f, 0.0f, 0.0f, Vector3(5, 1, 5));
     m_GameObjects.push_back(pBossStageBelow);
 }
 void Game::CreateIntroGround()
 {
-        Terrain* pGroundIntro = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -12.5f, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 17.5f));
+        std::shared_ptr<Terrain> pGroundIntro = std::make_shared<Terrain>("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -12.5f, -50), 0.0f, 0.0f, 0.0f, Vector3(15, 1, 17.5f));
     m_IntroGOs.push_back(pGroundIntro);
     m_ColliderObjects.push_back(pGroundIntro);
     m_Grounds.push_back(pGroundIntro);
     m_IntroGOs.push_back(pGroundIntro->GroundCheck);
-        Terrain* pIntroLWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 5, 17.5f));
+        std::shared_ptr<Terrain> pIntroLWall = std::make_shared<Terrain>("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(-35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 5, 17.5f));
     m_IntroGOs.push_back(pIntroLWall);
     m_ColliderObjects.push_back(pIntroLWall);
-        Terrain* pIntroRWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 5, 17.5f));
+        std::shared_ptr<Terrain> pIntroRWall = std::make_shared<Terrain>("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(35, 0, -50), 0.0f, 0.0f, 0.0f, Vector3(1, 5, 17.5f));
     m_IntroGOs.push_back(pIntroRWall);
     m_ColliderObjects.push_back(pIntroRWall);
-        Terrain* pIntroCeiling = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 30, -50), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 1, 17.5f));
+        std::shared_ptr<Terrain> pIntroCeiling = std::make_shared<Terrain>("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 30, -50), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 1, 17.5f));
     m_IntroGOs.push_back(pIntroCeiling);
     m_ColliderObjects.push_back(pIntroCeiling);
-        Terrain* pIntroBackWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 5), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 5, 3));
+        std::shared_ptr<Terrain> pIntroBackWall = std::make_shared<Terrain>("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 5), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 5, 3));
     m_IntroGOs.push_back(pIntroBackWall);
     m_ColliderObjects.push_back(pIntroBackWall);
-        Terrain* pIntroFrontWall = new Terrain("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -137.5f), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 5, 1));
+        std::shared_ptr<Terrain> pIntroFrontWall = std::make_shared<Terrain>("CaveCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -137.5f), 0.0f, 0.0f, 0.0f, Vector3(7.5f, 5, 1));
     m_IntroGOs.push_back(pIntroFrontWall);
     m_ColliderObjects.push_back(pIntroFrontWall);
 
-        Terrain* pIntroBreakable = new Terrain("CrackedWall", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2.5, -134), 0.0f, 0.0f, 0.0f, Vector3(4, 5.5f, 3));
+        std::shared_ptr<Terrain> pIntroBreakable = std::make_shared<Terrain>("CrackedWall", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2.5, -134), 0.0f, 0.0f, 0.0f, Vector3(4, 5.5f, 3));
     m_IntroGOs.push_back(pIntroBreakable);
     m_ColliderObjects.push_back(pIntroBreakable);
     m_Destructibles.push_back(pIntroBreakable);
-        pIntroExit = new Terrain("WhiteCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2.5f, -135.25f), 0.0f, 0.0f, 0.0f, Vector3(3, 5, 3));
+        pIntroExit = std::make_shared<Terrain>("WhiteCube", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2.5f, -135.25f), 0.0f, 0.0f, 0.0f, Vector3(3, 5, 3));
     m_IntroGOs.push_back(pIntroExit);
     m_TriggerObjects.push_back(pIntroExit);
 
-        pGoldedge = new Coin("Sword", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -75));
+        pGoldedge = std::make_shared<Coin>("Sword", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -75));
     pGoldedge->SetYaw(90);
     pGoldedge->SetScale(Vector3(0.25f, 0.3f, 0.25f));
     m_IntroGOs.push_back(pGoldedge);
@@ -1487,39 +1579,39 @@ void Game::CreateIntroGround()
 }
 void Game::CreateBossGround()
 {
-        Terrain* pBGMain = new Terrain("BossStage", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 0), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
+        std::shared_ptr<Terrain> pBGMain = std::make_shared<Terrain>("BossStage", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 0), 0.0f, 0.0f, 0.0f, Vector3(25, 1, 25));
     m_BossGOs.push_back(pBGMain);
     m_ColliderObjects.push_back(pBGMain);
     m_Grounds.push_back(pBGMain);
     m_BossGOs.push_back(pBGMain->GroundCheck);
 
     //Core 1
-        Terrain* pBG1 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(150, 0, 0), 0.0f, 0.0f, 0.0f, Vector3(3, 1, 3));
+        std::shared_ptr<Terrain> pBG1 = std::make_shared<Terrain>("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(150, 0, 0), 0.0f, 0.0f, 0.0f, Vector3(3, 1, 3));
     m_BossGOs.push_back(pBG1);
     m_ColliderObjects.push_back(pBG1);
     m_Grounds.push_back(pBG1);
     m_BossGOs.push_back(pBG1->GroundCheck);
-        Terrain* pBG2 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(190, 10, 0), 0.0f, 0.0f, 0.0f, Vector3(2.5f, 1, 2.5f));
+        std::shared_ptr<Terrain> pBG2 = std::make_shared<Terrain>("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(190, 10, 0), 0.0f, 0.0f, 0.0f, Vector3(2.5f, 1, 2.5f));
     m_BossGOs.push_back(pBG2);
     m_ColliderObjects.push_back(pBG2);
     m_Grounds.push_back(pBG2);
     m_BossGOs.push_back(pBG2->GroundCheck);
-        Terrain* pBG3 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(225, 20, 0), 0.0f, 0.0f, 0.0f, Vector3(2, 1, 2));
+        std::shared_ptr<Terrain> pBG3 = std::make_shared<Terrain>("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(225, 20, 0), 0.0f, 0.0f, 0.0f, Vector3(2, 1, 2));
     m_BossGOs.push_back(pBG3);
     m_ColliderObjects.push_back(pBG3);
     m_Grounds.push_back(pBG3);
     m_BossGOs.push_back(pBG3->GroundCheck);
-        Terrain* pBG4 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(260, 30, 0), 0.0f, 0.0f, 0.0f, Vector3(1.5f, 1, 1.5f));
+        std::shared_ptr<Terrain> pBG4 = std::make_shared<Terrain>("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(260, 30, 0), 0.0f, 0.0f, 0.0f, Vector3(1.5f, 1, 1.5f));
     m_BossGOs.push_back(pBG4);
     m_ColliderObjects.push_back(pBG4);
     m_Grounds.push_back(pBG4);
     m_BossGOs.push_back(pBG4->GroundCheck);
-        Terrain* pBG5 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(300, 40, 0), 0.0f, 0.0f, 0.0f, Vector3(3.5f, 1, 3.5f));
+        std::shared_ptr<Terrain> pBG5 = std::make_shared<Terrain>("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(300, 40, 0), 0.0f, 0.0f, 0.0f, Vector3(3.5f, 1, 3.5f));
     m_BossGOs.push_back(pBG5);
     m_ColliderObjects.push_back(pBG5);
     m_Grounds.push_back(pBG5);
     m_BossGOs.push_back(pBG5->GroundCheck);
-        pCore1 = new CMOGO("BossCore", m_d3dDevice.Get(), m_fxFactory);
+        pCore1 = std::make_shared<CMOGO>("BossCore", m_d3dDevice.Get(), m_fxFactory);
     pCore1->SetPos(Vector3(300, 45, 0));
     pCore1->SetScale(Vector3::One * 0.75f);
     m_BossGOs.push_back(pCore1);
@@ -1527,26 +1619,26 @@ void Game::CreateBossGround()
     m_Destructibles.push_back(pCore1);
 
     //Core 2
-        pMovePlatB1 = new MovingPlatform("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-150, -10, -150), 0.0f, 40.0f, 0.0f, Vector3(3, 1, 3));
+        pMovePlatB1 = std::make_shared<MovingPlatform>("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-150, -10, -150), 0.0f, 40.0f, 0.0f, Vector3(3, 1, 3));
         pMovePlatB1->Moving = MOVEUP;
         pMovePlatB1->updown_speed = 35;
     m_BossGOs.push_back(pMovePlatB1);
     m_ColliderObjects.push_back(pMovePlatB1);
     m_Platforms.push_back(pMovePlatB1);
     m_BossGOs.push_back(pMovePlatB1->GroundCheck);
-        pMovePlatB2 = new MovingPlatform("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-175, 180, -175), 0.0f, 40.0f, 0.0f, Vector3(3, 1, 3));
+        pMovePlatB2 = std::make_shared<MovingPlatform>("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-175, 180, -175), 0.0f, 40.0f, 0.0f, Vector3(3, 1, 3));
         pMovePlatB2->Moving = MOVEDOWN;
         pMovePlatB2->updown_speed = 35;
     m_BossGOs.push_back(pMovePlatB2);
     m_ColliderObjects.push_back(pMovePlatB2);
     m_Platforms.push_back(pMovePlatB2);
     m_BossGOs.push_back(pMovePlatB2->GroundCheck);
-        Terrain* pBG6 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-210, 170, -210), 0.0f, 40.0f, 0.0f, Vector3(3.5f, 1, 3.5f));
+        std::shared_ptr<Terrain> pBG6 = std::make_shared<Terrain>("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-210, 170, -210), 0.0f, 40.0f, 0.0f, Vector3(3.5f, 1, 3.5f));
     m_BossGOs.push_back(pBG6);
     m_ColliderObjects.push_back(pBG6);
     m_Grounds.push_back(pBG6);
     m_BossGOs.push_back(pBG6->GroundCheck);
-        pCore2 = new CMOGO("BossCore", m_d3dDevice.Get(), m_fxFactory);
+        pCore2 = std::make_shared<CMOGO>("BossCore", m_d3dDevice.Get(), m_fxFactory);
     pCore2->SetPos(Vector3(-210, 175, -210));
     pCore2->SetScale(Vector3::One * 0.75f);
     m_BossGOs.push_back(pCore2);
@@ -1554,26 +1646,26 @@ void Game::CreateBossGround()
     m_Destructibles.push_back(pCore2);
 
     //Core 3
-        pMovePlatB3 = new MovingPlatform("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-185, 0, 185), 0.0f, 40.0f, 0.0f, Vector3(15, 1, 3));
+        pMovePlatB3 = std::make_shared<MovingPlatform>("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-185, 0, 185), 0.0f, 40.0f, 0.0f, Vector3(15, 1, 3));
         pMovePlatB3->Moving = ROTATEANTICLOCKWISE;
         pMovePlatB3->rotate_speed = 2.25f;
     m_BossGOs.push_back(pMovePlatB3);
     m_ColliderObjects.push_back(pMovePlatB3);
     m_Platforms.push_back(pMovePlatB3);
     m_BossGOs.push_back(pMovePlatB3->GroundCheck);
-        pMovePlatB4 = new MovingPlatform("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-300, 0, 300), 0.0f, 40.0f, 0.0f, Vector3(15, 1, 3));
+        pMovePlatB4 = std::make_shared<MovingPlatform>("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-300, 0, 300), 0.0f, 40.0f, 0.0f, Vector3(15, 1, 3));
         pMovePlatB4->Moving = ROTATECLOCKWISE;
         pMovePlatB4->rotate_speed = 2.25f;
     m_BossGOs.push_back(pMovePlatB4);
     m_ColliderObjects.push_back(pMovePlatB4);
     m_Platforms.push_back(pMovePlatB4);
     m_BossGOs.push_back(pMovePlatB4->GroundCheck);
-        Terrain* pBG7 = new Terrain("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-375, 0, 375), 0.0f, 40.0f, 0.0f, Vector3(3.5f, 1, 3.5f));
+        std::shared_ptr<Terrain> pBG7 = std::make_shared<Terrain>("BossStageBase", m_d3dDevice.Get(), m_fxFactory, Vector3(-375, 0, 375), 0.0f, 40.0f, 0.0f, Vector3(3.5f, 1, 3.5f));
     m_BossGOs.push_back(pBG7);
     m_ColliderObjects.push_back(pBG7);
     m_Grounds.push_back(pBG7);
     m_BossGOs.push_back(pBG7->GroundCheck);
-        pCore3 = new CMOGO("BossCore", m_d3dDevice.Get(), m_fxFactory);
+        pCore3 = std::make_shared<CMOGO>("BossCore", m_d3dDevice.Get(), m_fxFactory);
     pCore3->SetPos(Vector3(-375, 5, 375));
     pCore3->SetScale(Vector3::One * 0.75f);
     m_BossGOs.push_back(pCore3);
@@ -1640,29 +1732,29 @@ void Game::CreateAudio()
 }
 void Game::CreateUI()
 {
-        ImageGO2D* UIBG = new ImageGO2D("UIBackground", m_d3dDevice.Get());
+        std::shared_ptr<ImageGO2D> UIBG = std::make_shared<ImageGO2D>("UIBackground", m_d3dDevice.Get());
     UIBG->SetPos(Vector2(700, 50));
     UIBG->SetScale(Vector2(0.15f, 0.2f));
     UIBG->SetRendered(true);
     m_GameObjects2D.push_back(UIBG);
 
-        ImageGO2D* pLivesCount = new ImageGO2D("Heart", m_d3dDevice.Get());
+        std::shared_ptr<ImageGO2D> pLivesCount = std::make_shared<ImageGO2D>("Heart", m_d3dDevice.Get());
     pLivesCount->SetPos(Vector2(615, 50));
     pLivesCount->SetScale(0.075f);
     pLivesCount->SetRendered(true);
         m_GameObjects2D.push_back(pLivesCount);
-    livesText = new TextGO2D(std::to_string(lives));
+    livesText = std::make_shared<TextGO2D>(std::to_string(lives));
     livesText->SetPos(Vector2(595, 15));
     livesText->SetColour(Color((float*)&Colors::Black));
     livesText->SetScale(Vector2(1.1f, 1));
     m_GameObjects2D.push_back(livesText);
 
-        ImageGO2D* pScoreCount = new ImageGO2D("Coin", m_d3dDevice.Get());
+        std::shared_ptr<ImageGO2D> pScoreCount = std::make_shared<ImageGO2D>("Coin", m_d3dDevice.Get());
     pScoreCount->SetPos(Vector2(725, 50));
     pScoreCount->SetScale(Vector2(0.09f, 0.075f));
     pScoreCount->SetRendered(true);
         m_GameObjects2D.push_back(pScoreCount);
-    scoreText = new TextGO2D(std::to_string(score));
+    scoreText = std::make_shared<TextGO2D>(std::to_string(score));
     scoreText->SetPos(Vector2(705, 15));
     scoreText->SetColour(Color((float*)&Colors::Black));
     scoreText->SetScale(Vector2(1.1f, 1));
@@ -1672,186 +1764,186 @@ void Game::CreateUI()
 void Game::CreateCoins()
 {
     // LAYER 1
-        Coin* pCoin1 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 50));
+        std::shared_ptr<Coin> pCoin1 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 50));
     m_GameObjects.push_back(pCoin1);
     m_Coins.push_back(pCoin1);
-        Coin* pCoin2 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 35));
+        std::shared_ptr<Coin> pCoin2 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, 35));
     m_GameObjects.push_back(pCoin2);
     m_Coins.push_back(pCoin2);
-        Coin* pCoin3 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-30, 0, 10));
+        std::shared_ptr<Coin> pCoin3 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-30, 0, 10));
     m_GameObjects.push_back(pCoin3);
     m_Coins.push_back(pCoin3);
-        Coin* pCoin4 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(30, 0, 10));
+        std::shared_ptr<Coin> pCoin4 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(30, 0, 10));
     m_GameObjects.push_back(pCoin4);
     m_Coins.push_back(pCoin4);
-        Coin* pCoin5 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 10, -125));
+        std::shared_ptr<Coin> pCoin5 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 10, -125));
     m_GameObjects.push_back(pCoin5);
     m_Coins.push_back(pCoin5);
-        Coin* pCoin6 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-50, 10, -175));
+        std::shared_ptr<Coin> pCoin6 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-50, 10, -175));
     m_GameObjects.push_back(pCoin6);
     m_Coins.push_back(pCoin6);
-        Coin* pCoin7 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 10, -225));
+        std::shared_ptr<Coin> pCoin7 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 10, -225));
     m_GameObjects.push_back(pCoin7);
     m_Coins.push_back(pCoin7);
-        Coin* pCoin8 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 25, -425));
+        std::shared_ptr<Coin> pCoin8 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 25, -425));
     m_GameObjects.push_back(pCoin8);
     m_Coins.push_back(pCoin8);
-        Coin* pCoin9 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(25, 25, -450));
+        std::shared_ptr<Coin> pCoin9 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(25, 25, -450));
     m_GameObjects.push_back(pCoin9);
     m_Coins.push_back(pCoin9);
-        Coin* pCoin10 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-25, 25, -450));
+        std::shared_ptr<Coin> pCoin10 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-25, 25, -450));
     m_GameObjects.push_back(pCoin10);
     m_Coins.push_back(pCoin10);
-        Coin* pCoin11 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-200, 25, -415));
+        std::shared_ptr<Coin> pCoin11 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-200, 25, -415));
     m_GameObjects.push_back(pCoin11);
     m_Coins.push_back(pCoin11);
-        Coin* pCoin12 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-350, 25, -415));
+        std::shared_ptr<Coin> pCoin12 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-350, 25, -415));
     m_GameObjects.push_back(pCoin12);
     m_Coins.push_back(pCoin12);
 
     // LAYER 2
-        Coin* pCoin13 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 125, -60));
+        std::shared_ptr<Coin> pCoin13 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 125, -60));
     m_GameObjects.push_back(pCoin13);
     m_Coins.push_back(pCoin13);
-        Coin* pCoin14 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-375, 105, 25));
+        std::shared_ptr<Coin> pCoin14 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-375, 105, 25));
     m_GameObjects.push_back(pCoin14);
     m_Coins.push_back(pCoin14);
-        Coin* pCoin15 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-325, 105, 25));
+        std::shared_ptr<Coin> pCoin15 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-325, 105, 25));
     m_GameObjects.push_back(pCoin15);
     m_Coins.push_back(pCoin15);
-        Coin* pCoin16 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 105, 25));
+        std::shared_ptr<Coin> pCoin16 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 105, 25));
     m_GameObjects.push_back(pCoin16);
     m_Coins.push_back(pCoin16);
-        Coin* pCoin17 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 105, -90));
+        std::shared_ptr<Coin> pCoin17 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 105, -90));
     m_GameObjects.push_back(pCoin17);
     m_Coins.push_back(pCoin17);
-        Coin* pCoin18 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 105, 140));
+        std::shared_ptr<Coin> pCoin18 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 105, 140));
     m_GameObjects.push_back(pCoin18);
     m_Coins.push_back(pCoin18);
-        Coin* pCoin19 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(225, 105, 25));
+        std::shared_ptr<Coin> pCoin19 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(225, 105, 25));
     m_GameObjects.push_back(pCoin19);
     m_Coins.push_back(pCoin19);
-        Coin* pCoin20 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(175, 105, 25));
+        std::shared_ptr<Coin> pCoin20 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(175, 105, 25));
     m_GameObjects.push_back(pCoin20);
     m_Coins.push_back(pCoin20);
 
     // LAYER 3
-        Coin* pCoin21 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(300, 155, -105));
+        std::shared_ptr<Coin> pCoin21 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(300, 155, -105));
     m_GameObjects.push_back(pCoin21);
     m_Coins.push_back(pCoin21);
-        Coin* pCoin22 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(250, 155, -105));
+        std::shared_ptr<Coin> pCoin22 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(250, 155, -105));
     m_GameObjects.push_back(pCoin22);
     m_Coins.push_back(pCoin22);
-        Coin* pCoin23 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(150, 162.5f, -165));
+        std::shared_ptr<Coin> pCoin23 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(150, 162.5f, -165));
     m_GameObjects.push_back(pCoin23);
     m_Coins.push_back(pCoin23);
-        Coin* pCoin24 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 162.5f, -275));
+        std::shared_ptr<Coin> pCoin24 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 162.5f, -275));
     m_GameObjects.push_back(pCoin24);
     m_Coins.push_back(pCoin24);
-        Coin* pCoin25 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 162.5f, -165));
+        std::shared_ptr<Coin> pCoin25 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 162.5f, -165));
     m_GameObjects.push_back(pCoin25);
     m_Coins.push_back(pCoin25);
     
     // LAYER 4
-        Coin* pCoin26 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-90, 165, -400));
+        std::shared_ptr<Coin> pCoin26 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-90, 165, -400));
     m_GameObjects.push_back(pCoin26);
     m_Coins.push_back(pCoin26);
-    Coin* pCoin27 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-175, 200, -400));
+        std::shared_ptr<Coin> pCoin27 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-175, 200, -400));
     m_GameObjects.push_back(pCoin27);
     m_Coins.push_back(pCoin27);
-    Coin* pCoin28 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-225, 275, -400));
+        std::shared_ptr<Coin> pCoin28 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-225, 275, -400));
     m_GameObjects.push_back(pCoin28);
     m_Coins.push_back(pCoin28);
-    Coin* pCoin29 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 350, -400));
+        std::shared_ptr<Coin> pCoin29 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 350, -400));
     m_GameObjects.push_back(pCoin29);
     m_Coins.push_back(pCoin29);
-    Coin* pCoin30 = new Coin("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 415, -325));
+        std::shared_ptr<Coin> pCoin30 = std::make_shared<Coin>("Coin", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 415, -325));
     m_GameObjects.push_back(pCoin30);
     m_Coins.push_back(pCoin30);
 }
 void Game::CreateEnemies()
 {
     // LAYER 1
-        Enemy* pEnemy1 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -50));
+    std::shared_ptr<Enemy> pEnemy1 = std::make_shared<Enemy>("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 0, -50));
     m_GameObjects.push_back(pEnemy1);
     m_Enemies.push_back(pEnemy1);
     m_GameObjects.push_back(pEnemy1->EnemySensor);
     m_EnemySensors.push_back(pEnemy1->EnemySensor);
-        Enemy* pEnemy2 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(30, 10, -180));
+    std::shared_ptr<Enemy> pEnemy2 = std::make_shared<Enemy>("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(30, 10, -180));
     m_GameObjects.push_back(pEnemy2);
     m_Enemies.push_back(pEnemy2);
     m_GameObjects.push_back(pEnemy2->EnemySensor);
     m_EnemySensors.push_back(pEnemy2->EnemySensor);
-        Enemy* pEnemy3 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30, 10.0f, -180));
+    std::shared_ptr<Enemy> pEnemy3 = std::make_shared<Enemy>("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-30, 10.0f, -180));
     m_GameObjects.push_back(pEnemy3);
     m_Enemies.push_back(pEnemy3);
     m_GameObjects.push_back(pEnemy3->EnemySensor);
     m_EnemySensors.push_back(pEnemy3->EnemySensor);
-        Enemy* pEnemy4 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 24, -375));
+    std::shared_ptr<Enemy> pEnemy4 = std::make_shared<Enemy>("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 24, -375));
     m_GameObjects.push_back(pEnemy4);
     m_Enemies.push_back(pEnemy4);
     m_GameObjects.push_back(pEnemy4->EnemySensor);
     m_EnemySensors.push_back(pEnemy4->EnemySensor);
-        Enemy* pEnemy5 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(15, 24, -425));
+    std::shared_ptr<Enemy> pEnemy5 = std::make_shared<Enemy>("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(15, 24, -425));
     m_GameObjects.push_back(pEnemy5);
     m_Enemies.push_back(pEnemy5);
     m_GameObjects.push_back(pEnemy5->EnemySensor);
     m_EnemySensors.push_back(pEnemy5->EnemySensor);
-        Enemy* pEnemy6 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-15, 24, -425));
+    std::shared_ptr<Enemy> pEnemy6 = std::make_shared<Enemy>("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-15, 24, -425));
     m_GameObjects.push_back(pEnemy6);
     m_Enemies.push_back(pEnemy6);
     m_GameObjects.push_back(pEnemy6->EnemySensor);
     m_EnemySensors.push_back(pEnemy6->EnemySensor);
-        Enemy* pEnemy7 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-375, 30, -250));
+    std::shared_ptr<Enemy> pEnemy7 = std::make_shared<Enemy>("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-375, 30, -250));
     m_GameObjects.push_back(pEnemy7);
     m_Enemies.push_back(pEnemy7);
     m_GameObjects.push_back(pEnemy7->EnemySensor);
     m_EnemySensors.push_back(pEnemy7->EnemySensor);
-        Enemy* pEnemy8 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-425, 30, -250));
+    std::shared_ptr<Enemy> pEnemy8 = std::make_shared<Enemy>("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-425, 30, -250));
     m_GameObjects.push_back(pEnemy8);
     m_Enemies.push_back(pEnemy8);
     m_GameObjects.push_back(pEnemy8->EnemySensor);
     m_EnemySensors.push_back(pEnemy8->EnemySensor);
-        Enemy* pStrongE1 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 30, -210));
+    std::shared_ptr<Enemy> pStrongE1 = std::make_shared<Enemy>("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-400, 30, -210));
         pStrongE1->speed = pStrongE1->speed * 2;
     m_GameObjects.push_back(pStrongE1);
     m_Enemies.push_back(pStrongE1);
     m_GameObjects.push_back(pStrongE1->EnemySensor);
     m_EnemySensors.push_back(pStrongE1->EnemySensor);
-        Enemy* pEnemy9 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-425, 30, -250));
+    std::shared_ptr<Enemy> pEnemy9 = std::make_shared<Enemy>("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-425, 30, -250));
     m_GameObjects.push_back(pEnemy9);
     m_Enemies.push_back(pEnemy9);
     m_GameObjects.push_back(pEnemy9->EnemySensor);
     m_EnemySensors.push_back(pEnemy9->EnemySensor);
 
     // LAYER 2
-        Enemy* pEnemy10 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-225, 105, 25));
+    std::shared_ptr<Enemy> pEnemy10 = std::make_shared<Enemy>("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-225, 105, 25));
     m_GameObjects.push_back(pEnemy10);
     m_Enemies.push_back(pEnemy10);
     m_GameObjects.push_back(pEnemy10->EnemySensor);
     m_EnemySensors.push_back(pEnemy10->EnemySensor);
-        Enemy* pEnemy11 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-175, 105, 25));
+    std::shared_ptr<Enemy> pEnemy11 = std::make_shared<Enemy>("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-175, 105, 25));
     m_GameObjects.push_back(pEnemy11);
     m_Enemies.push_back(pEnemy11);
     m_GameObjects.push_back(pEnemy11->EnemySensor);
     m_EnemySensors.push_back(pEnemy11->EnemySensor);
-        Enemy* pStrongE2 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 105, 25));
+    std::shared_ptr<Enemy> pStrongE2 = std::make_shared<Enemy>("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(0, 105, 25));
         pStrongE2->speed = pStrongE2->speed * 2;
     m_GameObjects.push_back(pStrongE2);
     m_Enemies.push_back(pStrongE2);
     m_GameObjects.push_back(pStrongE2->EnemySensor);
     m_EnemySensors.push_back(pStrongE2->EnemySensor);
-        Enemy* pEnemy12 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(275, 105, 25));
+    std::shared_ptr<Enemy> pEnemy12 = std::make_shared<Enemy>("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(275, 105, 25));
     m_GameObjects.push_back(pEnemy12);
     m_Enemies.push_back(pEnemy12);
     m_GameObjects.push_back(pEnemy12->EnemySensor);
     m_EnemySensors.push_back(pEnemy12->EnemySensor);
-        Enemy* pEnemy13 = new Enemy("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(325, 105, 25));
+    std::shared_ptr<Enemy> pEnemy13 = std::make_shared<Enemy>("Enemy", m_d3dDevice.Get(), m_fxFactory, Vector3(325, 105, 25));
     m_GameObjects.push_back(pEnemy13);
     m_Enemies.push_back(pEnemy13);
     m_GameObjects.push_back(pEnemy13->EnemySensor);
     m_EnemySensors.push_back(pEnemy13->EnemySensor);
-        Enemy* pStrongE3 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(375, 105, 25));
+    std::shared_ptr<Enemy> pStrongE3 = std::make_shared<Enemy>("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(375, 105, 25));
         pStrongE3->speed = pStrongE3->speed * 2;
     m_GameObjects.push_back(pStrongE3);
     m_Enemies.push_back(pStrongE3);
@@ -1859,31 +1951,31 @@ void Game::CreateEnemies()
     m_EnemySensors.push_back(pStrongE3->EnemySensor);
 
     // LAYER 4
-        Enemy* pStrongE4 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-125, 165, -365));
+    std::shared_ptr<Enemy> pStrongE4 = std::make_shared<Enemy>("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-125, 165, -365));
         pStrongE4->speed = pStrongE4->speed * 2;
     m_GameObjects.push_back(pStrongE4);
     m_Enemies.push_back(pStrongE4);
     m_GameObjects.push_back(pStrongE4->EnemySensor);
     m_EnemySensors.push_back(pStrongE4->EnemySensor);
-        Enemy* pStrongE5 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-125, 165, -435));
+    std::shared_ptr<Enemy> pStrongE5 = std::make_shared<Enemy>("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-125, 165, -435));
         pStrongE5->speed = pStrongE5->speed * 2;
     m_GameObjects.push_back(pStrongE5);
     m_Enemies.push_back(pStrongE5);
     m_GameObjects.push_back(pStrongE5->EnemySensor);
     m_EnemySensors.push_back(pStrongE5->EnemySensor);
-        Enemy* pStrongE6 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 415, -300));
+    std::shared_ptr<Enemy> pStrongE6 = std::make_shared<Enemy>("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 415, -300));
         pStrongE6->speed = pStrongE6->speed * 2;
     m_GameObjects.push_back(pStrongE6);
     m_Enemies.push_back(pStrongE6);
     m_GameObjects.push_back(pStrongE6->EnemySensor);
     m_EnemySensors.push_back(pStrongE6->EnemySensor);
-        Enemy* pStrongE7 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-250, 415, -285));
+    std::shared_ptr<Enemy> pStrongE7 = std::make_shared<Enemy>("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-250, 415, -285));
         pStrongE7->speed = pStrongE7->speed * 2;
     m_GameObjects.push_back(pStrongE7);
     m_Enemies.push_back(pStrongE7);
     m_GameObjects.push_back(pStrongE7->EnemySensor);
     m_EnemySensors.push_back(pStrongE7->EnemySensor);
-        Enemy* pStrongE8 = new Enemy("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-300, 415, -285));
+    std::shared_ptr<Enemy> pStrongE8 = std::make_shared<Enemy>("StrongEnemy", m_d3dDevice.Get(), m_fxFactory, Vector3(-300, 415, -285));
         pStrongE8->speed = pStrongE8->speed * 2;
     m_GameObjects.push_back(pStrongE8);
     m_Enemies.push_back(pStrongE8);
@@ -1892,85 +1984,85 @@ void Game::CreateEnemies()
 }
 void Game::CreateSigns()
 {
-        pSign1 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -35), 0);
+        pSign1 = std::make_shared<Sign>("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -35), 0);
     m_IntroGOs.push_back(pSign1);
     m_Signs.push_back(pSign1);
     m_ColliderObjects.push_back(pSign1);
     m_IntroGOs.push_back(pSign1->SignTrigger);
-        pSign2 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -85), 0);
+        pSign2 = std::make_shared<Sign>("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -5, -85), 0);
     m_IntroGOs.push_back(pSign2);
     m_Signs.push_back(pSign2);
     m_ColliderObjects.push_back(pSign2);
     m_IntroGOs.push_back(pSign2->SignTrigger);
-        pSign3 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2, 15), 0);
+        pSign3 = std::make_shared<Sign>("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(0, -2, 15), 0);
     m_GameObjects.push_back(pSign3);
     m_Signs.push_back(pSign3);
     m_ColliderObjects.push_back(pSign3);
     m_GameObjects.push_back(pSign3->SignTrigger);
-        pSign4 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(15, 8, -120), 0);
+        pSign4 = std::make_shared<Sign>("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(15, 8, -120), 0);
     m_GameObjects.push_back(pSign4);
     m_Signs.push_back(pSign4);
     m_ColliderObjects.push_back(pSign4);
     m_GameObjects.push_back(pSign4->SignTrigger);
-        pSign5 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-375, 28, -175), 179);
+        pSign5 = std::make_shared<Sign>("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-375, 28, -175), 179);
     m_GameObjects.push_back(pSign5);
     m_Signs.push_back(pSign5);
     m_ColliderObjects.push_back(pSign5);
     m_GameObjects.push_back(pSign5->SignTrigger);
-        pSign6 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-160, 102.5f, 25), 80);
+        pSign6 = std::make_shared<Sign>("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-160, 102.5f, 25), 80);
     m_GameObjects.push_back(pSign6);
     m_Signs.push_back(pSign6);
     m_ColliderObjects.push_back(pSign6);
     m_GameObjects.push_back(pSign6->SignTrigger);
-        pSign7 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 160, -400), 0);
+        pSign7 = std::make_shared<Sign>("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(50, 160, -400), 0);
     m_GameObjects.push_back(pSign7);
     m_Signs.push_back(pSign7);
     m_ColliderObjects.push_back(pSign7);
     m_GameObjects.push_back(pSign7->SignTrigger);
-        pSign8 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 412.5f, -160), 179);
+        pSign8 = std::make_shared<Sign>("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-275, 412.5f, -160), 179);
     m_GameObjects.push_back(pSign8);
     m_Signs.push_back(pSign8);
     m_ColliderObjects.push_back(pSign8);
     m_GameObjects.push_back(pSign8->SignTrigger);
-        pSign9 = new Sign("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-290, 412.5f, -155), 179);
+        pSign9 = std::make_shared<Sign>("Sign", m_d3dDevice.Get(), m_fxFactory, Vector3(-290, 412.5f, -155), 179);
     m_GameObjects.push_back(pSign9);
     m_Signs.push_back(pSign9);
     m_ColliderObjects.push_back(pSign9);
     m_GameObjects.push_back(pSign9->SignTrigger);
 
-        sign1Image = new ImageGO2D("IntroLoreSign", m_d3dDevice.Get());
+        sign1Image = std::make_shared<ImageGO2D>("IntroLoreSign", m_d3dDevice.Get());
     sign1Image->SetPos(Vector2(400, 300));
     sign1Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign1Image);
-        sign2Image = new ImageGO2D("IntroHTPSign", m_d3dDevice.Get());
+        sign2Image = std::make_shared<ImageGO2D>("IntroHTPSign", m_d3dDevice.Get());
     sign2Image->SetPos(Vector2(400, 300));
     sign2Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign2Image);
-        sign3Image = new ImageGO2D("TreeInfoSign", m_d3dDevice.Get());
+        sign3Image = std::make_shared<ImageGO2D>("TreeInfoSign", m_d3dDevice.Get());
     sign3Image->SetPos(Vector2(400, 300));
     sign3Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign3Image);
-        sign4Image = new ImageGO2D("CubeMinionSign", m_d3dDevice.Get());
+        sign4Image = std::make_shared<ImageGO2D>("CubeMinionSign", m_d3dDevice.Get());
     sign4Image->SetPos(Vector2(400, 300));
     sign4Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign4Image);
-        sign5Image = new ImageGO2D("CheckpointSign", m_d3dDevice.Get());
+        sign5Image = std::make_shared<ImageGO2D>("CheckpointSign", m_d3dDevice.Get());
     sign5Image->SetPos(Vector2(400, 300));
     sign5Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign5Image);
-        sign6Image = new ImageGO2D("MovePlatHint", m_d3dDevice.Get());
+        sign6Image = std::make_shared<ImageGO2D>("MovePlatHint", m_d3dDevice.Get());
     sign6Image->SetPos(Vector2(400, 300));
     sign6Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign6Image);
-        sign7Image = new ImageGO2D("AlmostThereSign", m_d3dDevice.Get());
+        sign7Image = std::make_shared<ImageGO2D>("AlmostThereSign", m_d3dDevice.Get());
     sign7Image->SetPos(Vector2(400, 300));
     sign7Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign7Image);
-        sign8Image = new ImageGO2D("FinalSign", m_d3dDevice.Get());
+        sign8Image = std::make_shared<ImageGO2D>("FinalSign", m_d3dDevice.Get());
     sign8Image->SetPos(Vector2(400, 300));
     sign8Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign8Image);
-        sign9Image = new ImageGO2D("BossHintSign", m_d3dDevice.Get());
+        sign9Image = std::make_shared<ImageGO2D>("BossHintSign", m_d3dDevice.Get());
     sign9Image->SetPos(Vector2(400, 300));
     sign9Image->SetScale(Vector2(0.75f, 0.75f));
     m_GameObjects2D.push_back(sign9Image);

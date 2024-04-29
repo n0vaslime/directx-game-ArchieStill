@@ -13,7 +13,7 @@ Boss::Boss(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF) : C
     is_talking = true;
     is_dying = false;
 
-    pBossProjectile = new CMOGO("Projectile", _pd3dDevice, _EF);
+    pBossProjectile = std::make_shared<CMOGO>("Projectile", _pd3dDevice, _EF);
     pBossProjectile->SetPos(Vector3::One * 1000000);
     pBossProjectile->SetScale(Vector3::One * 2.5f);
     pBossProjectile->SetRendered(false);

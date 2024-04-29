@@ -104,7 +104,7 @@ private:
     //Basic 3D renderers
     Camera* m_cam = NULL; //principle camera
     TPSCamera* m_TPScam = NULL;//TPS cam
-    std::shared_ptr<Light> m_light = NULL; //base light
+    Light* m_light = NULL; //base light
 
     //required for the CMO model rendering system
     DirectX::CommonStates* m_states = NULL;
@@ -123,22 +123,22 @@ private:
     //list<CMOGO*> m_CMOGameObjects; //data structure to hold pointers to all 3D CMO Game Objects
     //list<CMOGO*> m_PhysicsObjects
 
-    std::vector<CMOGO*> m_ColliderObjects;
-    std::vector<CMOGO*> m_PhysicsObjects;
-    std::vector<CMOGO*> m_TriggerObjects;
+    std::vector<std::shared_ptr<CMOGO>> m_ColliderObjects;
+    std::vector<std::shared_ptr<CMOGO>> m_PhysicsObjects;
+    std::vector<std::shared_ptr<CMOGO>> m_TriggerObjects;
 
     std::vector<std::shared_ptr<Player>> m_Player;
-    std::vector<Terrain*> m_Grounds;
-    std::vector<MovingPlatform*> m_Platforms;
-    std::vector<CMOGO*> m_Checkpoints;
-    std::vector<CMOGO*> m_Coins;
-    std::vector<CMOGO*> m_SwordTrigger;
-    std::vector<Enemy*> m_Enemies;
-    std::vector<CMOGO*> m_Destructibles;
-    std::vector<CMOGO*> m_EnemySensors;
-    std::vector<Sign*>  m_Signs;
+    std::vector<std::shared_ptr<Terrain>> m_Grounds;
+    std::vector<std::shared_ptr<MovingPlatform>> m_Platforms;
+    std::vector<std::shared_ptr<CMOGO>> m_Checkpoints;
+    std::vector<std::shared_ptr<CMOGO>> m_Coins;
+    std::vector<std::shared_ptr<CMOGO>> m_SwordTrigger;
+    std::vector<std::shared_ptr<Enemy>> m_Enemies;
+    std::vector<std::shared_ptr<CMOGO>> m_Destructibles;
+    std::vector<std::shared_ptr<CMOGO>> m_EnemySensors;
+    std::vector<std::shared_ptr<Sign>>  m_Signs;
     std::vector<string> m_StringLines;
-    std::vector<TextGO2D*> m_TextLines;
+    std::vector<std::shared_ptr<TextGO2D>> m_TextLines;
 
     void CheckCollision();
     void CheckTriggers();
@@ -156,62 +156,63 @@ private:
     std::unique_ptr<DirectX::AudioEngine> m_audioEngine;
     std::vector<Sound*>m_Sounds;
 
-    //The Super Important Stuff!!!!!
+    //The Important Stuff!!!!!
     std::shared_ptr<Player> pPlayer;
-    Coin* pGoldedge;
-    Boss* pKazcranak;
-    CMOGO* pCore1;
-    CMOGO* pCore2;
-    CMOGO* pCore3;
-    CMOGO* treeCollision;
-    CMOGO* secretTrigger;
+    std::shared_ptr<Coin> pGoldedge;
+    std::shared_ptr<Boss> pKazcranak;
+    std::shared_ptr<CMOGO> pCore1;
+    std::shared_ptr<CMOGO> pCore2;
+    std::shared_ptr<CMOGO> pCore3;
+    //std::shared_ptr<Tree> tree;
+    std::shared_ptr<CMOGO> treeCollision;
+    std::shared_ptr<CMOGO> secretTrigger;
 
     //Assorted triggers & cave exterior
-    Terrain* pIntroExit;
-    Terrain* pDeathTrigger;
-    CMOGO* pLaunchpadTrigger;
-    Terrain* pBossTrigger;
+    std::shared_ptr<Terrain> pIntroExit;
+    std::shared_ptr<Terrain> pDeathTrigger;
+    std::shared_ptr<CMOGO> pLaunchpadTrigger;
+    std::shared_ptr<Terrain> pBossTrigger;
 
     //Checkpoint notifications
-    TextGO2D* checkpoint_notif;
+    std::shared_ptr<TextGO2D> checkpoint_notif;
     float checkpoint_life = 0.0f;
     bool notif_active = false;
-    TextGO2D* skip_notif;
+    std::shared_ptr<TextGO2D> skip_notif;
 
     //Text for storing .txt text
-    TextGO2D* imported_lore;
-    ImageGO2D* secret_bg;
+    std::shared_ptr<TextGO2D> imported_lore;
+    std::shared_ptr<ImageGO2D> secret_bg;
 
     //Signs & sign images
-    Sign* pSign1;
-    Sign* pSign2;
-    Sign* pSign3;
-    Sign* pSign4;
-    Sign* pSign5;
-    Sign* pSign6;
-    Sign* pSign7;
-    Sign* pSign8;
-    Sign* pSign9;
-    ImageGO2D* sign1Image;
-    ImageGO2D* sign2Image;
-    ImageGO2D* sign3Image;
-    ImageGO2D* sign4Image;
-    ImageGO2D* sign5Image;
-    ImageGO2D* sign6Image;
-    ImageGO2D* sign7Image;
-    ImageGO2D* sign8Image;
-    ImageGO2D* sign9Image;
+    std::shared_ptr<Sign> pSign1;
+    std::shared_ptr<Sign> pSign2;
+    std::shared_ptr<Sign> pSign3;
+    std::shared_ptr<Sign> pSign4;
+    std::shared_ptr<Sign> pSign5;
+    std::shared_ptr<Sign> pSign6;
+    std::shared_ptr<Sign> pSign7;
+    std::shared_ptr<Sign> pSign8;
+    std::shared_ptr<Sign> pSign9;
+    std::shared_ptr<ImageGO2D> sign1Image;
+    std::shared_ptr<ImageGO2D> sign2Image;
+    std::shared_ptr<ImageGO2D> sign3Image;
+    std::shared_ptr<ImageGO2D> sign4Image;
+    std::shared_ptr<ImageGO2D> sign5Image;
+    std::shared_ptr<ImageGO2D> sign6Image;
+    std::shared_ptr<ImageGO2D> sign7Image;
+    std::shared_ptr<ImageGO2D> sign8Image;
+    std::shared_ptr<ImageGO2D> sign9Image;
     
     //Score & lives
     int score = 0;
-    TextGO2D* scoreText;
+    std::shared_ptr<TextGO2D> scoreText;
     int lives = 9;
-    TextGO2D* livesText;
+    std::shared_ptr<TextGO2D> livesText;
 
     //Assorted 2D images for states
-    ImageGO2D* title_screen;
-    ImageGO2D* credits;
-    ImageGO2D* lose_screen;
+    std::shared_ptr<ImageGO2D> title_screen;
+    std::shared_ptr<ImageGO2D> credits;
+    std::shared_ptr<ImageGO2D> lose_screen;
     float scroll = 2700;
     bool credits_scroll = false;
     bool reset = false;
@@ -243,19 +244,19 @@ private:
     Loop* KZK_final;
 
     //Moving platforms
-    MovingPlatform* pMovePlat1;
-    MovingPlatform* pMovePlat2;
-    MovingPlatform* pMovePlat3;
-    MovingPlatform* pMovePlat4;
-    MovingPlatform* pMovePlat5;
-    MovingPlatform* pMovePlat6;
-    MovingPlatform* pMovePlat7;
-    MovingPlatform* pMovePlat8;
-    MovingPlatform* pMovePlat9;
-    MovingPlatform* pMovePlatB1;
-    MovingPlatform* pMovePlatB2;
-    MovingPlatform* pMovePlatB3;
-    MovingPlatform* pMovePlatB4;
+    std::shared_ptr<MovingPlatform> pMovePlat1;
+    std::shared_ptr<MovingPlatform> pMovePlat2;
+    std::shared_ptr<MovingPlatform> pMovePlat3;
+    std::shared_ptr<MovingPlatform> pMovePlat4;
+    std::shared_ptr<MovingPlatform> pMovePlat5;
+    std::shared_ptr<MovingPlatform> pMovePlat6;
+    std::shared_ptr<MovingPlatform> pMovePlat7;
+    std::shared_ptr<MovingPlatform> pMovePlat8;
+    std::shared_ptr<MovingPlatform> pMovePlat9;
+    std::shared_ptr<MovingPlatform> pMovePlatB1;
+    std::shared_ptr<MovingPlatform> pMovePlatB2;
+    std::shared_ptr<MovingPlatform> pMovePlatB3;
+    std::shared_ptr<MovingPlatform> pMovePlatB4;
 
     void CollectCoin();
     void LoseLife();

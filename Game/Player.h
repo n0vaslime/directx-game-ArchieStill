@@ -34,8 +34,8 @@ public:
 
 	float lifetime = 0.0f;
 
-	CMOGO* pSwordTrigger;
-	CMOGO* pSwordObject;
+	std::shared_ptr<CMOGO> pSwordTrigger;
+	std::shared_ptr<CMOGO> pSwordObject;
 	Vector3 base_trigger_size;
 
 protected:

@@ -14,9 +14,9 @@ public:
 	void SetTriggerPos(GameData* _GD);
 	void CreateText();
 
-	CMOGO* SignTrigger;
+	std::shared_ptr<CMOGO> SignTrigger;
 
 	bool can_read = false;
 	bool is_reading = false;
-	TextGO2D* ReadText;
+	std::shared_ptr<TextGO2D> ReadText;
 };

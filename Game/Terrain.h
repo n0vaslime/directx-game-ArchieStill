@@ -16,7 +16,7 @@ public:
 
 	void Tick(GameData* _GD) override { _GD; };
 
-	CMOGO* GroundCheck;
+	std::shared_ptr<CMOGO> GroundCheck;
 
 protected:
 

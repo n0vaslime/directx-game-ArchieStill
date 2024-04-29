@@ -82,7 +82,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_audioEngine = std::make_unique<AudioEngine>(eflags);
 
     //create a base light
-    m_light = new Light(Vector3(0.0f, 100.0f, 160.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(110.4f, 110.1f, 0.1f, 1.0f));
+    m_light = std::make_shared<Light>(Vector3(0.0f, 100.0f, 160.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(110.4f, 110.1f, 0.1f, 1.0f));
     m_GameObjects.push_back(m_light);
 
     //find how big my window is to correctly calculate my aspect ratio
@@ -139,7 +139,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     }
     
     //add Player - player object and adding swords to player class
-    pPlayer = new Player("Player", m_d3dDevice.Get(), m_fxFactory);
+    pPlayer = std::make_shared<Player>("Player", m_d3dDevice.Get(), m_fxFactory);
     m_Player.push_back(pPlayer);
     m_GameObjects.push_back(pPlayer);
     m_IntroGOs.push_back(pPlayer);

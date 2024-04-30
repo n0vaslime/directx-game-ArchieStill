@@ -137,7 +137,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
         }
         secret_lore.close();
     }
-    
+    z\
     //add Player - player object and adding swords to player class
     pPlayer = std::make_shared<Player>("Player", m_d3dDevice.Get(), m_fxFactory);
     m_Player.push_back(pPlayer);
@@ -188,7 +188,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     // m_TriggerObjects.push_back(secretTrigger);
 
     //create DrawData struct and populate its pointers
-    m_DD = new DrawData;
+    m_DD = std::make_shared<DrawData>;
     m_DD->m_pd3dImmediateContext = nullptr;
     m_DD->m_states = m_states;
     // m_DD->m_cam = m_TPScam;

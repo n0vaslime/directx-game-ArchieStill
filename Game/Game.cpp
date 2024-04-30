@@ -82,7 +82,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_audioEngine = std::make_unique<AudioEngine>(eflags);
 
     //create a base light
-    m_light = new Light(Vector3(0.0f, 100.0f, 160.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(110.4f, 110.1f, 0.1f, 1.0f));
+    // m_light = new Light(Vector3(0.0f, 100.0f, 160.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(110.4f, 110.1f, 0.1f, 1.0f));
     // m_GameObjects.push_back(m_light);
 
     //find how big my window is to correctly calculate my aspect ratio
@@ -162,10 +162,10 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_Destructibles.push_back(pKazcranak->pBossProjectile);
 
     //add a PRIMARY camera
-    m_TPScam = new TPSCamera(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f)); // Vector3(0,0,0.1f)
-    // m_GameObjects.push_back(m_TPScam);
-    // m_IntroGOs.push_back(m_TPScam);
-    // m_BossGOs.push_back(m_TPScam);
+    m_TPScam = std::make_shared<TPSCamera>(0.5f * XM_PI, AR, 1.0f, 10000.0f, pPlayer, Vector3::UnitY, Vector3(0.0f, 0.0f, 0.1f)); // Vector3(0,0,0.1f)
+    m_GameObjects.push_back(m_TPScam);
+    m_IntroGOs.push_back(m_TPScam);
+    m_BossGOs.push_back(m_TPScam);
 
     CreateBossGround();
 
@@ -191,8 +191,8 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_DD = new DrawData;
     m_DD->m_pd3dImmediateContext = nullptr;
     m_DD->m_states = m_states;
-    m_DD->m_cam = m_TPScam;
-    m_DD->m_light = m_light;
+    // m_DD->m_cam = m_TPScam;
+    // m_DD->m_light = m_light;
 
     //2D screens
     title_screen = std::make_shared<ImageGO2D>("TitleScreen", m_d3dDevice.Get());

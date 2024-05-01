@@ -41,7 +41,7 @@ ImageGO2D::~ImageGO2D()
 	}
 }
 
-void ImageGO2D::Tick(GameData* _GD)
+void ImageGO2D::Tick(std::shared_ptr<GameData> _GD)
 {
 	//spins!
 	//m_rotation += _GD->m_dt;
@@ -49,7 +49,7 @@ void ImageGO2D::Tick(GameData* _GD)
 
 
 
-void ImageGO2D::Draw(DrawData2D* _DD)
+void ImageGO2D::Draw(std::shared_ptr<DrawData2D> _DD)
 {
 	//nullptr can be changed to a RECT* to define what area of this image to grab
 	//you can also add an extra value at the end to define layer depth

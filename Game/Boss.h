@@ -7,11 +7,11 @@ public:
 	Boss(string _filename, ID3D11Device* _pd3dDevice, IEffectFactory* _EF);
 	~Boss();
 
-	virtual void Tick(GameData* _GD) override;
-	virtual void Draw(DrawData* _DD) override;
+	virtual void Tick(std::shared_ptr<GameData> _GD) override;
+	virtual void Draw(std::shared_ptr<DrawData> _DD) override;
 	void BossFacing();
-	void BossIntroduction(GameData* _GD);
-	void BossEnding(GameData* _GD);
+	void BossIntroduction(std::shared_ptr<GameData> _GD);
+	void BossEnding(std::shared_ptr<GameData> _GD);
 
 	void BossHealth();
 	void BossAttacking();

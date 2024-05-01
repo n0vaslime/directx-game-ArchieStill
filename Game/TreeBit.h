@@ -16,7 +16,7 @@ public:
 	TreeBit(int _levels, int _perLevel, int _ofLevel, float _scale, Vector3 _shift, float _lean, string _bitFileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, TreeBit* _parent, list<TreeBit*>* _tree);
 	~TreeBit();
 
-	virtual void Tick(GameData* _GD) override;
+	virtual void Tick(std::shared_ptr<GameData> _GD) override;
 
 protected:
 

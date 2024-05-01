@@ -14,7 +14,7 @@ TPSCamera::~TPSCamera()
 
 }
 
-void TPSCamera::Tick(GameData* _GD)
+void TPSCamera::Tick(std::shared_ptr<GameData> _GD)
 {
 	//Set up position of camera and target position of camera based on new position and orientation of target object
 	Matrix rotCam = Matrix::CreateFromYawPitchRoll(m_targetObject->GetYaw(), m_targetObject->GetPitch(), 0.0f);

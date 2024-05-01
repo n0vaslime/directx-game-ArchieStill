@@ -72,12 +72,12 @@ VBGO::~VBGO()
 	DESTROY(m_pRasterState);
 }
 
-void VBGO::Tick(GameData* _GD)
+void VBGO::Tick(std::shared_ptr<GameData> _GD)
 {
 	GameObject::Tick(_GD);
 }
 
-void VBGO::Draw(DrawData* _DD)
+void VBGO::Draw(std::shared_ptr<DrawData> _DD)
 {
 	//set raster state
 	ID3D11RasterizerState* useRasterS = m_pRasterState ? m_pRasterState : s_pRasterState;
@@ -228,7 +228,7 @@ void VBGO::Init(ID3D11Device* _GD)
 	hr = _GD->CreateRasterizerState(&rasterDesc, &s_pRasterState);
 }
 
-void VBGO::UpdateConstantBuffer(DrawData* _DD)
+void VBGO::UpdateConstantBuffer(std::shared_ptr<DrawData> _DD)
 {
 	//you'll need your own version of this if you use a different Constant Buffer
 	s_pCB->view = _DD->m_cam->GetView().Transpose();

@@ -20,7 +20,7 @@ Tree::~Tree()
 	m_Tree.clear();
 }
 
-void Tree::Tick(GameData* _GD)
+void Tree::Tick(std::shared_ptr<GameData> _GD)
 {
 	//update all tree parts
 	for (list<TreeBit *>::iterator it = m_Tree.begin(); it != m_Tree.end(); it++)
@@ -29,7 +29,7 @@ void Tree::Tick(GameData* _GD)
 	}
 }
 
-void Tree::Draw(DrawData* _DD)
+void Tree::Draw(std::shared_ptr<DrawData> _DD)
 {
 	//draw all tree parts
 	for (list<TreeBit *>::iterator it = m_Tree.begin(); it != m_Tree.end(); it++)

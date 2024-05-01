@@ -566,7 +566,7 @@ float VBMarchCubes::function(Vector3 _pos)
 	//VBMC->init(Vector3(-8.5, -8.5, -17), Vector3(8.5, 8.5,23), Vector3(100, 100, 100), 0.01, _pd3dDevice);
 }
 
-void VBMarchCubes::Tick(GameData* _GD)
+void VBMarchCubes::Tick(std::shared_ptr<GameData> _GD)
 {
 	VBGO::Tick(_GD);
 }

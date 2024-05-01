@@ -14,9 +14,9 @@ public:
 	Camera(float _fieldOfView, float _aspectRatio, float _nearPlaneDistance, float _farPlaneDistance, Vector3 _up = Vector3::Up, Vector3 _target = Vector3::Zero);
 	~Camera();
 
-	virtual void Tick(GameData* _GD) override;
+	virtual void Tick(std::shared_ptr<GameData> _GD) override;
 
-	virtual void Draw(DrawData* _DD) override;
+	virtual void Draw(std::shared_ptr<DrawData> _DD) override;
 
 	//Getters
 	Matrix GetProj() { return m_projMat; }

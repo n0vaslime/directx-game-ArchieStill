@@ -58,11 +58,11 @@ void Game::Initialize(HWND _window, int _width, int _height)
     ShowCursor(false);
 
     //create GameData struct and populate its pointers
-    m_GD = new GameData;
+    m_GD = std::make_shared<GameData>();
     m_GD->m_GS = GS_MENU;
 
     //set up systems for 2D rendering
-    m_DD2D = new DrawData2D();
+    m_DD2D = make_shared<DrawData2D>();
     m_DD2D->m_Sprites.reset(new SpriteBatch(m_d3dContext.Get()));
     m_DD2D->m_Font.reset(new SpriteFont(m_d3dDevice.Get(), L"..\\Assets\\italic.spritefont"));
     m_states = new CommonStates(m_d3dDevice.Get());
@@ -82,8 +82,8 @@ void Game::Initialize(HWND _window, int _width, int _height)
     m_audioEngine = std::make_unique<AudioEngine>(eflags);
 
     //create a base light
-    // m_light = new Light(Vector3(0.0f, 100.0f, 160.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(110.4f, 110.1f, 0.1f, 1.0f));
-    // m_GameObjects.push_back(m_light);
+    m_light = std::make_shared<Light>(Vector3(0.0f, 100.0f, 160.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(110.4f, 110.1f, 0.1f, 1.0f));
+    m_GameObjects.push_back(m_light);
 
     //find how big my window is to correctly calculate my aspect ratio
     float AR = (float)_width / (float)_height;
@@ -137,7 +137,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
         }
         secret_lore.close();
     }
-    z\
+    
     //add Player - player object and adding swords to player class
     pPlayer = std::make_shared<Player>("Player", m_d3dDevice.Get(), m_fxFactory);
     m_Player.push_back(pPlayer);
@@ -172,27 +172,27 @@ void Game::Initialize(HWND _window, int _width, int _height)
     CreateCoins();
     CreateEnemies();
     CreateSigns();
-
+     
     //L-system like tree
-    //     tree = std::make_shared<Tree>(4, 3, 1.0f, 8.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
-    // m_GameObjects.push_back(tree);
-    //     treeCollision = std::make_shared<CMOGO>("Player", m_d3dDevice.Get(), m_fxFactory);
-    // treeCollision->SetPos(Vector3(tree->GetPos().x, tree->GetPos().y, tree->GetPos().z));
-    // treeCollision->SetScale(Vector3(2.5f, 10, 2.5f));
-    // m_GameObjects.push_back(treeCollision);
-    // m_ColliderObjects.push_back(treeCollision);
-    //     secretTrigger = std::make_shared<CMOGO>("Player", m_d3dDevice.Get(), m_fxFactory);
-    // secretTrigger->SetPos(Vector3(tree->GetPos().x, tree->GetPos().y, tree->GetPos().z));
-    // secretTrigger->SetScale(Vector3(5, 10, 5));
-    // m_GameObjects.push_back(secretTrigger);
-    // m_TriggerObjects.push_back(secretTrigger);
+        std::shared_ptr<Tree> tree = std::make_shared<Tree>(4, 3, 1.0f, 8.0f * Vector3::Up, XM_PI / 6.0f, "JEMINA vase -up", m_d3dDevice.Get(), m_fxFactory);
+    m_GameObjects.push_back(tree);
+        treeCollision = std::make_shared<CMOGO>("Player", m_d3dDevice.Get(), m_fxFactory);
+    treeCollision->SetPos(Vector3(tree->GetPos().x, tree->GetPos().y, tree->GetPos().z));
+    treeCollision->SetScale(Vector3(2.5f, 10, 2.5f));
+    m_GameObjects.push_back(treeCollision);
+    m_ColliderObjects.push_back(treeCollision);
+        secretTrigger = std::make_shared<CMOGO>("Player", m_d3dDevice.Get(), m_fxFactory);
+    secretTrigger->SetPos(Vector3(tree->GetPos().x, tree->GetPos().y, tree->GetPos().z));
+    secretTrigger->SetScale(Vector3(5, 10, 5));
+    m_GameObjects.push_back(secretTrigger);
+    m_TriggerObjects.push_back(secretTrigger);
 
     //create DrawData struct and populate its pointers
-    m_DD = std::make_shared<DrawData>;
+    m_DD = std::make_shared<DrawData>();
     m_DD->m_pd3dImmediateContext = nullptr;
     m_DD->m_states = m_states;
-    // m_DD->m_cam = m_TPScam;
-    // m_DD->m_light = m_light;
+    m_DD->m_cam = m_TPScam;
+    m_DD->m_light = m_light;
 
     //2D screens
     title_screen = std::make_shared<ImageGO2D>("TitleScreen", m_d3dDevice.Get());
@@ -204,7 +204,7 @@ void Game::Initialize(HWND _window, int _width, int _height)
     lose_screen = std::make_shared<ImageGO2D>("GameOverScreen", m_d3dDevice.Get());
     lose_screen->SetPos(Vector2(400, 300));
     lose_screen->SetScale(0.35f);
-
+     
     CreateAudio();
 
     DisplayMenu();
@@ -223,6 +223,9 @@ void Game::Tick()
 // Updates the world.
 void Game::Update(DX::StepTimer const& _timer)
 {
+    //std::cout << pKazcranak->GetPos().x << ", " << pKazcranak->GetPos().y << ", " << pKazcranak->GetPos().z << std::endl;
+    std::cout << pPlayer->GetPos().x << ", " << pPlayer->GetPos().y << ", " << pPlayer->GetPos().z << std::endl;
+
     //make deltatime consistent
     if (m_GD->m_dt > 1 / 30)
         m_GD->m_dt = 1 / 30;
@@ -243,7 +246,7 @@ void Game::Update(DX::StepTimer const& _timer)
         //update sounds playing
         for (std::vector<Sound*>::iterator it = m_Sounds.begin(); it != m_Sounds.end(); it++)
         {
-            (*it)->Tick(m_GD);
+            (*it)->Tick(std::make_shared<GameData>());
         }
     }
 
@@ -324,13 +327,17 @@ void Game::Update(DX::StepTimer const& _timer)
                 GameObject == pMovePlatB1->GroundCheck ||
                 GameObject == pMovePlatB2->GroundCheck ||
                 GameObject == pMovePlatB3->GroundCheck ||
-                GameObject == pMovePlatB4->GroundCheck)
+                GameObject == pMovePlatB4->GroundCheck ||
+                GameObject == m_TPScam ||
+                GameObject == pPlayer)
             {
                 GameObject->Tick(m_GD);
             }
         }
         if (pKazcranak->is_talking)
             pPlayer->is_attacking = true;
+        if (pPlayer->GetPos().y < -25)
+            LoseLife();
 
         //determines where Kazcranak fires projectiles
         pKazcranak->player_adjacent = pPlayer->GetPos().x / 2;
@@ -368,10 +375,10 @@ void Game::Update(DX::StepTimer const& _timer)
     //     if ((*it)->isRendered())
     //         (*it)->Tick(m_GD);
     // }
-    for (auto GameObject : m_GameObjects2D)
+    for (auto GameObject2D : m_GameObjects2D)
     {
-        if (GameObject->isRendered())
-            GameObject->Tick(m_GD);
+        if (GameObject2D->isRendered())
+            GameObject2D->Tick(m_GD);
     }
 
     //make ground and sign checks invisible
@@ -465,7 +472,7 @@ void Game::Render()
     m_DD->m_pd3dImmediateContext = m_d3dContext.Get();
 
     //set which camera to be used
-    // m_DD->m_cam = std::make_shared<TPSCamera> m_TPScam;
+    m_DD->m_cam = m_TPScam;
 
     //update the constant buffer for the rendering of VBGOs
     VBGO::UpdateConstantBuffer(m_DD);
@@ -535,7 +542,8 @@ void Game::Render()
         for (auto GameObject : m_BossGOs)
         {
             if (GameObject->isRendered()
-                && GameObject != pPlayer->pSwordTrigger)
+                && GameObject != pPlayer->pSwordTrigger ||
+                GameObject == pDeathTrigger)
                 GameObject->Draw(m_DD);
         }
     }
@@ -1238,6 +1246,8 @@ void Game::DisplayGame()
         else
             GameObject->SetRendered(false);
     }
+
+
 }
 void Game::DisplayBoss()
 {
@@ -1255,8 +1265,10 @@ void Game::DisplayBoss()
     boss_intro->Play();
     KZK_intro->Play();
 
+    std::cout << "respawn" << std::endl;
     pPlayer->respawn_pos = Vector3(0, 5, 50);
     pPlayer->is_respawning = true;
+    //pPlayer->SetPos(Vector3(0, 5, 50));
     pPlayer->is_attacking = true;
     
     // for (std::vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)

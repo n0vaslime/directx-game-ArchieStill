@@ -13,7 +13,7 @@ Light::~Light()
 {
 }
 
-void Light::Tick(GameData* _GD)
+void Light::Tick(std::shared_ptr<GameData> _GD)
 {
 	//not really needed but spins the light around to show off the lambert default VBGO shader
 	static float time = 0.0f;

@@ -14,10 +14,10 @@ public:
 	Player(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF);
 	~Player();
 
-	virtual void Draw(DrawData* _DD) override;
-	virtual void Tick(GameData* _GD) override;
-	void PlayerMovement(GameData* _GD);
-	void SwordTriggers(GameData* _GD);
+	virtual void Draw(std::shared_ptr<DrawData>) override;
+	virtual void Tick(std::shared_ptr<GameData>) override;
+	void PlayerMovement(std::shared_ptr<GameData>);
+	void SwordTriggers(std::shared_ptr<GameData>);
 	void SwordObjects();
 
 	bool is_grounded = false;

@@ -16,9 +16,9 @@ public:
 	Light(Vector3 _pos, Color _colour, Color _ambientColour);
 	~Light();
 
-	virtual void Draw(DrawData* _DD) override { _DD; }; //draws nothing
+	virtual void Draw(std::shared_ptr<DrawData> _DD) override { _DD; }; //draws nothing
 
-	virtual void Tick(GameData* _GD) override;
+	virtual void Tick(std::shared_ptr<GameData> _GD) override;
 
 	//getters
 	Color GetColour() { return m_colour; }

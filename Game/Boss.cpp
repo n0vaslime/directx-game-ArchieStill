@@ -23,7 +23,7 @@ Boss::~Boss()
 {
 }
 
-void Boss::Tick(GameData* _GD)
+void Boss::Tick(std::shared_ptr<GameData> _GD)
 {
     if (_GD->m_GS == GS_BOSS)
     {
@@ -74,7 +74,7 @@ void Boss::Tick(GameData* _GD)
 	CMOGO::Tick(_GD);
 }
 
-void Boss::Draw(DrawData* _DD)
+void Boss::Draw(std::shared_ptr<DrawData> _DD)
 {
     if (isRendered())
         CMOGO::Draw(_DD);
@@ -90,7 +90,7 @@ void Boss::BossFacing()
 
 }
 
-void Boss::BossIntroduction(GameData* _GD) 
+void Boss::BossIntroduction(std::shared_ptr<GameData> _GD) 
 {
     //slowly descending down to the ground
     if (m_pos.y > 100)
@@ -105,7 +105,7 @@ void Boss::BossIntroduction(GameData* _GD)
         is_talking = false;
     }
 }
-void Boss::BossEnding(GameData* _GD)
+void Boss::BossEnding(std::shared_ptr<GameData> _GD)
 {
     //lying down in agony and slowly rising into the sky
     m_pitch = -5;

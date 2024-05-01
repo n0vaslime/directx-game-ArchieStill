@@ -107,12 +107,12 @@ CMOGO::~CMOGO()
 	}
 }
 
-void CMOGO::Tick(GameData* _GD)
+void CMOGO::Tick(std::shared_ptr<GameData> _GD)
 {
 	GameObject::Tick(_GD);
 }
 
-void CMOGO::Draw(DrawData* _DD)
+void CMOGO::Draw(std::shared_ptr<DrawData> _DD)
 {
 	//a dirty hack as the CMO model drawer breaks the depth stencil state
 	ID3D11DepthStencilState *DSS = nullptr;

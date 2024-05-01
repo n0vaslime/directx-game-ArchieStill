@@ -17,14 +17,14 @@ Camera::~Camera()
 {
 }
 
-void Camera::Tick(GameData* _GD)
+void Camera::Tick(std::shared_ptr<GameData> _GD)
 {
 	m_projMat = Matrix::CreatePerspectiveFieldOfView( m_fieldOfView, m_aspectRatio, m_nearPlaneDistance, m_farPlaneDistance );
 	m_viewMat = Matrix::CreateLookAt( m_pos, m_target, m_up );
 	GameObject::Tick(_GD);
 }
 
-void Camera::Draw(DrawData* _DD)
+void Camera::Draw(std::shared_ptr<DrawData> _DD)
 {
 	_DD;
 	//standard camera doesn't draw ANYTHING

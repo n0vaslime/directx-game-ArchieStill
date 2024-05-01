@@ -19,7 +19,7 @@ MovingPlatform::~MovingPlatform()
 {
 }
 
-void MovingPlatform::Tick(GameData* _GD)
+void MovingPlatform::Tick(std::shared_ptr<GameData> _GD)
 {
 	GroundCheck->SetPos(Vector3(this->GetPos().x, this->GetPos().y + 0.5f, this->GetPos().z));
 	GroundCheck->SetYaw(this->GetYaw());

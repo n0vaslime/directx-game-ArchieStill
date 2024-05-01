@@ -15,8 +15,8 @@ public:
 	ImageGO2D(string _fileName, ID3D11Device* _GD);
 	virtual ~ImageGO2D();
 
-	virtual void Tick(GameData* _GD);
-	virtual void Draw(DrawData2D* _DD);
+	virtual void Tick(std::shared_ptr<GameData> _GD);
+	virtual void Draw(std::shared_ptr<DrawData2D> _DD);
 protected:
 
 	ID3D11ShaderResourceView* m_pTextureRV;

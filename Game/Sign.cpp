@@ -21,20 +21,20 @@ Sign::~Sign()
 {
 }
 
-void Sign::Draw(DrawData* _DD)
+void Sign::Draw(std::shared_ptr<DrawData> _DD)
 {
 	if (this->isRendered())
 		CMOGO::Draw(_DD);
 }
 
-void Sign::Tick(GameData* _GD)
+void Sign::Tick(std::shared_ptr<GameData> _GD)
 {
 	SetTriggerPos(_GD);
 
 	CMOGO::Tick(_GD);
 }
 
-void Sign::SetTriggerPos(GameData* _GD)
+void Sign::SetTriggerPos(std::shared_ptr<GameData> _GD)
 {
 	Vector3 forwardMove = 2.5f * Vector3::Forward;
 	Matrix rotMove = Matrix::CreateRotationY(m_yaw);

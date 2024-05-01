@@ -12,7 +12,7 @@ public:
 	TPSCamera(float _fieldOfView, float _aspectRatio, float _nearPlaneDistance, float _farPlaneDistance, std::shared_ptr<GameObject> _target, Vector3 _up, Vector3 _dpos);
 	virtual ~TPSCamera();
 
-	virtual void Tick(GameData* _GD) override;
+	virtual void Tick(std::shared_ptr<GameData> _GD) override;
 
 protected:
 	std::shared_ptr<GameObject>	m_targetObject; //I'm following this object

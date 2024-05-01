@@ -15,15 +15,15 @@ public:
 	VBGO();
 	virtual ~VBGO();
 
-	virtual void Tick(GameData* _GD) override;
-	virtual void Draw(DrawData* _DD) override;
+	virtual void Tick(std::shared_ptr<GameData> _GD) override;
+	virtual void Draw(std::shared_ptr<DrawData> _DD) override;
 
 	//set up and then destroy all static default render stuff for VBGOs
 	static void Init(ID3D11Device* _GD);//Graphics Device NOT GameData
 	static void CleanUp();
 
 	//Update static const buffer required for deafult rendering
-	static void UpdateConstantBuffer(DrawData* _DD);
+	static void UpdateConstantBuffer(std::shared_ptr<DrawData> _DD);
 
 protected:
 

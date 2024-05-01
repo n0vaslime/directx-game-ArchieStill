@@ -30,7 +30,7 @@ Player::~Player()
 {
 }
 
-void Player::Tick(GameData* _GD)
+void Player::Tick(std::shared_ptr<GameData> _GD)
 {
 	if (_GD->m_GS == GS_GAME || _GD->m_GS == GS_INTRO || _GD->m_GS == GS_BOSS)
 	{
@@ -68,14 +68,14 @@ void Player::Tick(GameData* _GD)
 	}
 }
 
-void Player::Draw(DrawData* _DD)
+void Player::Draw(std::shared_ptr<DrawData> _DD)
 {
 	//don't draw the player
 	if (false)
 		CMOGO::Draw(_DD);
 }
 
-void Player::PlayerMovement(GameData* _GD)
+void Player::PlayerMovement(std::shared_ptr<GameData> _GD)
 {
 	///MOVEMENT CONTROL HERE
 	Vector3 forwardMove = 40.0f * Vector3::Forward;
@@ -130,6 +130,12 @@ void Player::PlayerMovement(GameData* _GD)
 		launching = false;
 		play_jump_sfx = true;
 	}
+
+	if (_GD->m_KBS.NumPad5 && is_grounded)
+	{
+		m_vel.y = 2000;
+		is_grounded = false;
+	}
 	
 	//Checkpoint reset
 	if (_GD->m_KBS.C && is_grounded && !is_attacking && _GD->m_GS == GS_GAME)
@@ -146,7 +152,7 @@ void Player::PlayerMovement(GameData* _GD)
 	}
 }
 
-void Player::SwordTriggers(GameData* _GD)
+void Player::SwordTriggers(std::shared_ptr<GameData> _GD)
 {
 	//checks if sword bounds are active
 	if (pSwordTrigger->isRendered())

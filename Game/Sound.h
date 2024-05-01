@@ -17,7 +17,7 @@ public:
 	Sound(AudioEngine* _audEngine, string _filename);
 	virtual ~Sound();
 
-	virtual void Tick(GameData* _GD) { _GD; };
+	virtual void Tick(std::shared_ptr<GameData> _GD) { _GD; };
 
 	virtual void Play();
 

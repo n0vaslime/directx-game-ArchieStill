@@ -13,7 +13,7 @@ Coin::~Coin()
 {
 }
 
-void Coin::Tick(GameData* _GD)
+void Coin::Tick(std::shared_ptr<GameData> _GD)
 {
 	//spins!
 	m_yaw += _GD->m_dt;

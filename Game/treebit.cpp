@@ -31,7 +31,7 @@ TreeBit::~TreeBit()
 {
 }
 
-void TreeBit::Tick(GameData* _GD)
+void TreeBit::Tick(std::shared_ptr<GameData> _GD)
 {
 	CMOGO::Tick(_GD);
 	if (m_parent)

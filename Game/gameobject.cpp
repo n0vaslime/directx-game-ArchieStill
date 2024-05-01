@@ -22,7 +22,7 @@ GameObject::~GameObject()
 
 }
 
-void GameObject::Tick(GameData* _GD)
+void GameObject::Tick(std::shared_ptr<GameData> _GD)
 {
 	if (m_physicsOn)
 	{

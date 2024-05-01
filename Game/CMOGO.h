@@ -20,8 +20,8 @@ public:
 	CMOGO(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF);
 	virtual ~CMOGO();
 
-	virtual void Tick(GameData* _GD) override;
-	virtual void Draw(DrawData* _DD) override;
+	virtual void Tick(std::shared_ptr<GameData> _GD) override;
+	virtual void Draw(std::shared_ptr<DrawData> _DD) override;
 
 	virtual bool Intersects(const CMOGO& other) const;
 

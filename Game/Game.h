@@ -102,9 +102,9 @@ private:
     std::shared_ptr<DrawData2D> m_DD2D = NULL;	    //Data to be passed by game to all 2D Game Objects via Draw 
 
     //Basic 3D renderers
-    // Camera* m_cam = NULL; //principle camera
+    std::shared_ptr<Camera> m_cam = NULL; //principle camera
     std::shared_ptr<TPSCamera> m_TPScam = NULL;//TPS cam
-    // Light* m_light = NULL; //base light
+    std::shared_ptr<Light> m_light = NULL; //base light
 
     //required for the CMO model rendering system
     DirectX::CommonStates* m_states = NULL;
@@ -163,7 +163,6 @@ private:
     std::shared_ptr<CMOGO> pCore1;
     std::shared_ptr<CMOGO> pCore2;
     std::shared_ptr<CMOGO> pCore3;
-    //std::shared_ptr<Tree> tree;
     std::shared_ptr<CMOGO> treeCollision;
     std::shared_ptr<CMOGO> secretTrigger;
 

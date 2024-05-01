@@ -22,8 +22,8 @@ public:
 	GameObject();
 	virtual ~GameObject();
 
-	virtual void Tick(GameData* _GD);
-	virtual void Draw(DrawData* _DD) = 0;
+	virtual void Tick(std::shared_ptr<GameData> _GD);
+	virtual void Draw(std::shared_ptr<DrawData> _DD) = 0;
 
 	//getters
 	Vector3		GetPos() { return m_pos; }

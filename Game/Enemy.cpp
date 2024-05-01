@@ -23,7 +23,7 @@ Enemy::~Enemy()
 {
 }
 
-void Enemy::Tick(GameData* _GD)
+void Enemy::Tick(std::shared_ptr<GameData> _GD)
 {
     //idle??
     m_yaw -= _GD->m_dt / 4;
@@ -33,13 +33,13 @@ void Enemy::Tick(GameData* _GD)
 	CMOGO::Tick(_GD);
 }
 
-void Enemy::Draw(DrawData* _DD)
+void Enemy::Draw(std::shared_ptr<DrawData> _DD)
 {
     if (isRendered())
         CMOGO::Draw(_DD);
 }
 
-void Enemy::EnemyAI(GameData* _GD)
+void Enemy::EnemyAI(std::shared_ptr<GameData> _GD)
 {
     if (_GD->m_GS == GS_GAME)
     {

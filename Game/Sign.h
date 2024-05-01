@@ -9,9 +9,9 @@ public:
 	Sign(string _fileName, ID3D11Device* _pd3dDevice, IEffectFactory* _EF, Vector3 _pos, float _yaw);
 	~Sign();
 
-	virtual void Draw(DrawData* _DD) override;
-	virtual void Tick(GameData* _GD) override;
-	void SetTriggerPos(GameData* _GD);
+	virtual void Draw(std::shared_ptr<DrawData>) override;
+	virtual void Tick(std::shared_ptr<GameData>) override;
+	void SetTriggerPos(std::shared_ptr<GameData>);
 	void CreateText();
 
 	std::shared_ptr<CMOGO> SignTrigger;

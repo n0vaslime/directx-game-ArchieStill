@@ -197,6 +197,7 @@
     <ResourceCompile Include="resource.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\RawAssets\ReallyCoolLogo.ico" />
     <Image Include="directx.ico" />
   </ItemGroup>
   <ItemGroup>

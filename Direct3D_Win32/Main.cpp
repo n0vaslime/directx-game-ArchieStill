@@ -85,7 +85,7 @@ int WINAPI wWinMain(_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance
 
         HWND hwnd =
 #ifdef _DEBUG
-            CreateWindowExW(0, L"Scarle2021WindowClass", L"Scarle2021", WS_OVERLAPPEDWINDOW,
+            CreateWindowExW(0, L"Scarle2021WindowClass", L"Goldedge 2", WS_OVERLAPPEDWINDOW,
 #else
                 CreateWindowExW(WS_EX_TOPMOST, L"Scarle2021WindowClass", L"Scarle2021", WS_POPUP,
 #endif

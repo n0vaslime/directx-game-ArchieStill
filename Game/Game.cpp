@@ -223,9 +223,6 @@ void Game::Tick()
 // Updates the world.
 void Game::Update(DX::StepTimer const& _timer)
 {
-    //std::cout << pKazcranak->GetPos().x << ", " << pKazcranak->GetPos().y << ", " << pKazcranak->GetPos().z << std::endl;
-    std::cout << pPlayer->GetPos().x << ", " << pPlayer->GetPos().y << ", " << pPlayer->GetPos().z << std::endl;
-
     //make deltatime consistent
     if (m_GD->m_dt > 1 / 30)
         m_GD->m_dt = 1 / 30;
@@ -1265,7 +1262,6 @@ void Game::DisplayBoss()
     boss_intro->Play();
     KZK_intro->Play();
 
-    std::cout << "respawn" << std::endl;
     pPlayer->respawn_pos = Vector3(0, 5, 50);
     pPlayer->is_respawning = true;
     //pPlayer->SetPos(Vector3(0, 5, 50));

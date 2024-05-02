@@ -367,11 +367,6 @@ void Game::Update(DX::StepTimer const& _timer)
             credits->SetPos(Vector2(400, 2700));
     }
 
-    // for (std::vector<GameObject2D*>::iterator it = m_GameObjects2D.begin(); it != m_GameObjects2D.end(); it++)
-    // {
-    //     if ((*it)->isRendered())
-    //         (*it)->Tick(m_GD);
-    // }
     for (auto GameObject2D : m_GameObjects2D)
     {
         if (GameObject2D->isRendered())

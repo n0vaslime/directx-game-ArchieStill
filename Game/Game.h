@@ -274,6 +274,7 @@ private:
 
     void CreateAudio();
     void CreateUI();
+
     void CreateCoins();
     void CreateEnemies();
     void CreateSigns();

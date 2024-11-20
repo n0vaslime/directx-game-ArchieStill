@@ -27,6 +27,9 @@ void Boss::Tick(std::shared_ptr<GameData> _GD)
 {
     if (_GD->m_GS == GS_BOSS)
     {
+        // DEBUG - set boss health to 0
+        /*if (_GD->m_KBS.NumPad9)
+            boss_health = 0;*/
         BossFacing();
         if (is_talking)
             BossIntroduction(_GD);

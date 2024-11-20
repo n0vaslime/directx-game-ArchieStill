@@ -198,8 +198,8 @@ void Game::Initialize(HWND _window, int _width, int _height)
     title_screen = std::make_shared<ImageGO2D>("TitleScreen", m_d3dDevice.Get());
     title_screen->SetPos(Vector2(400,300));
     title_screen->SetScale(0.35f);
-    credits = std::make_shared<ImageGO2D>("Goldedge2Credits", m_d3dDevice.Get());
-    credits->SetPos(Vector2(400, 2700));
+    credits = std::make_shared<ImageGO2D>("Goldedge2NewCredits", m_d3dDevice.Get());
+    credits->SetPos(Vector2(400, 2450));
     credits->SetScale(1.5f);
     lose_screen = std::make_shared<ImageGO2D>("GameOverScreen", m_d3dDevice.Get());
     lose_screen->SetPos(Vector2(400, 300));
@@ -223,6 +223,7 @@ void Game::Tick()
 // Updates the world.
 void Game::Update(DX::StepTimer const& _timer)
 {
+    std::cout << scroll << std::endl;
     //make deltatime consistent
     if (m_GD->m_dt > 1 / 30)
         m_GD->m_dt = 1 / 30;
@@ -352,19 +353,19 @@ void Game::Update(DX::StepTimer const& _timer)
         //credits are just a super long image slowly moving up!
         if (credits_scroll)
         {
-            if (scroll >= -2250)
+            if (scroll >= -2020)
             {
                 scroll = scroll -= m_GD->m_dt * 20;
                 credits->SetPos(Vector2(400, scroll));
             }
             else
             {
-                //END AT -2250 (end of credits)
-                scroll == -2250;
+                //END AT -2020 (end of credits)
+                scroll == -2020;
             }
         }
         else
-            credits->SetPos(Vector2(400, 2700));
+            credits->SetPos(Vector2(400, 2450));
     }
 
     for (auto GameObject2D : m_GameObjects2D)
@@ -1144,7 +1145,7 @@ void Game::ReturnToDefault()
         reset = false;
         score = 0;
         lives = 9;
-        scroll = 2700;
+        scroll = 2450;
         skip_notif->SetRendered(false);
         m_GameObjects2D.clear();
         m_GD->m_GS = GS_MENU;
@@ -1166,7 +1167,7 @@ void Game::ReturnToDefault()
         for(int i = 0; i < m_TextLines.size(); i++)
             m_GameObjects2D.push_back(m_TextLines[i]);
         credits_scroll = false;
-        credits->SetPos(Vector2(400, 2700));
+        credits->SetPos(Vector2(400, 2450));
         game_music->Stop();
         boss_music->Stop();
         ending_music->Stop();
@@ -1284,7 +1285,7 @@ void Game::DisplayWin()
     m_GD->m_GS = GS_WIN;
     m_GameObjects2D.clear();
     credits_scroll = true;
-    credits->SetPos(Vector2(400, 2700));
+    credits->SetPos(Vector2(400, 2450));
     credits->SetRendered(true);
     m_GameObjects2D.push_back(credits);
     skip_notif->SetRendered(true);

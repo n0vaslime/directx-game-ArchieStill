@@ -16,11 +16,11 @@
     <ImageContentTask Include="..\RawAssets\Images\IntroHTPSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\FinalSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\TitleScreen.png" />
-    <ImageContentTask Include="..\RawAssets\Images\Goldedge2Credits.png" />
     <ImageContentTask Include="..\RawAssets\Images\GameOverScreen.png" />
     <ImageContentTask Include="..\RawAssets\Images\CheckpointSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\MovePlatHint.png" />
     <ImageContentTask Include="..\RawAssets\Images\BossHintSign.png" />
     <ImageContentTask Include="..\RawAssets\Images\TreeInfoSign.png" />
+    <ImageContentTask Include="..\RawAssets\Images\Goldedge2NewCredits.png" />
   </ItemGroup>
 </Project>

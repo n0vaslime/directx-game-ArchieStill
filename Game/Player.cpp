@@ -131,11 +131,12 @@ void Player::PlayerMovement(std::shared_ptr<GameData> _GD)
 		play_jump_sfx = true;
 	}
 
-	if (_GD->m_KBS.NumPad5 && is_grounded)
+	// super jump - skips to Lord Kazcranak
+	/*if (_GD->m_KBS.NumPad5 && is_grounded)
 	{
 		m_vel.y = 2000;
 		is_grounded = false;
-	}
+	}*/
 	
 	//Checkpoint reset
 	if (_GD->m_KBS.C && is_grounded && !is_attacking && _GD->m_GS == GS_GAME)

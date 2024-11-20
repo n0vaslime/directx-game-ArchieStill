@@ -183,7 +183,6 @@
   </ItemGroup>
   <ItemGroup>
     <ImageContentTask Include="..\RawAssets\Images\GameOverScreen.png" />
-    <ImageContentTask Include="..\RawAssets\Images\Goldedge2Credits.png" />
     <ImageContentTask Include="..\RawAssets\Images\TitleScreen.png" />
   </ItemGroup>
   <ItemGroup>
@@ -197,6 +196,9 @@
   </ItemGroup>
   <ItemGroup>
     <ImageContentTask Include="..\RawAssets\Images\TreeInfoSign.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="..\RawAssets\Images\Goldedge2NewCredits.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

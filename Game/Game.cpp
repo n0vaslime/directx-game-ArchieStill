@@ -223,7 +223,6 @@ void Game::Tick()
 // Updates the world.
 void Game::Update(DX::StepTimer const& _timer)
 {
-    std::cout << scroll << std::endl;
     //make deltatime consistent
     if (m_GD->m_dt > 1 / 30)
         m_GD->m_dt = 1 / 30;
